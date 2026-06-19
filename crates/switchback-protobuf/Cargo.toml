@@ -14,6 +14,24 @@ path = "src/lib.rs"
 name = "switchback-protobuf"
 path = "src/bin/switchback-protobuf.rs"
 
+[features]
+default = ["protoc", "buf"]
+protoc = ["dep:protoc-bin-vendored"]
+buf = ["dep:buf-tools"]
+
 [dependencies]
 switchback-traits.workspace = true
 switchback-codec-pb.workspace = true
+buffa.workspace = true
+buffa-descriptor = { version = "0.6.0", default-features = false, features = ["std"] }
+anyhow = "1.0"
+sha2 = "0.10"
+walkdir = "2.5"
+tempfile = "3.19"
+protoc-bin-vendored = { version = "3.2.0", optional = true }
+buf-tools = { version = "=1.70.0-hotfix.1", optional = true }
+
+[dev-dependencies]
+switchback-codec-pb.workspace = true
+tempfile = "3.19"
+tokio = { version = "1", features = ["macros", "rt"] }

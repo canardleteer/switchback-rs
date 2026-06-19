@@ -28,6 +28,13 @@ switchback-jsonschema = { path = "crates/switchback-jsonschema" }
 switchback-openapi = { path = "crates/switchback-openapi" }
 switchback-asyncapi = { path = "crates/switchback-asyncapi" }
 switchback-openrpc = { path = "crates/switchback-openrpc" }
+buffa = { version = "0.6.0", default-features = false, features = ["std"] }
+buffa-descriptor = { version = "0.6.0", default-features = false, features = ["std"] }
+protoc-bin-vendored = "3.2.0"
+buf-tools = "=1.70.0-hotfix.1"
+
+[workspace.metadata.switchback-rs.toolchain]
+buf = "1.70.0-hotfix.1"
 
 [profile.release]
 lto = true

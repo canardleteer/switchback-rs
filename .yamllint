@@ -1,0 +1,4 @@
+extends: default
+
+ignore: |
+  crates/switchback-protobuf/tests/fixtures/**

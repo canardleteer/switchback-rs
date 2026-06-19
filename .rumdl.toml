@@ -1,5 +1,8 @@
 [global]
 line-length = 80
+exclude = [
+    "crates/switchback-protobuf/tests/fixtures/**",
+]
 
 [MD013]
 reflow = true
