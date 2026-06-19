@@ -30,7 +30,9 @@ pub enum SwitchbackError {
     /// Local filesystem I/O.
     #[error("io error at {path}: {source}")]
     Io {
+        /// Path involved in the failed I/O operation.
         path: PathBuf,
+        /// Underlying operating-system I/O error.
         #[source]
         source: std::io::Error,
     },
@@ -41,29 +43,36 @@ pub enum SwitchbackError {
 }
 
 impl SwitchbackError {
+    /// Wraps a codec failure message.
     pub fn codec(message: impl Into<String>) -> Self {
         Self::Codec(message.into())
     }
 
+    /// Wraps a renderer failure message.
     pub fn render(message: impl Into<String>) -> Self {
         Self::Render(message.into())
     }
 
+    /// Wraps a contract or manual load failure message.
     pub fn load(message: impl Into<String>) -> Self {
         Self::Load(message.into())
     }
 
+    /// Wraps a link extraction or formatting failure message.
     pub fn link(message: impl Into<String>) -> Self {
         Self::Link(message.into())
     }
 
+    /// Wraps a companion discovery failure message.
     pub fn companion(message: impl Into<String>) -> Self {
         Self::Companion(message.into())
     }
 
+    /// Wraps an uncategorized failure message.
     pub fn other(message: impl Into<String>) -> Self {
         Self::Other(message.into())
     }
 }
 
+/// Result alias for seam operations that surface [`SwitchbackError`].
 pub type Result<T> = std::result::Result<T, SwitchbackError>;

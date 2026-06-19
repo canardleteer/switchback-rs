@@ -14,7 +14,7 @@ pub use entity::{
 };
 pub use link::{
     Anchor, ContractRef, EntityRef, ExternalUrl, GroupRef, IntraLink, LinkTarget, ManualRef,
-    ModuleRef, RefKind, Reference,
+    ManualRefInner, ModuleRef, RefKind, Reference,
 };
 pub use manual::{CompanionFile, Document, Module, ReferenceManual, Source, SourceRef, Span};
 pub use resolved::{IndexedEntity, ResolvedManual};

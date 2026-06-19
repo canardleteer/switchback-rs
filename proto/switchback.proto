@@ -2,10 +2,250 @@ syntax = "proto3";
 
 package switchback.v1alpha1;
 
-// Lossless, versioned switchback intermediate representation.
+// Lossless, versioned switchback intermediate representation (UNSTABLE v1alpha1).
 //
-// This is the canonical artifact between the parser side and the renderer
-// side of the switchback-rs toolchain. Every parser emits a switchback binary file; every
-// renderer reads it. The schema is two-layered: a source layer that carries the
-// raw input documents verbatim, and a derived layer holding the resolved
-// entity tree renderers consume.
+// This schema is in active development alongside switchback-codec-pb and future
+// parsers. Expect field and message changes; no external stability promise yet.
+//
+// Canonical artifact between parsers and renderers. Two layers:
+// - source: raw input documents verbatim
+// - derived: resolved entity tree renderers consume
+
+message ReferenceManual {
+  // Schema version, e.g. "v1alpha1". Codecs reject incompatible values.
+  string switchback_version = 1;
+  string title = 2;
+  repeated Document sources = 3;
+  repeated Module modules = 4;
+}
+
+message Document {
+  SourceRef ref = 1;
+  string media_type = 2;
+  bytes content = 3;
+}
+
+message SourceRef {
+  string uri = 1;
+  string commit = 2;
+  string content_hash = 3;
+}
+
+message Module {
+  string id = 1;
+  string title = 2;
+  string overview = 3;
+  repeated Contract contracts = 4;
+}
+
+message Contract {
+  string family = 1;
+  string version = 2;
+  repeated Group groups = 3;
+  repeated Companion companions = 4;
+}
+
+message Group {
+  string id = 1;
+  string dir = 2;
+  string title = 3;
+  string overview = 4;
+  Source source = 5;
+  repeated Entity entities = 6;
+}
+
+message Entity {
+  string name = 1;
+  string category = 2;
+  string title = 3;
+  string doc = 4;
+  Source source = 5;
+  repeated Reference refs = 6;
+  repeated IntraLink intra_links = 7;
+  oneof body {
+    OperationBody operation = 10;
+    SchemaBody schema = 11;
+    ChannelBody channel = 12;
+    MessageBody message = 13;
+    ParameterBody parameter = 14;
+    ResponseBody response = 15;
+    RequestBodyBody request_body = 16;
+    SecuritySchemeBody security_scheme = 17;
+    ServiceBody service = 18;
+    ExtensionBody extension = 19;
+  }
+}
+
+message ExtensionBody {
+  string extension_type = 1;
+  bytes payload = 2;
+  string fence_language = 3;
+  string fence_body = 4;
+}
+
+message Reference {
+  EntityRef target = 1;
+  RefKind kind = 2;
+}
+
+enum RefKind {
+  REF_KIND_UNSPECIFIED = 0;
+  INTERNAL = 1;
+  EXTERNAL = 2;
+  COMPONENT = 3;
+  INLINE = 4;
+}
+
+message EntityRef {
+  string module = 1;
+  string group = 2;
+  string category = 3;
+  string name = 4;
+}
+
+message Source {
+  string file = 1;
+  Span span = 2;
+}
+
+message Span {
+  int32 start_line = 1;
+  int32 start_col = 2;
+  int32 end_line = 3;
+  int32 end_col = 4;
+}
+
+message Companion {
+  string output_name = 1;
+  bytes bytes = 2;
+  string media_type = 3;
+}
+
+message OperationBody {
+  string signature = 1;
+  string fence_language = 2;
+  string fence_body = 3;
+  repeated ParameterRef parameters = 4;
+  repeated ResponseRef responses = 5;
+}
+
+message SchemaBody {
+  string fence_language = 1;
+  string fence_body = 2;
+  string payload_format = 3;
+  repeated Property properties = 4;
+}
+
+message ChannelBody {
+  string signature = 1;
+  string fence_language = 2;
+  string fence_body = 3;
+}
+
+message MessageBody {
+  string fence_language = 1;
+  string fence_body = 2;
+}
+
+message ParameterBody {
+  string name = 1;
+  string location = 2;
+  bool required = 3;
+  string fence_language = 4;
+  string fence_body = 5;
+}
+
+message ResponseBody {
+  string status = 1;
+  string media_type = 2;
+  string fence_language = 3;
+  string fence_body = 4;
+}
+
+message RequestBodyBody {
+  bool required = 1;
+  string fence_language = 2;
+  string fence_body = 3;
+}
+
+message SecuritySchemeBody {
+  string scheme_type = 1;
+  string fence_language = 2;
+  string fence_body = 3;
+}
+
+message ServiceBody {
+  string signature = 1;
+  string fence_language = 2;
+  string fence_body = 3;
+}
+
+message Property {
+  string name = 1;
+  Reference schema_ref = 2;
+  bool required = 3;
+}
+
+message ParameterRef {
+  string name = 1;
+  string location = 2;
+  bool required = 3;
+  Reference schema_ref = 4;
+}
+
+message ResponseRef {
+  string status = 1;
+  Reference schema_ref = 2;
+  string media_type = 3;
+}
+
+message IntraLink {
+  Anchor anchor = 1;
+  LinkTarget target = 2;
+  string raw = 3;
+}
+
+message Anchor {
+  string field = 1;
+  int32 byte_start = 2;
+  int32 byte_end = 3;
+}
+
+message LinkTarget {
+  oneof target {
+    EntityRef entity_ref = 1;
+    GroupRef group_ref = 2;
+    ContractRef contract_ref = 3;
+    ModuleRef module_ref = 4;
+    ManualRef manual_ref = 5;
+    ExternalUrl url = 6;
+  }
+}
+
+message GroupRef {
+  string module = 1;
+  string group = 2;
+}
+
+message ContractRef {
+  string module = 1;
+  string family = 2;
+  string version = 3;
+}
+
+message ModuleRef {
+  string module = 1;
+}
+
+message ManualRef {
+  string uri = 1;
+  string version = 2;
+  oneof inner {
+    EntityRef entity_ref = 3;
+    GroupRef group_ref = 4;
+  }
+}
+
+message ExternalUrl {
+  string url = 1;
+}

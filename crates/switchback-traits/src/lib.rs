@@ -1,4 +1,5 @@
 #![forbid(unsafe_code)]
+#![warn(missing_docs)]
 #![allow(async_fn_in_trait)] // ADR 0002: native async fn in trait at the seam
 
 //! The seam of the switchback-rs toolchain.
@@ -37,9 +38,10 @@ pub use link_context::LinkContext;
 pub use model::{
     Anchor, ChannelBody, Companion, ContractRef, Document, EntityBody, EntityRef, ExtensionBody,
     ExternalUrl, Group, GroupRef, IndexedEntity, IntraLink, LinkTarget, ManualContract, ManualRef,
-    MessageBody, Module, ModuleRef, OperationBody, ParameterBody, ParameterRef, Property, RefKind,
-    Reference, ReferenceManual, RequestBodyBody, ResolvedManual, ResponseBody, ResponseRef,
-    SchemaBody, SecuritySchemeBody, ServiceBody, Source, SourceRef, Span, StoredEntity,
+    ManualRefInner, MessageBody, Module, ModuleRef, OperationBody, ParameterBody, ParameterRef,
+    Property, RefKind, Reference, ReferenceManual, RequestBodyBody, ResolvedManual, ResponseBody,
+    ResponseRef, SchemaBody, SecuritySchemeBody, ServiceBody, Source, SourceRef, Span,
+    StoredEntity,
 };
 pub use options::{EscapeTags, Layout, Options};
 pub use traits::{

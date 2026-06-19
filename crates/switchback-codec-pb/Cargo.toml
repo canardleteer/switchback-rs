@@ -12,3 +12,13 @@ path = "src/lib.rs"
 
 [dependencies]
 switchback-traits.workspace = true
+buffa.workspace = true
+
+[build-dependencies]
+buffa-build = { version = "0.6.0", default-features = false }
+protoc-bin-vendored = "3.1.0"
+
+[dev-dependencies]
+static_assertions = "1"
+tokio = { version = "1", features = ["macros", "rt"] }
+buffa.workspace = true
