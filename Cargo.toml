@@ -1,0 +1,35 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/switchback-traits",
+    "crates/switchback-codec-pb",
+    "crates/switchback-mdbook",
+    "crates/switchback-protobuf",
+    "crates/switchback-jsonschema",
+    "crates/switchback-openapi",
+    "crates/switchback-asyncapi",
+    "crates/switchback-openrpc",
+    "xtask",
+]
+
+[workspace.package]
+edition = "2021"
+version = "0.0.0"
+rust-version = "1.85"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/canardleteer/switchback-rs"
+
+[workspace.dependencies]
+switchback-traits = { path = "crates/switchback-traits" }
+switchback-codec-pb = { path = "crates/switchback-codec-pb" }
+switchback-mdbook = { path = "crates/switchback-mdbook" }
+switchback-protobuf = { path = "crates/switchback-protobuf" }
+switchback-jsonschema = { path = "crates/switchback-jsonschema" }
+switchback-openapi = { path = "crates/switchback-openapi" }
+switchback-asyncapi = { path = "crates/switchback-asyncapi" }
+switchback-openrpc = { path = "crates/switchback-openrpc" }
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true

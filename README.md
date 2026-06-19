@@ -27,8 +27,8 @@ standalone on a switchback binary file (`switchback-mdbook switchback.binpb`).
 No parser depends on any renderer and no renderer depends on any parser; the
 switchback is the only thing both sides see.
 
-See the [Glossary](doc/GLOSSARY.md) for terminology (reference manual, contract,
-module, entity, and how each contract family maps).
+See the [Glossary](docs/GLOSSARY.md) for terminology (reference manual,
+contract, module, entity, and how each contract family maps).
 
 ## Workspace layout
 

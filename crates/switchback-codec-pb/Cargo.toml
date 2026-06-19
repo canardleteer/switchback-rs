@@ -1,0 +1,14 @@
+[package]
+name = "switchback-codec-pb"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Reference binary codec for the switchback: implements SwitchbackCodec using buffa-generated types from proto/switchback.proto. A switchback binary file is the canonical serialized form."
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+switchback-traits.workspace = true

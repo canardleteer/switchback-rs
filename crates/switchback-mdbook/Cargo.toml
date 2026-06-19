@@ -1,0 +1,19 @@
+[package]
+name = "switchback-mdbook"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "The mdBook renderer: turns a switchback binary file into an mdBook. Holds the mdBook-specific scaffolding (init, summary, book.toml, render driver) lifted from protobuf-mdbook."
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "switchback-mdbook"
+path = "src/bin/switchback-mdbook.rs"
+
+[dependencies]
+switchback-traits.workspace = true
+switchback-codec-pb.workspace = true

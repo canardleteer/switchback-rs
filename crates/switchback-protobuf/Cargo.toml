@@ -1,0 +1,19 @@
+[package]
+name = "switchback-protobuf"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Parser that turns .proto files into a switchback. The protobuf compile-to-descriptors strategy (buf build / protoc / descriptor-set), decomposed from protobuf-mdbook. Built on switchback-traits."
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "switchback-protobuf"
+path = "src/bin/switchback-protobuf.rs"
+
+[dependencies]
+switchback-traits.workspace = true
+switchback-codec-pb.workspace = true

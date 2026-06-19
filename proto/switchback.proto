@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package switchback.v1alpha1;
+
+// Lossless, versioned switchback intermediate representation.
+//
+// This is the canonical artifact between the parser side and the renderer
+// side of the switchback-rs toolchain. Every parser emits a switchback binary file; every
+// renderer reads it. The schema is two-layered: a source layer that carries the
+// raw input documents verbatim, and a derived layer holding the resolved
+// entity tree renderers consume.

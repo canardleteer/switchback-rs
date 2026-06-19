@@ -1,0 +1,20 @@
+[package]
+name = "switchback-openrpc"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Parser that turns an OpenRPC document into a switchback. A thin behavior layer over JSON Schema content descriptors, built on switchback-traits and switchback-jsonschema."
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "switchback-openrpc"
+path = "src/bin/switchback-openrpc.rs"
+
+[dependencies]
+switchback-traits.workspace = true
+switchback-codec-pb.workspace = true
+switchback-jsonschema.workspace = true

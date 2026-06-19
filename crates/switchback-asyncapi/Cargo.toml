@@ -1,0 +1,20 @@
+[package]
+name = "switchback-asyncapi"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Parser that turns an AsyncAPI document into a switchback. Handles 2.x and 3.x, preserving the contract's version. Built on switchback-traits and switchback-jsonschema."
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "switchback-asyncapi"
+path = "src/bin/switchback-asyncapi.rs"
+
+[dependencies]
+switchback-traits.workspace = true
+switchback-codec-pb.workspace = true
+switchback-jsonschema.workspace = true
