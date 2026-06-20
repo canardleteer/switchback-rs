@@ -16,7 +16,7 @@ members = [
 edition = "2021"
 version = "0.0.0"
 rust-version = "1.85"
-license = "MIT OR Apache-2.0"
+license = "Apache-2.0"
 repository = "https://github.com/canardleteer/switchback-rs"
 
 [workspace.dependencies]

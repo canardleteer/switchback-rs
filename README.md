@@ -110,3 +110,7 @@ switchback-rs/
 - **`xtask`** — the workspace task runner: `ci`, `fmt`, `fmt-check`, `clippy`,
   `test`, `parse` (`--parser <family>`), `render` (`--renderer <target>`),
   `link-check`, `update-golden`, `check-toolchain`.
+
+## License
+
+Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE).
