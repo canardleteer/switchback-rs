@@ -1,0 +1,221 @@
+[[asset]]
+id = "openapi-oas-2-0-schema-2017-08-27"
+path = "oas/2.0/schema/2017-08-27"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/2.0/schema/2017-08-27"
+sha256 = "b36871c8016292c5e66dd3b203e69aeff98bfef97e0b3c67c1909036095586a5"
+
+[[asset]]
+id = "openapi-oas-3-0-schema-2021-09-28"
+path = "oas/3.0/schema/2021-09-28"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.0/schema/2021-09-28"
+sha256 = "7a0db7311a69d8b7f2505f59c5d4cbb58539a0961df0c05724a07538014822cf"
+
+[[asset]]
+id = "openapi-oas-3-0-schema-2024-10-18"
+path = "oas/3.0/schema/2024-10-18"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.0/schema/2024-10-18"
+sha256 = "2385f5bbb8c37878daae73baeabe7f34b2f022a4a8c049329ee61f71796f039c"
+
+[[asset]]
+id = "openapi-oas-3-1-schema-2021-03-02"
+path = "oas/3.1/schema/2021-03-02"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/schema/2021-03-02"
+sha256 = "a581aba8a5d5fdbd4485ea263b074238221afed70b7f3545a4aa72d995063cbd"
+
+[[asset]]
+id = "openapi-oas-3-1-schema-base-2021-03-02"
+path = "oas/3.1/schema-base/2021-03-02"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/schema-base/2021-03-02"
+sha256 = "c2729939acd00159668b1672c0a16ff92e3a6c98ece9c9ee2233262c5d49b40d"
+
+[[asset]]
+id = "openapi-oas-3-1-schema-2021-04-15"
+path = "oas/3.1/schema/2021-04-15"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/schema/2021-04-15"
+sha256 = "eb5c4544fa2560f8dbd25da98014b7efc07d1ab1e6d7320afec559ee0df2a1fc"
+
+[[asset]]
+id = "openapi-oas-3-1-schema-base-2021-04-15"
+path = "oas/3.1/schema-base/2021-04-15"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/schema-base/2021-04-15"
+sha256 = "6988f2974d7dfee6d22a8e6f369f5db143a738167b32307f0a46f5b6b5bc082b"
+
+[[asset]]
+id = "openapi-oas-3-1-schema-2021-05-20"
+path = "oas/3.1/schema/2021-05-20"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/schema/2021-05-20"
+sha256 = "97f90ae963af3816bfb287f1b3ad1bdc1ad52ef21a03066170c7ba0009f1d2fa"
+
+[[asset]]
+id = "openapi-oas-3-1-schema-base-2021-05-20"
+path = "oas/3.1/schema-base/2021-05-20"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/schema-base/2021-05-20"
+sha256 = "6ce81019c2dd0d3d9ef50722b6cfcfe19fc81ddc19c6b3b9f773e4eeacfa639b"
+
+[[asset]]
+id = "openapi-oas-3-1-schema-2021-09-28"
+path = "oas/3.1/schema/2021-09-28"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/schema/2021-09-28"
+sha256 = "03ffcecaba5a4db4ab0608a3cdabbfd8163f3e6a5ce96fa440475830e8ccedcc"
+
+[[asset]]
+id = "openapi-oas-3-1-schema-base-2021-09-28"
+path = "oas/3.1/schema-base/2021-09-28"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/schema-base/2021-09-28"
+sha256 = "807df4c5fceb5c809353206aac6ba3b3875d105e38f9103fb8cafb447a86c6ae"
+
+[[asset]]
+id = "openapi-oas-3-1-schema-2022-02-27"
+path = "oas/3.1/schema/2022-02-27"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/schema/2022-02-27"
+sha256 = "976c8bec99584bf335f6f2ff2f715aa78f2c000b649344d545f2a3a5e94ec0a1"
+
+[[asset]]
+id = "openapi-oas-3-1-schema-base-2022-02-27"
+path = "oas/3.1/schema-base/2022-02-27"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/schema-base/2022-02-27"
+sha256 = "103e0bd8f5823574875bf1386f648bb032f03ccc294679cb715b6aa91b5cc7dc"
+
+[[asset]]
+id = "openapi-oas-3-1-schema-2022-10-07"
+path = "oas/3.1/schema/2022-10-07"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/schema/2022-10-07"
+sha256 = "da01ba28852cac0de53893797cb8d1942bc3b05084f526dcc216717dec314ed0"
+
+[[asset]]
+id = "openapi-oas-3-1-schema-base-2022-10-07"
+path = "oas/3.1/schema-base/2022-10-07"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/schema-base/2022-10-07"
+sha256 = "14cd42cfaba6b4700b5995e60b6e0bf8ed9d800f996b00d22fa91fad21b4442c"
+
+[[asset]]
+id = "openapi-oas-3-1-schema-2024-11-14"
+path = "oas/3.1/schema/2024-11-14"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/schema/2024-11-14"
+sha256 = "94bf183558f36947cf1c7c17492105b484f8a479c447cd026d13b10d38eabf88"
+
+[[asset]]
+id = "openapi-oas-3-1-schema-base-2024-11-14"
+path = "oas/3.1/schema-base/2024-11-14"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/schema-base/2024-11-14"
+sha256 = "821f5f4384ff4eb4e3b008a1d2a2bd3fde0a758d846bf67acc83b3d24260c29c"
+
+[[asset]]
+id = "openapi-oas-3-1-schema-2025-02-13"
+path = "oas/3.1/schema/2025-02-13"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/schema/2025-02-13"
+sha256 = "66f9c674bff99e11d584e7c0162ac159218b9595f418fea9e443b2d78174d44c"
+
+[[asset]]
+id = "openapi-oas-3-1-schema-base-2025-02-13"
+path = "oas/3.1/schema-base/2025-02-13"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/schema-base/2025-02-13"
+sha256 = "4b7a8245f380f3645fcde4b39b24a628b091747da79acb655ef3cfafdf1bc48b"
+
+[[asset]]
+id = "openapi-oas-3-1-schema-2025-08-31"
+path = "oas/3.1/schema/2025-08-31"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/schema/2025-08-31"
+sha256 = "40dad5347fd5ab62b6316d407c585e6d00903e2ea7bf77fb62b3ec35a8f13c9d"
+
+[[asset]]
+id = "openapi-oas-3-1-schema-base-2025-08-31"
+path = "oas/3.1/schema-base/2025-08-31"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/schema-base/2025-08-31"
+sha256 = "fe64de4a72cf45bc66d956676a29d200230f80ae8d6e4eeab977bac40a98c378"
+
+[[asset]]
+id = "openapi-oas-3-1-schema-2025-09-15"
+path = "oas/3.1/schema/2025-09-15"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/schema/2025-09-15"
+sha256 = "d0a3955182364c7b5fdebfd0583ecad259a870b4a2fe86a1b0fe8785f8224fed"
+
+[[asset]]
+id = "openapi-oas-3-1-schema-base-2025-09-15"
+path = "oas/3.1/schema-base/2025-09-15"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/schema-base/2025-09-15"
+sha256 = "740186b45574c93647b1ca6184a96310efd384fbeed16bebd07f572eedfbddd4"
+
+[[asset]]
+id = "openapi-oas-3-1-schema-2025-11-23"
+path = "oas/3.1/schema/2025-11-23"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/schema/2025-11-23"
+sha256 = "1b8ccc6e34234b17536f2dd0eb3597142a32bd108438cd42471a5fca4c1a07ef"
+
+[[asset]]
+id = "openapi-oas-3-1-schema-base-2025-11-23"
+path = "oas/3.1/schema-base/2025-11-23"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/schema-base/2025-11-23"
+sha256 = "ab0bde84a429f43f280624f645a19d05c90b626e63862d7278074a465a20ff54"
+
+[[asset]]
+id = "openapi-oas-3-1-dialect-base"
+path = "oas/3.1/dialect/base"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/dialect/base"
+sha256 = "8a0e89e365dadbebce2921ce6244340c1090e9d544c60d977e9ad6b97a61227b"
+
+[[asset]]
+id = "openapi-oas-3-1-dialect-2024-10-25"
+path = "oas/3.1/dialect/2024-10-25"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/dialect/2024-10-25"
+sha256 = "b2cc88e6cdd486f1d1e23edcfeae618a1d209609c1a35888dba75278361762a2"
+
+[[asset]]
+id = "openapi-oas-3-1-dialect-2024-11-10"
+path = "oas/3.1/dialect/2024-11-10"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/dialect/2024-11-10"
+sha256 = "647f32dfff64949d5020a28ecd1af4ffeffb1e9c695f861a52255a8004e07460"
+
+[[asset]]
+id = "openapi-oas-3-1-meta-base"
+path = "oas/3.1/meta/base"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/meta/base"
+sha256 = "267a88226e64e96dfc8c89dbd7e863160c84715e0fb893ca1d9fbf9f830f1f54"
+
+[[asset]]
+id = "openapi-oas-3-1-meta-2024-10-25"
+path = "oas/3.1/meta/2024-10-25"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/meta/2024-10-25"
+sha256 = "caa1f18cb40d5b6153c5420544b6ca413e52caf6e5ca889b5743fb3a0785c7aa"
+
+[[asset]]
+id = "openapi-oas-3-1-meta-2024-11-10"
+path = "oas/3.1/meta/2024-11-10"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.1/meta/2024-11-10"
+sha256 = "80706a9a404affedbf84ac4dc1328c9ce0d2a00804cdfc4d95c0ddd0053121dd"
+
+[[asset]]
+id = "openapi-oas-3-2-schema-2025-09-17"
+path = "oas/3.2/schema/2025-09-17"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.2/schema/2025-09-17"
+sha256 = "0c9d74bf25f9b9388b2d81e421ef60fdefa9feffa94898dadfc501b342b3bfcc"
+
+[[asset]]
+id = "openapi-oas-3-2-schema-2025-11-23"
+path = "oas/3.2/schema/2025-11-23"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.2/schema/2025-11-23"
+sha256 = "7d48f01f37eeae4799041b371ad5f533f9f533fd2b0caa1011a8ba27c5b48b70"
+
+[[asset]]
+id = "openapi-oas-3-2-schema-base-2025-09-17"
+path = "oas/3.2/schema-base/2025-09-17"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.2/schema-base/2025-09-17"
+sha256 = "43bb51dbd831b2215cf27e734969ff50fe7043a1e60879afe9631c5a6c262214"
+
+[[asset]]
+id = "openapi-oas-3-2-schema-base-2025-11-23"
+path = "oas/3.2/schema-base/2025-11-23"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.2/schema-base/2025-11-23"
+sha256 = "423daa88e2285fa343856c08502fe63fd8aa3674cd5b4ef88746ba6f82647af3"
+
+[[asset]]
+id = "openapi-oas-3-2-dialect-2025-09-17"
+path = "oas/3.2/dialect/2025-09-17"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.2/dialect/2025-09-17"
+sha256 = "4e2c989f3d1e6489d41bc1ca4ade11743278c612b82fba9144c6116c79f1c273"
+
+[[asset]]
+id = "openapi-oas-3-2-meta-2025-09-17"
+path = "oas/3.2/meta/2025-09-17"
+url = "https://raw.githubusercontent.com/OAI/spec.openapis.org/main/oas/3.2/meta/2025-09-17"
+sha256 = "a1959c0aa1f9a7ce58f2b75699be5bc5187c8a25901fe04a227f1d9419ba4e9c"

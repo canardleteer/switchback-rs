@@ -13,3 +13,5 @@
 //! `x-tagGroup`; the module is the service the OpenRPC document describes. The
 //! whole family-specific surface is roughly two trait impls plus a
 //! method-to-operation mapper.
+
+pub mod meta_schemas;

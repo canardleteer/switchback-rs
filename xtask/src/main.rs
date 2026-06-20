@@ -2,12 +2,12 @@
 
 //! Workspace task runner for `switchback-rs`.
 //!
-//! Commands: `ci`, `fmt`, `fmt-check`, `clippy`, `test`, `parse`
-//! (`--parser <family>`), `render` (`--renderer <target>`), `link-check`,
-//! `update-golden`, and `check-toolchain`. Also supports `--parser`/`--renderer`
-//! flags and optional `schema-lint`/`yamlfmt`/`prettier` for example YAML.
+//! Commands: `ci`, `fmt`, `fmt-check`, `clippy`, `test`, `spec-vendor`,
+//! `parse` (`--parser <family>`), `render` (`--renderer <target>`), `link-check`,
+//! `update-golden`, and `check-toolchain`.
 
 mod ci;
+mod spec_vendor;
 mod workspace;
 
 use anyhow::{bail, Result};
@@ -54,6 +54,28 @@ enum Cmd {
     LinkCheck,
     /// Not implemented yet.
     UpdateGolden,
+    /// Validate vendored meta-schema SHA-256 locks.
+    SpecVendor {
+        #[command(subcommand)]
+        cmd: SpecVendorCmd,
+    },
+}
+
+#[derive(Subcommand)]
+enum SpecVendorCmd {
+    /// Recompute SHA-256 of vendored files and compare to lock (no network).
+    Validate {
+        #[arg(long, default_value = "all")]
+        family: String,
+    },
+    /// Redownload vendored files from upstream URLs in the lock file.
+    Fetch {
+        #[arg(long, default_value = "all")]
+        family: String,
+        /// Bootstrap lock file and download all assets (one-time).
+        #[arg(long)]
+        write_lock: bool,
+    },
 }
 
 fn main() -> Result<()> {
@@ -65,6 +87,9 @@ fn main() -> Result<()> {
             run("check", ci::check)?;
             run("clippy", ci::clippy)?;
             run("test", ci::test)?;
+            run("spec-vendor validate", || {
+                spec_vendor::validate(spec_vendor::Family::All)
+            })?;
             run("audit", ci::audit)?;
             run("rumdl check", ci::rumdl_check)?;
             run("ryl", ci::ryl_check)?;
@@ -87,5 +112,13 @@ fn main() -> Result<()> {
         Cmd::Render { renderer } => bail!("render --renderer {renderer}: not implemented yet"),
         Cmd::LinkCheck => bail!("link-check: not implemented yet"),
         Cmd::UpdateGolden => bail!("update-golden: not implemented yet"),
+        Cmd::SpecVendor { cmd } => match cmd {
+            SpecVendorCmd::Validate { family } => {
+                spec_vendor::validate(spec_vendor::Family::from_str(&family)?)
+            }
+            SpecVendorCmd::Fetch { family, write_lock } => {
+                spec_vendor::fetch(spec_vendor::Family::from_str(&family)?, write_lock)
+            }
+        },
     }
 }

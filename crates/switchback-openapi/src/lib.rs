@@ -12,3 +12,5 @@
 //! `request-body`, `security-scheme`. Grouping uses `tags` / `x-tagGroups`.
 //! It reuses the loader, `$ref` resolver, envelope, and schema renderer from
 //! `switchback-jsonschema`.
+
+pub mod meta_schemas;

@@ -14,3 +14,5 @@
 //! renderer from `switchback-jsonschema`. Mermaid sequence diagrams are
 //! generated from operations and replies (an AsyncAPI-specific feature with no
 //! OpenAPI analog).
+
+pub mod meta_schemas;
