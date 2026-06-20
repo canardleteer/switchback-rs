@@ -2,20 +2,24 @@
 
 use crate::workspace::{cargo, external, WORKSPACE_ROOT};
 use anyhow::{bail, Context, Result};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
 const CARGO_AUDIT_INSTALL: &str = "cargo install cargo-audit --locked";
 const RUMDL_INSTALL: &str = "cargo install rumdl --locked";
 const RYL_INSTALL: &str = "cargo install ryl --locked";
 
+const WIRE_PROTO_MODULE: &str = "crates/switchback-codec-pb";
+
 pub fn fmt() -> Result<()> {
     cargo_fmt(&[])?;
+    buf_wire_proto_format()?;
     rumdl_fmt()
 }
 
 pub fn fmt_check() -> Result<()> {
-    cargo_fmt(&["--check"])
+    cargo_fmt(&["--check"])?;
+    buf_wire_proto_check()
 }
 
 fn cargo_fmt(extra: &[&str]) -> Result<()> {
@@ -182,4 +186,74 @@ fn active_toolchain_channel() -> Result<String> {
         .next()
         .map(str::to_string)
         .context("parse toolchain channel from active-toolchain name")
+}
+
+fn wire_proto_module_root() -> PathBuf {
+    Path::new(WORKSPACE_ROOT)
+        .join(WIRE_PROTO_MODULE)
+        .join("proto")
+}
+
+fn resolve_buf_path() -> PathBuf {
+    if Command::new("buf")
+        .arg("--version")
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .status()
+        .map(|s| s.success())
+        .unwrap_or(false)
+    {
+        PathBuf::from("buf")
+    } else {
+        buf_tools::buf_bin_path()
+    }
+}
+
+fn run_buf_in_wire_module(args: &[&str]) -> Result<()> {
+    let module_root = wire_proto_module_root();
+    let buf = resolve_buf_path();
+    let output = Command::new(&buf)
+        .current_dir(&module_root)
+        .args(args)
+        .output()
+        .with_context(|| format!("spawn {} in {}", buf.display(), module_root.display()))?;
+    if output.status.success() {
+        Ok(())
+    } else {
+        bail!(
+            "buf {} failed in {} ({:?}): {}",
+            args.join(" "),
+            module_root.display(),
+            output.status.code(),
+            String::from_utf8_lossy(&output.stderr)
+        )
+    }
+}
+
+pub fn buf_wire_proto_check() -> Result<()> {
+    run_buf_in_wire_module(&["lint"])?;
+    run_buf_in_wire_module(&["format", "--diff"])
+}
+
+fn buf_wire_proto_format() -> Result<()> {
+    run_buf_in_wire_module(&["format", "-w"])
+}
+
+const PUBLISH_CRATES: &[&str] = &[
+    "switchback-traits",
+    "switchback-codec-pb",
+    "switchback-jsonschema",
+    "switchback-protobuf",
+    "switchback-mdbook",
+    "switchback-openapi",
+    "switchback-asyncapi",
+    "switchback-openrpc",
+];
+
+pub fn publish_check() -> Result<()> {
+    for pkg in PUBLISH_CRATES {
+        eprintln!("xtask: cargo package --list -p {pkg}");
+        cargo(&["package", "--list", "-p", pkg, "--allow-dirty"])?;
+    }
+    Ok(())
 }

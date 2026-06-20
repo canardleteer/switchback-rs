@@ -3,7 +3,7 @@
 
 syntax = "proto3";
 
-package switchback.v1alpha1;
+package canardleteer.switchback.v1alpha1;
 
 // Lossless, versioned switchback intermediate representation (UNSTABLE v1alpha1).
 //
@@ -93,10 +93,10 @@ message Reference {
 
 enum RefKind {
   REF_KIND_UNSPECIFIED = 0;
-  INTERNAL = 1;
-  EXTERNAL = 2;
-  COMPONENT = 3;
-  INLINE = 4;
+  REF_KIND_INTERNAL = 1;
+  REF_KIND_EXTERNAL = 2;
+  REF_KIND_COMPONENT = 3;
+  REF_KIND_INLINE = 4;
 }
 
 message EntityRef {

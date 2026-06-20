@@ -315,4 +315,5 @@ Update this file whenever you change:
 - Populate rules for structural `refs` in any parser
 - Render-time linking behavior in `switchback-mdbook` or `LinkContext`
 
-See [AGENTS.md](../AGENTS.md).
+See
+[AGENTS.md](https://github.com/canardleteer/switchback-rs/blob/main/AGENTS.md).

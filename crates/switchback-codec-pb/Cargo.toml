@@ -5,7 +5,17 @@ edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-description = "Reference binary codec for the switchback: implements SwitchbackCodec using buffa-generated types from proto/switchback.proto. A switchback binary file is the canonical serialized form."
+description = "Reference binary codec for the switchback: implements SwitchbackCodec using buffa-generated types from the wire-schema protobuf. A switchback binary file is the canonical serialized form."
+include = [
+    "src/**/*",
+    "proto/canardleteer/**/*",
+    "proto/buf.yaml",
+    "build.rs",
+    "Cargo.toml",
+    "README.md",
+    "LICENSE*",
+    "tests/**/*",
+]
 
 [lib]
 path = "src/lib.rs"

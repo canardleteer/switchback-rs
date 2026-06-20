@@ -2,8 +2,8 @@
 
 //! Workspace task runner for `switchback-rs`.
 //!
-//! Commands: `ci`, `fmt`, `fmt-check`, `clippy`, `test`, `spec-vendor`,
-//! `parse` (`--parser <family>`), `render` (`--renderer <target>`), `link-check`,
+//! Commands: `ci`, `fmt`, `fmt-check`, `clippy`, `test`, `publish-check`,
+//! `spec-vendor`, `parse` (`--parser <family>`), `render` (`--renderer <target>`), `link-check`,
 //! `check-highlight-rust`, `update-highlight-golden`, `update-golden`, and `check-toolchain`.
 
 mod ci;
@@ -31,8 +31,10 @@ enum Cmd {
     Ci,
     /// `cargo fmt --all` plus `rumdl fmt` and `ryl --fix`.
     Fmt,
-    /// `cargo fmt --all --check` plus `rumdl check`.
+    /// `cargo fmt --all --check` plus wire-schema `buf lint` / `buf format --diff`.
     FmtCheck,
+    /// Dry-run `cargo package` for publishable workspace crates in dependency order.
+    PublishCheck,
     Check,
     Clippy,
     Test,
@@ -111,6 +113,7 @@ fn main() -> Result<()> {
             ci::ryl_fix()
         }
         Cmd::FmtCheck => ci::fmt_check(),
+        Cmd::PublishCheck => ci::publish_check(),
         Cmd::Check => ci::check(),
         Cmd::Clippy => ci::clippy(),
         Cmd::Test => ci::test(),

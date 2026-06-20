@@ -362,8 +362,12 @@ fn alphabetize_messages_sorts_schema_headings_only() {
         .split("## Messages and enums")
         .nth(1)
         .expect("Messages and enums");
-    let batch = messages.find("### BatchEchoRequest").expect("BatchEchoRequest");
-    let unary = messages.find("### EchoUnaryRequest").expect("EchoUnaryRequest");
+    let batch = messages
+        .find("### BatchEchoRequest")
+        .expect("BatchEchoRequest");
+    let unary = messages
+        .find("### EchoUnaryRequest")
+        .expect("EchoUnaryRequest");
     assert!(batch < unary);
 }
 

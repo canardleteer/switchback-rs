@@ -16,13 +16,15 @@ v1alpha1 schema status.
 
 ## Decision
 
-**Protobuf stack:** Use buffa for codegen (buffa-build from
-proto/switchback.proto) and wire encode/decode (buffa::Message). Same stack as
-protobuf-mdbook.
+**Protobuf stack:** Use buffa for codegen (buffa-build from the wire schema in
+`crates/switchback-codec-pb/proto/canardleteer/switchback/v1alpha1/switchback.proto`;
+repo-root `proto/` symlinks to that directory) and wire encode/decode
+(buffa::Message). Same stack as protobuf-mdbook.
 
-**Schema package:** switchback.v1alpha1 is unstable and in active development
-alongside parsers and the codec. Expect field and message changes; no BSR
-publish or external stability promise yet.
+**Schema package:** `canardleteer.switchback.v1alpha1` is unstable and in active
+development alongside parsers and the codec. Expect field and message changes;
+no BSR publish or external stability promise yet. The module is linted with Buf
+`STANDARD` (local `buf.yaml`, no registry name).
 
 **Default filename:** switchback.binpb (not manual.binpb).
 

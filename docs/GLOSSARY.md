@@ -110,10 +110,10 @@ A markdown file discovered beside contract inputs and copied verbatim into the
 reference manual. Companion discovery and placement rules are owned by each
 [contract family](#contract-family) via its companion strategy. On the wire,
 each companion stores `title`, `source_dir`, and `stem` nav metadata (see
-[ADR 0009](adr/0009-companion-nav-metadata-on-wire-in-switchback-traits.md))
+[ADR 0009](https://github.com/canardleteer/switchback-rs/blob/main/docs/adr/0009-companion-nav-metadata-on-wire-in-switchback-traits.md))
 so [renderers](#renderer) can build navigation without re-parsing companion
-bytes or re-walking source trees. How each target format uses those fields
-(for example mdBook `SUMMARY.md` nesting) is renderer-specific.
+bytes or re-walking source trees. How each target format uses those fields (for
+example mdBook `SUMMARY.md` nesting) is renderer-specific.
 
 ### component
 
@@ -284,7 +284,9 @@ must agree on.
 
 The serialize/deserialize trait for a [switchback](#switchback).
 `switchback-codec-pb` implements it as the reference binary codec using types
-compiled from `proto/switchback.proto` (`switchback.v1alpha1`).
+compiled from
+`crates/switchback-codec-pb/proto/canardleteer/switchback/v1alpha1/switchback.proto`
+(`canardleteer.switchback.v1alpha1`; repo-root `proto/` symlinks to this tree).
 
 ## Vocabulary by contract family
 

@@ -21,14 +21,14 @@ license = "Apache-2.0"
 repository = "https://github.com/canardleteer/switchback-rs"
 
 [workspace.dependencies]
-switchback-traits = { path = "crates/switchback-traits" }
-switchback-codec-pb = { path = "crates/switchback-codec-pb" }
-switchback-mdbook = { path = "crates/switchback-mdbook" }
-switchback-protobuf = { path = "crates/switchback-protobuf" }
-switchback-jsonschema = { path = "crates/switchback-jsonschema" }
-switchback-openapi = { path = "crates/switchback-openapi" }
-switchback-asyncapi = { path = "crates/switchback-asyncapi" }
-switchback-openrpc = { path = "crates/switchback-openrpc" }
+switchback-traits = { version = "0.0.0", path = "crates/switchback-traits" }
+switchback-codec-pb = { version = "0.0.0", path = "crates/switchback-codec-pb" }
+switchback-mdbook = { version = "0.0.0", path = "crates/switchback-mdbook" }
+switchback-protobuf = { version = "0.0.0", path = "crates/switchback-protobuf" }
+switchback-jsonschema = { version = "0.0.0", path = "crates/switchback-jsonschema" }
+switchback-openapi = { version = "0.0.0", path = "crates/switchback-openapi" }
+switchback-asyncapi = { version = "0.0.0", path = "crates/switchback-asyncapi" }
+switchback-openrpc = { version = "0.0.0", path = "crates/switchback-openrpc" }
 buffa = { version = "0.6.0", default-features = false, features = ["std"] }
 buffa-descriptor = { version = "0.6.0", default-features = false, features = ["std"] }
 protoc-bin-vendored = "3.2.0"

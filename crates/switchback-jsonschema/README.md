@@ -63,7 +63,7 @@ Default features are **empty**; CI and pass-through tests run with no network.
 
 ## Partial implementation
 
-[`JsonSchemaLinkExtractor`](src/link.rs) implements the trait but returns empty
+`JsonSchemaLinkExtractor` implements the trait but returns empty
 `intra_links`; prose `[Name](…)` extraction is deferred. Structural `$ref`
 cross-links populate `StoredEntity.refs`.
 
@@ -72,13 +72,11 @@ See
 
 ## Fixtures
 
-Integration tests use a catalog under
-[`tests/fixtures/catalog/`](tests/fixtures/catalog/) (external/internal `$ref`,
-cyclic chain, companion markdown), mirroring
-[`switchback-protobuf`](../switchback-protobuf/)'s in-crate fixture layout.
-Curated vendored meta-schema paths from
-[`switchback-openapi`](../switchback-openapi/),
-[`switchback-openrpc`](../switchback-openrpc/) (see ADR 0005).
+Integration tests use a catalog under `tests/fixtures/catalog/`
+(external/internal `$ref`, cyclic chain, companion markdown), mirroring
+[`switchback-protobuf`](https://github.com/canardleteer/switchback-rs/tree/main/crates/switchback-protobuf)'s
+in-crate fixture layout. Curated vendored meta-schema paths from
+`switchback-openapi`, `switchback-openrpc` (see ADR 0005).
 
 Tests assert loader resolution, `ProtobufCodec` round-trip, directory-faithful
 source restoration, and structural smoke on `$ref` indexes.

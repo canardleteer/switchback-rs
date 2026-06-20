@@ -36,8 +36,7 @@ contract, module, entity, and how each contract family maps).
 switchback-rs/
 ├── Cargo.toml                    workspace + [workspace.dependencies]
 ├── rust-toolchain.toml
-├── proto/
-│   └── switchback.proto          lossless switchback schema (switchback.v1alpha1)
+├── proto/                        symlink → crates/switchback-codec-pb/proto
 ├── crates/
 │   ├── switchback-traits/        core: traits + in-memory model + helpers
 │   ├── switchback-codec-pb/      reference binary codec (protobuf)
@@ -61,10 +60,10 @@ switchback-rs/
   check, companion discovery, paths, prose escaping, source snippets). Knows
   nothing about any contract family, output format, or serialization format.
 - **`switchback-codec-pb`** — the reference binary codec. Implements
-  `SwitchbackCodec` using `buffa`-generated types compiled from
-  `proto/switchback.proto` (`switchback.v1alpha1`). A switchback binary file is
-  the canonical, deterministic, cacheable serialized form. The codec is a binary
-  IDL format.
+  `SwitchbackCodec` using `buffa`-generated types compiled from the wire schema
+  in `switchback-codec-pb` (`canardleteer.switchback.v1alpha1`). A switchback
+  binary file is the canonical, deterministic, cacheable serialized form. The
+  codec is a binary IDL format.
 
 ### Renderers
 

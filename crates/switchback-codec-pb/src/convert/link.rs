@@ -211,20 +211,20 @@ fn manual_ref_from_proto(manual_ref: pb::ManualRef) -> ManualRef {
 fn ref_kind_to_proto(kind: RefKind) -> pb::RefKind {
     match kind {
         RefKind::Unspecified => pb::RefKind::REF_KIND_UNSPECIFIED,
-        RefKind::Internal => pb::RefKind::INTERNAL,
-        RefKind::External => pb::RefKind::EXTERNAL,
-        RefKind::Component => pb::RefKind::COMPONENT,
-        RefKind::Inline => pb::RefKind::INLINE,
+        RefKind::Internal => pb::RefKind::REF_KIND_INTERNAL,
+        RefKind::External => pb::RefKind::REF_KIND_EXTERNAL,
+        RefKind::Component => pb::RefKind::REF_KIND_COMPONENT,
+        RefKind::Inline => pb::RefKind::REF_KIND_INLINE,
     }
 }
 
 fn ref_kind_from_proto(kind: &buffa::EnumValue<pb::RefKind>) -> switchback_traits::Result<RefKind> {
     match kind.as_known() {
         Some(pb::RefKind::REF_KIND_UNSPECIFIED) | None => Ok(RefKind::Unspecified),
-        Some(pb::RefKind::INTERNAL) => Ok(RefKind::Internal),
-        Some(pb::RefKind::EXTERNAL) => Ok(RefKind::External),
-        Some(pb::RefKind::COMPONENT) => Ok(RefKind::Component),
-        Some(pb::RefKind::INLINE) => Ok(RefKind::Inline),
+        Some(pb::RefKind::REF_KIND_INTERNAL) => Ok(RefKind::Internal),
+        Some(pb::RefKind::REF_KIND_EXTERNAL) => Ok(RefKind::External),
+        Some(pb::RefKind::REF_KIND_COMPONENT) => Ok(RefKind::Component),
+        Some(pb::RefKind::REF_KIND_INLINE) => Ok(RefKind::Inline),
     }
 }
 

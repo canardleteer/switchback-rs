@@ -9,7 +9,7 @@ use crate::pb;
 /// Default on-disk filename for a switchback binary file.
 pub const DEFAULT_SWITCHBACK_FILENAME: &str = "switchback.binpb";
 
-/// Reference protobuf codec using buffa-generated types from `switchback.v1alpha1`.
+/// Reference protobuf codec using buffa-generated types from `canardleteer.switchback.v1alpha1`.
 ///
 /// Implements [`SwitchbackCodec`] (async-primary) and [`SyncSwitchbackCodec`]
 /// per [ADR 0002](https://github.com/canardleteer/switchback-rs/blob/main/docs/adr/0002-async-first-traits-with-synchronous-secondary-apis-in-switchback-traits.md).

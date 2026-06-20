@@ -54,12 +54,11 @@ Disable defaults for slim builds, e.g.
 `cargo build -p switchback-protobuf --no-default-features --features protoc`.
 
 BSR deps for the examples module (Protovalidate) are exported via
-[`ensure_test_proto_deps`](src/load.rs) / [`proto_deps`](src/proto_deps.rs),
-mirroring protobuf-mdbook CI.
+`ensure_test_proto_deps` / `proto_deps`, mirroring protobuf-mdbook CI.
 
 ## Link extraction
 
-[`ProtobufFqnLinkExtractor`](src/link.rs) (`ProtobufLinkExtractor`) extracts
+`ProtobufFqnLinkExtractor` (`ProtobufLinkExtractor`) extracts
 bare fully-qualified type names from leading-comment prose into `intra_links`.
 Structural cross-refs on operations (`StoredEntity.refs`) are populated.
 Field-level type links inside protobuf fences are not generated (matches
@@ -71,11 +70,11 @@ See
 ## Fixtures
 
 Integration tests copy protobuf-mdbook’s `examples/proto/` tree to
-[`tests/fixtures/proto/`](tests/fixtures/proto/) (including `buf.yaml`,
-`buf.lock`, companion markdown). Loose protos live under
-[`tests/fixtures/loose/`](tests/fixtures/loose/). Tests assert protoc/buf
-parity, `ProtobufCodec` round-trip, directory-faithful source restoration, and
-`buf lint` / `buf format --diff` on restored modules.
+[`tests/fixtures/proto/`](https://github.com/canardleteer/switchback-rs/tree/main/crates/switchback-protobuf/tests/fixtures/proto)
+(including `buf.yaml`, `buf.lock`, companion markdown). Loose protos live under
+[`tests/fixtures/loose/`](https://github.com/canardleteer/switchback-rs/tree/main/crates/switchback-protobuf/tests/fixtures/loose).
+Tests assert protoc/buf parity, `ProtobufCodec` round-trip, directory-faithful
+source restoration, and `buf lint` / `buf format --diff` on restored modules.
 
 ## Architecture
 
