@@ -8,6 +8,8 @@ mod entity;
 mod link;
 /// Manual, document, module, and source mapping.
 mod manual;
+/// Protocol attachment mapping.
+mod protocol;
 
 use switchback_traits::{ReferenceManual, Result, SwitchbackError};
 

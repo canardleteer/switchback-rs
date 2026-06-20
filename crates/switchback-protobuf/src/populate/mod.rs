@@ -2,6 +2,7 @@
 
 pub mod comments;
 pub mod fence;
+pub mod grpc_attach;
 pub mod source;
 
 use std::collections::BTreeMap;
@@ -21,8 +22,8 @@ use crate::descriptor_util::split_proto_type_name;
 use crate::input::ResolvedInput;
 use crate::populate::comments::{dedent_comment, package_overview, CommentIndex};
 use crate::populate::fence::{
-    rpc_signature_plain, synthesize_enum_body, synthesize_message_body,
-    synthesize_method_options_body, synthesize_service_body,
+    synthesize_enum_body, synthesize_message_body, synthesize_method_options_body,
+    synthesize_service_body,
 };
 use crate::populate::source::SourceCache;
 
@@ -182,7 +183,12 @@ pub fn populate(resolved: &ResolvedInput) -> switchback_traits::Result<Populated
                         .leading_method(si, method_idx)
                         .map(dedent_comment)
                         .filter(|s| !s.is_empty());
-                    let signature = rpc_signature_plain(method);
+                    let output_fqn = method
+                        .output_type
+                        .as_deref()
+                        .unwrap_or(".google.protobuf.Empty");
+                    let (signature, protocols, responses, parameters) =
+                        grpc_attach::populate_rpc(method, &module_id, output_fqn);
                     let fence_body = synthesize_method_options_body(method).unwrap_or_default();
                     entities.push(PopulatedEntity {
                         entity: Entity {
@@ -199,9 +205,10 @@ pub fn populate(resolved: &ResolvedInput) -> switchback_traits::Result<Populated
                                 signature,
                                 fence_language: "protobuf".into(),
                                 fence_body,
-                                parameters: Vec::new(),
-                                responses: Vec::new(),
+                                parameters,
+                                responses,
                                 request_body: None,
+                                protocols,
                             }),
                         },
                         refs: operation_refs(&module_id, method),

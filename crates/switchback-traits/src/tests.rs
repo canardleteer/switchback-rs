@@ -282,6 +282,7 @@ fn resolved_manual_from_reference_manual() {
                     source_path: Default::default(),
                 }],
                 companions: Vec::new(),
+                protocols: Vec::new(),
             }],
         }],
     };

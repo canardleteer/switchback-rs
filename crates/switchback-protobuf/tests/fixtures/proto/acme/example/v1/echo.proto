@@ -39,6 +39,7 @@ syntax = "proto3";
 package acme.example.v1;
 
 import "acme/example/v2/types.proto";
+import "canardleteer/switchback/protocol/grpc/v1alpha1/metadata_options.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 
@@ -159,6 +160,12 @@ service EchoService {
   // hello-world RPC — leading comment preserved for mdBook heading link tests.
   rpc EchoUnary(EchoUnaryRequest) returns (EchoUnaryResponse) {
     option idempotency_level = NO_SIDE_EFFECTS;
+    option (canardleteer.switchback.protocol.grpc.v1alpha1.switchback_rpc_metadata) = {
+      keys: [
+        { name: "x-request-id", required: true },
+        { name: "authorization", required: false }
+      ]
+    };
   }
 
   // EchoServerStream demonstrates server streaming in generated docs.

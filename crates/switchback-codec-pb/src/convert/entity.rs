@@ -10,6 +10,7 @@ use crate::pb;
 use crate::pb::__buffa::oneof::entity::Body as PbEntityBody;
 
 use super::link;
+use super::protocol;
 
 pub fn entity_to_proto(entity: &StoredEntity) -> switchback_traits::Result<pb::Entity> {
     Ok(pb::Entity {
@@ -135,6 +136,7 @@ fn operation_body_to_proto(body: &OperationBody) -> switchback_traits::Result<pb
             .transpose()?
             .map(buffa::MessageField::some)
             .unwrap_or_default(),
+        protocols: protocol::protocols_to_proto(&body.protocols),
         ..Default::default()
     })
 }
@@ -159,6 +161,7 @@ fn operation_body_from_proto(body: pb::OperationBody) -> switchback_traits::Resu
             .into_option()
             .map(link::operation_request_body_ref_from_proto)
             .transpose()?,
+        protocols: protocol::protocols_from_proto(body.protocols),
     })
 }
 
@@ -228,6 +231,7 @@ fn parameter_body_to_proto(body: &ParameterBody) -> pb::ParameterBody {
         required: body.required,
         fence_language: body.fence_language.clone(),
         fence_body: body.fence_body.clone(),
+        protocols: protocol::protocols_to_proto(&body.protocols),
         ..Default::default()
     }
 }
@@ -239,6 +243,7 @@ fn parameter_body_from_proto(body: pb::ParameterBody) -> ParameterBody {
         required: body.required,
         fence_language: body.fence_language,
         fence_body: body.fence_body,
+        protocols: protocol::protocols_from_proto(body.protocols),
     }
 }
 
@@ -249,6 +254,7 @@ fn response_body_to_proto(body: &ResponseBody) -> pb::ResponseBody {
         fence_language: body.fence_language.clone(),
         fence_body: body.fence_body.clone(),
         severity: buffa::EnumValue::from(link::response_severity_to_proto(body.severity)),
+        protocols: protocol::protocols_to_proto(&body.protocols),
         ..Default::default()
     }
 }
@@ -260,6 +266,7 @@ fn response_body_from_proto(body: pb::ResponseBody) -> ResponseBody {
         media_type: body.media_type,
         fence_language: body.fence_language,
         fence_body: body.fence_body,
+        protocols: protocol::protocols_from_proto(body.protocols),
     }
 }
 
@@ -268,6 +275,7 @@ fn request_body_body_to_proto(body: &RequestBodyBody) -> pb::RequestBodyBody {
         required: body.required,
         fence_language: body.fence_language.clone(),
         fence_body: body.fence_body.clone(),
+        protocols: protocol::protocols_to_proto(&body.protocols),
         ..Default::default()
     }
 }
@@ -277,6 +285,7 @@ fn request_body_body_from_proto(body: pb::RequestBodyBody) -> RequestBodyBody {
         required: body.required,
         fence_language: body.fence_language,
         fence_body: body.fence_body,
+        protocols: protocol::protocols_from_proto(body.protocols),
     }
 }
 

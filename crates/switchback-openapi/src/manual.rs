@@ -54,6 +54,12 @@ pub fn build_reference_manual(
         .unwrap_or_default();
 
     let companions = companion_files_to_stored(&populated.companions, "text/markdown");
+    let contract_protocols = resolved
+        .entry_uris
+        .first()
+        .and_then(|uri| resolved.docs.iter().find(|d| &d.uri == uri))
+        .map(|doc| crate::populate::http_attach::contract_attachments(&doc.value))
+        .unwrap_or_default();
 
     Ok(ReferenceManual {
         switchback_version: WIRE_VERSION.to_string(),
@@ -68,6 +74,7 @@ pub fn build_reference_manual(
                 version: populated.version,
                 groups,
                 companions,
+                protocols: contract_protocols,
             }],
         }],
     })

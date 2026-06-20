@@ -4,9 +4,10 @@ use serde_json::Value;
 use switchback_jsonschema::loader::Doc;
 use switchback_jsonschema::resolver::resolve_pointer;
 use switchback_traits::{
-    http_status_severity, OperationBody, OperationRequestBodyRef, ParameterRef, RefKind, Reference,
-    ResponseRef,
+    OperationBody, OperationRequestBodyRef, ParameterRef, RefKind, Reference, ResponseRef,
 };
+
+use crate::populate::http_attach;
 
 use crate::populate::refs::schema_ref_from_value;
 use crate::populate::schema_type_label::{parameter_type_label, schema_type_label};
@@ -24,7 +25,7 @@ pub fn build_operation_body(
     doc: &Doc,
     ctx: &PopulateCtx<'_>,
 ) -> OperationBody {
-    let signature = operation_name(method, path);
+    let (signature, protocols) = http_attach::populate_operation(method, path, op_value);
     let fence_body = serialize_fence(op_value, doc);
     let parameters = collect_parameter_refs(op_value, path_item, ctx);
     let responses = collect_response_refs(op_value, ctx);
@@ -37,6 +38,7 @@ pub fn build_operation_body(
         parameters,
         responses,
         request_body,
+        protocols,
     }
 }
 
@@ -163,12 +165,15 @@ fn push_parameter_ref(
     .unwrap_or_else(|| inline_schema_ref(ctx.module_id));
 
     out.push(ParameterRef {
-        name,
-        location,
+        name: name.clone(),
+        location: location.clone(),
         required,
         schema_ref,
         type_label,
         description,
+        protocols: vec![http_attach::parameter_attachment(
+            &name, &location, required,
+        )],
     });
 }
 
@@ -190,13 +195,7 @@ fn collect_response_refs(op_value: &Value, ctx: &PopulateCtx<'_>) -> Vec<Respons
                 ctx.uri_to_group,
                 ctx.index,
             ) {
-                out.push(ResponseRef {
-                    status: status.clone(),
-                    severity: http_status_severity(status),
-                    schema_ref: reference,
-                    media_type: String::new(),
-                    description: String::new(),
-                });
+                out.push(http_attach::response_ref(status, "", "", reference));
             }
             continue;
         }
@@ -221,13 +220,12 @@ fn collect_response_refs(op_value: &Value, ctx: &PopulateCtx<'_>) -> Vec<Respons
                 schema_ref_from_value(s, ctx.doc_uri, ctx.module_id, ctx.uri_to_group, ctx.index)
             })
             .unwrap_or_else(|| placeholder_ref(ctx.module_id, status));
-        out.push(ResponseRef {
-            status: status.clone(),
-            severity: http_status_severity(status),
+        out.push(http_attach::response_ref(
+            status,
+            &description,
+            &media_type,
             schema_ref,
-            media_type,
-            description,
-        });
+        ));
     }
     out
 }

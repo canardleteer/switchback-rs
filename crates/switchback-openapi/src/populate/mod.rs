@@ -2,6 +2,7 @@
 
 mod components;
 mod groups;
+pub mod http_attach;
 mod operation;
 mod paths;
 mod refs;

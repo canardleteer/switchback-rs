@@ -6,6 +6,12 @@ GatewayService focuses on streaming patterns and catalog adjacency.
 
 **RelayConnect** ( [RelayConnectRequest](../messages/RelayConnectRequest.md) ) returns ( [RelayConnectResponse](../messages/RelayConnectResponse.md) )
 
+#### Metadata
+
+| Key | Required |
+| --- | --- |
+| `x-session-token` | required |
+
 RelayConnect opens a bidirectional stream for frame exchange.
 
 **PublishEvents** ( [PublishEventsRequest](../messages/PublishEventsRequest.md) ) returns ( [PublishEventsResponse](../messages/PublishEventsResponse.md) )

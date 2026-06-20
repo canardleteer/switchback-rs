@@ -27,6 +27,7 @@ path = "src/bin/switchback-openapi.rs"
 [dependencies]
 switchback-traits.workspace = true
 switchback-codec-pb.workspace = true
+switchback-protocols.workspace = true
 switchback-jsonschema.workspace = true
 serde_json.workspace = true
 serde-saphyr.workspace = true

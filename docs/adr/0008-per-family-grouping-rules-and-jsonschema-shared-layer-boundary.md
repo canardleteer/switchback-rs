@@ -7,13 +7,7 @@ Date: 2026-06-20
 Proposed
 
 Relates to
-[5. Vendored JSON Schema meta-schemas per parser crate](0005-vendored-json-schema-meta-schemas-per-parser-crate.md)
-
-Relates to
-[6. JSON Schema parser loader and catalog in switchback-jsonschema](0006-json-schema-parser-loader-and-catalog-in-switchback-jsonschema.md)
-
-Relates to
-[7. Parser library conventions for switchback family crates](0007-parser-library-conventions-for-switchback-family-crates.md)
+[11. Protocol layer and contract family binding](0011-protocol-layer-and-contract-family-binding.md)
 
 ## Context
 

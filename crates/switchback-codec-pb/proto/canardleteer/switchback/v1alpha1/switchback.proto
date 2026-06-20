@@ -41,11 +41,17 @@ message Module {
   repeated Contract contracts = 4;
 }
 
+message ProtocolAttachment {
+  string protocol_id = 1;
+  bytes payload = 2;
+}
+
 message Contract {
   string family = 1;
   string version = 2;
   repeated Group groups = 3;
   repeated Companion companions = 4;
+  repeated ProtocolAttachment protocols = 5;
 }
 
 message Group {
@@ -134,6 +140,7 @@ message OperationBody {
   repeated ParameterRef parameters = 4;
   repeated ResponseRef responses = 5;
   OperationRequestBodyRef request_body = 6;
+  repeated ProtocolAttachment protocols = 7;
 }
 
 message OperationRequestBodyRef {
@@ -167,6 +174,7 @@ message ParameterBody {
   bool required = 3;
   string fence_language = 4;
   string fence_body = 5;
+  repeated ProtocolAttachment protocols = 6;
 }
 
 message ResponseBody {
@@ -175,12 +183,14 @@ message ResponseBody {
   string fence_language = 3;
   string fence_body = 4;
   ResponseSeverity severity = 5;
+  repeated ProtocolAttachment protocols = 6;
 }
 
 message RequestBodyBody {
   bool required = 1;
   string fence_language = 2;
   string fence_body = 3;
+  repeated ProtocolAttachment protocols = 4;
 }
 
 message SecuritySchemeBody {
@@ -208,6 +218,7 @@ message ParameterRef {
   Reference schema_ref = 4;
   string type_label = 5;
   string description = 6;
+  repeated ProtocolAttachment protocols = 7;
 }
 
 message ResponseRef {
@@ -216,6 +227,7 @@ message ResponseRef {
   string media_type = 3;
   string description = 4;
   ResponseSeverity severity = 5;
+  repeated ProtocolAttachment protocols = 6;
 }
 
 enum ResponseSeverity {

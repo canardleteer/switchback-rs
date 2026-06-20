@@ -7,7 +7,7 @@ Date: 2026-06-20
 Proposed
 
 Relates to
-[9. Companion nav metadata on wire in switchback-traits](0009-companion-nav-metadata-on-wire-in-switchback-traits.md)
+[11. Protocol layer and contract family binding](0011-protocol-layer-and-contract-family-binding.md)
 
 ## Context
 

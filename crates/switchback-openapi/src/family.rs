@@ -104,4 +104,12 @@ impl ContractFamily for OpenApiFamily {
     fn link_extractor(&self) -> &Self::LinkExtractor {
         &OpenApiLinkExtractor
     }
+
+    fn supported_protocols(&self) -> &'static [&'static str] {
+        &["http"]
+    }
+
+    fn default_protocol(&self) -> &'static str {
+        "http"
+    }
 }

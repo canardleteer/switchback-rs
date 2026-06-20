@@ -2256,6 +2256,7 @@ dependencies = [
  "buffa-build",
  "protoc-bin-vendored",
  "static_assertions",
+ "switchback-protocols",
  "switchback-traits",
  "tokio",
 ]
@@ -2298,6 +2299,7 @@ dependencies = [
  "switchback-codec-pb",
  "switchback-openapi",
  "switchback-protobuf",
+ "switchback-protocols",
  "switchback-traits",
  "tempfile",
  "toml_edit 0.25.12+spec-1.1.0",
@@ -2315,6 +2317,7 @@ dependencies = [
  "sha2 0.10.9",
  "switchback-codec-pb",
  "switchback-jsonschema",
+ "switchback-protocols",
  "switchback-traits",
  "tempfile",
  "toml 0.8.23",
@@ -2345,10 +2348,20 @@ dependencies = [
  "regex",
  "sha2 0.10.9",
  "switchback-codec-pb",
+ "switchback-protocols",
  "switchback-traits",
  "tempfile",
  "tokio",
  "walkdir",
+]
+
+[[package]]
+name = "switchback-protocols"
+version = "0.0.0"
+dependencies = [
+ "buffa",
+ "switchback-codec-pb",
+ "switchback-traits",
 ]
 
 [[package]]

@@ -4,6 +4,7 @@ mod contract;
 mod entity;
 mod link;
 mod manual;
+mod protocol;
 mod resolved;
 
 pub use contract::{Companion, Group, ManualContract};
@@ -17,4 +18,5 @@ pub use link::{
     ManualRefInner, ModuleRef, RefKind, Reference,
 };
 pub use manual::{CompanionFile, Document, Module, ReferenceManual, Source, SourceRef, Span};
+pub use protocol::ProtocolAttachment;
 pub use resolved::{IndexedEntity, ResolvedManual};

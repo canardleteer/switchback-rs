@@ -4,12 +4,13 @@ use serde_json::Value;
 use switchback_jsonschema::loader::Doc;
 use switchback_jsonschema::schema::populate_schema_body;
 use switchback_traits::{
-    http_status_severity, Entity, EntityBody, EntityCategory, EntityId, ParameterBody,
-    RequestBodyBody, ResponseBody, SecuritySchemeBody,
+    Entity, EntityBody, EntityCategory, EntityId, ParameterBody, RequestBodyBody, ResponseBody,
+    SecuritySchemeBody,
 };
 
 use crate::category::OpenApiCategory;
 use crate::paths::COMPONENTS_GROUP;
+use crate::populate::http_attach;
 use crate::populate::refs::structural_refs;
 use crate::populate::PopulateCtx;
 use crate::populate::PopulatedEntity;
@@ -147,10 +148,11 @@ fn push_parameter_entity(
             source_span: None,
             body: EntityBody::Parameter(ParameterBody {
                 name: name.to_string(),
-                location,
+                location: location.clone(),
                 required,
                 fence_language: ctx.doc.fence_language().to_string(),
                 fence_body: fence.fence_body,
+                protocols: http_attach::parameter_body_protocols(name, &location, required),
             }),
         },
         refs,
@@ -164,6 +166,9 @@ fn push_response_entity(
     out: &mut Vec<PopulatedEntity>,
 ) {
     let (status, media_type, fence_body) = response_fence(value, ctx.doc);
+    let desc_text = description(value).unwrap_or_default();
+    let (severity, protocols) =
+        http_attach::response_body_protocols(&status, &desc_text, &media_type);
     let refs = structural_refs(
         value,
         ctx.doc_uri,
@@ -180,10 +185,11 @@ fn push_response_entity(
             source_span: None,
             body: EntityBody::Response(ResponseBody {
                 status,
-                severity: http_status_severity(name),
+                severity,
                 media_type,
                 fence_language: ctx.doc.fence_language().to_string(),
                 fence_body,
+                protocols,
             }),
         },
         refs,
@@ -223,6 +229,7 @@ fn push_request_body_entity(
                 required,
                 fence_language: ctx.doc.fence_language().to_string(),
                 fence_body,
+                protocols: Vec::new(),
             }),
         },
         refs,

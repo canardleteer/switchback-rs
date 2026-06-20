@@ -175,6 +175,31 @@ fn render_operation_block(
     };
     let mut out = operation_signature_markdown(&op.title, &body.signature, &op.refs, ctx);
     out.push_str("\n\n");
+    let metadata: Vec<_> = body
+        .parameters
+        .iter()
+        .filter(|param| param.location == "metadata")
+        .collect();
+    if !metadata.is_empty() {
+        out.push_str(&md_heading(4, "Metadata"));
+        out.push_str("| Key | Required |\n");
+        out.push_str("| --- | --- |\n");
+        for param in metadata {
+            out.push('|');
+            out.push(' ');
+            out.push('`');
+            out.push_str(&param.name);
+            out.push('`');
+            out.push_str(" | ");
+            out.push_str(if param.required {
+                "required"
+            } else {
+                "optional"
+            });
+            out.push_str(" |\n");
+        }
+        out.push('\n');
+    }
     if !body.fence_body.trim().is_empty() {
         push_proto_fence_body(&mut out, &body.fence_body);
     }

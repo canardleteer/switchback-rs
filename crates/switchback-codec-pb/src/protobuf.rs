@@ -24,6 +24,24 @@ pub(crate) mod generated {
 pub mod canardleteer {
     /// Protobuf package `canardleteer.switchback.*`.
     pub mod switchback {
+        /// Built-in protocol packages under `canardleteer.switchback.protocol.*`.
+        pub mod protocol {
+            /// HTTP protocol schema `canardleteer.switchback.protocol.http.v1alpha1`.
+            pub mod http {
+                /// Unstable HTTP protocol schema.
+                pub mod v1alpha1 {
+                    pub use crate::protobuf::generated::canardleteer::switchback::protocol::http::v1alpha1::*;
+                }
+            }
+            /// gRPC protocol schema `canardleteer.switchback.protocol.grpc.v1alpha1`.
+            pub mod grpc {
+                /// Unstable gRPC protocol schema.
+                pub mod v1alpha1 {
+                    pub use crate::protobuf::generated::canardleteer::switchback::protocol::grpc::v1alpha1::*;
+                }
+            }
+        }
+
         /// Unstable schema `canardleteer.switchback.v1alpha1`.
         pub mod v1alpha1 {
             pub use crate::protobuf::generated::canardleteer::switchback::v1alpha1::*;

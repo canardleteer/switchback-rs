@@ -32,3 +32,4 @@ protoc-bin-vendored = "3.1.0"
 static_assertions = "1"
 tokio = { version = "1", features = ["macros", "rt"] }
 buffa.workspace = true
+switchback-protocols.workspace = true

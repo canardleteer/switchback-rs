@@ -6,6 +6,9 @@ Date: 2026-06-19
 
 Accepted
 
+Relates to
+[11. Protocol layer and contract family binding](0011-protocol-layer-and-contract-family-binding.md)
+
 ## Context
 
 The switchback-rs toolchain must support async I/O: URL $ref fetching, remote

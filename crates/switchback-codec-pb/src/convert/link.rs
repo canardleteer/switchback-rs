@@ -238,6 +238,7 @@ pub fn parameter_ref_to_proto(
         schema_ref: buffa::MessageField::some(reference_to_proto(&parameter.schema_ref)?),
         type_label: parameter.type_label.clone(),
         description: parameter.description.clone(),
+        protocols: super::protocol::protocols_to_proto(&parameter.protocols),
         ..Default::default()
     })
 }
@@ -256,6 +257,7 @@ pub fn parameter_ref_from_proto(
         schema_ref: reference_from_proto(schema_ref)?,
         type_label: parameter.type_label,
         description: parameter.description,
+        protocols: super::protocol::protocols_from_proto(parameter.protocols),
     })
 }
 
@@ -268,6 +270,7 @@ pub fn response_ref_to_proto(
         media_type: response.media_type.clone(),
         description: response.description.clone(),
         severity: buffa::EnumValue::from(response_severity_to_proto(response.severity)),
+        protocols: super::protocol::protocols_to_proto(&response.protocols),
         ..Default::default()
     })
 }
@@ -285,6 +288,7 @@ pub fn response_ref_from_proto(
         schema_ref: reference_from_proto(schema_ref)?,
         media_type: response.media_type,
         description: response.description,
+        protocols: super::protocol::protocols_from_proto(response.protocols),
     })
 }
 

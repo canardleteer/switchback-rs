@@ -1,0 +1,23 @@
+// SPDX-FileCopyrightText: 2026 canardleteer
+// SPDX-License-Identifier: Apache-2.0
+
+syntax = "proto3";
+
+package canardleteer.switchback.protocol.grpc.v1alpha1;
+
+import "google/protobuf/descriptor.proto";
+
+// One gRPC call metadata key declared on an RPC.
+message RpcMetadataKey {
+  string name = 1;
+  bool required = 2;
+}
+
+// Repeated metadata keys attached via MethodOptions extension.
+message RpcMetadataKeys {
+  repeated RpcMetadataKey keys = 1;
+}
+
+extend google.protobuf.MethodOptions {
+  RpcMetadataKeys switchback_rpc_metadata = 50100;
+}

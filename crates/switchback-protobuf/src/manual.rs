@@ -13,6 +13,7 @@ use switchback_traits::{
 use crate::family::ProtobufFamily;
 use crate::input::ResolvedInput;
 use crate::link::ProtobufLinkExtractor;
+use crate::populate::grpc_attach;
 use crate::populate::PopulatedContract;
 
 pub fn build_reference_manual(
@@ -25,6 +26,13 @@ pub fn build_reference_manual(
     let manual_title = title.unwrap_or_else(|| family.default_title().to_string());
 
     let sources = build_sources(resolved)?;
+    let package = populated
+        .groups
+        .first()
+        .map(|g| g.id.as_str())
+        .unwrap_or("")
+        .to_string();
+    let contract_protocols = grpc_attach::contract_attachment(&package);
     let mut groups = populated.groups;
     let extractor = ProtobufLinkExtractor;
 
@@ -55,6 +63,7 @@ pub fn build_reference_manual(
                 version: populated.version,
                 groups,
                 companions: companion_files_to_stored(&populated.companions, "text/markdown"),
+                protocols: contract_protocols,
             }],
         }],
     };

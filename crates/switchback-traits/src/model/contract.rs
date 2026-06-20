@@ -17,6 +17,8 @@ pub struct ManualContract {
     pub groups: Vec<Group>,
     /// Companion documents embedded in the switchback artifact.
     pub companions: Vec<Companion>,
+    /// Contract-level protocol attachments (for example server URLs).
+    pub protocols: Vec<crate::model::ProtocolAttachment>,
 }
 
 /// Intra-contract grouping unit (package, tag group, application, etc.).

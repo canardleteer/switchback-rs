@@ -1,8 +1,10 @@
 //! Protobuf fence wrapping and CEL splitting.
 
+use switchback_protocols::ProtocolRegistry;
 use switchback_traits::{
     apply_intra_links, EscapeTags, IntraLink, LinkContext, LinkFormatter, OperationBody,
-    OperationRequestBodyRef, ParameterRef, RefKind, Reference, ResponseRef, StoredEntity,
+    OperationRequestBodyRef, ParameterRef, ProtocolAttachment, RefKind, Reference, ResponseRef,
+    StoredEntity,
 };
 
 use crate::highlight::split_message_cel_blocks;
@@ -125,7 +127,7 @@ pub fn openapi_operation_markdown(
         .render_from
         .as_deref()
         .unwrap_or_else(|| std::path::Path::new(&ctx.markdown_root));
-    let mut out = format_method_path_line(&body.signature);
+    let mut out = format_method_path_line(&body.signature, &body.protocols);
     if let Some(doc) = entity_doc {
         let doc = apply_intra_links("doc", doc, intra_links, formatter, ctx);
         push_markdown_doc(&mut out, &doc, escape_tags);
@@ -189,7 +191,23 @@ pub fn openapi_operation_markdown(
     out
 }
 
-fn format_method_path_line(signature: &str) -> String {
+fn format_method_path_line(signature: &str, protocols: &[ProtocolAttachment]) -> String {
+    let registry = ProtocolRegistry::with_builtins();
+    if let Some(meta) = registry.http_operation_from_attachments(protocols) {
+        let mut line = format!("**{}** `{}`", meta.method, meta.path_template);
+        let mut hints = Vec::new();
+        if meta.request_streaming {
+            hints.push("request stream");
+        }
+        if meta.response_streaming {
+            hints.push("response stream");
+        }
+        if !hints.is_empty() {
+            line.push_str(" — ");
+            line.push_str(&hints.join(", "));
+        }
+        return format!("{line}\n\n");
+    }
     let Some((method, path)) = signature.split_once(' ') else {
         return format!("**{signature}**\n\n");
     };

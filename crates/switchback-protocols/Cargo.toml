@@ -1,0 +1,21 @@
+[package]
+name = "switchback-protocols"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Built-in protocol implementations (http, grpc) and ProtocolRegistry for switchback protocol attachments."
+include = [
+    "src/**/*",
+    "Cargo.toml",
+    "README.md",
+    "LICENSE*",
+]
+
+[dependencies]
+switchback-traits.workspace = true
+switchback-codec-pb.workspace = true
+buffa.workspace = true
+
+[dev-dependencies]

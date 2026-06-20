@@ -98,6 +98,16 @@ pub trait ContractFamily: Send + Sync + Sized + 'static {
     /// Returns the link extractor instance for this family.
     fn link_extractor(&self) -> &Self::LinkExtractor;
 
+    /// Protocol slugs this family may attach during populate.
+    fn supported_protocols(&self) -> &'static [&'static str] {
+        &[]
+    }
+
+    /// Default protocol slug for this family when populate attaches one binding.
+    fn default_protocol(&self) -> &'static str {
+        ""
+    }
+
     /// Additional CLI or config option tokens understood by this family's tooling.
     fn extra_option_tokens(&self) -> &'static [&'static str] {
         &[]

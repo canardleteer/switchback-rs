@@ -3,6 +3,7 @@ resolver = "2"
 members = [
     "crates/switchback-traits",
     "crates/switchback-codec-pb",
+    "crates/switchback-protocols",
     "crates/switchback-mdbook",
     "crates/switchback-protobuf",
     "crates/switchback-jsonschema",
@@ -24,6 +25,7 @@ repository = "https://github.com/canardleteer/switchback-rs"
 [workspace.dependencies]
 switchback-traits = { version = "0.0.0", path = "crates/switchback-traits" }
 switchback-codec-pb = { version = "0.0.0", path = "crates/switchback-codec-pb" }
+switchback-protocols = { version = "0.0.0", path = "crates/switchback-protocols" }
 switchback-mdbook = { version = "0.0.0", path = "crates/switchback-mdbook" }
 switchback-protobuf = { version = "0.0.0", path = "crates/switchback-protobuf" }
 switchback-jsonschema = { version = "0.0.0", path = "crates/switchback-jsonschema" }

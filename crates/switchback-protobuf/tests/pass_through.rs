@@ -5,6 +5,8 @@ use common::{
     mirrored_compilers, normalize, rebuild_buf_module, restore_sources_map, run_buf_lint_format,
 };
 use switchback_protobuf::examples::{fixtures_proto_dir, EXAMPLE_PROTO_INPUTS};
+use switchback_protocols::{DecodedAttachment, GrpcPayloadKind, ProtocolRegistry};
+use switchback_traits::EntityBody;
 use tempfile::tempdir;
 
 #[test]
@@ -129,6 +131,62 @@ fn structural_smoke_examples_corpus() {
             doc.source_ref.uri
         );
     }
+}
+
+#[test]
+fn grpc_metadata_parameters_from_method_options() {
+    let manual = load_examples(mirrored_compilers()[0]);
+    let contract = &manual.modules[0].contracts[0];
+    let registry = ProtocolRegistry::with_builtins();
+
+    let echo_unary = contract
+        .groups
+        .iter()
+        .find(|g| g.id.as_str() == "acme.example.v1")
+        .and_then(|g| {
+            g.entities
+                .iter()
+                .find(|e| e.name == "EchoService.EchoUnary")
+        })
+        .expect("EchoUnary operation");
+    let EntityBody::Operation(body) = &echo_unary.body else {
+        panic!("expected operation body");
+    };
+    let request_id = body
+        .parameters
+        .iter()
+        .find(|p| p.name == "x-request-id")
+        .expect("x-request-id metadata");
+    assert_eq!(request_id.location, "metadata");
+    assert!(request_id.required);
+    assert_eq!(request_id.protocols.len(), 1);
+    assert_eq!(request_id.protocols[0].protocol_id, "grpc");
+    let decoded = registry
+        .decode_attachment(&request_id.protocols[0])
+        .expect("decode metadata attachment");
+    let DecodedAttachment::Grpc(GrpcPayloadKind::Metadata(meta)) = decoded else {
+        panic!("expected GrpcMetadataMeta payload");
+    };
+    assert_eq!(meta.key, "x-request-id");
+    assert!(meta.required);
+
+    let relay = contract
+        .groups
+        .iter()
+        .find(|g| g.id.as_str() == "acme.example.v1")
+        .and_then(|g| {
+            g.entities
+                .iter()
+                .find(|e| e.name == "GatewayService.RelayConnect")
+        })
+        .expect("RelayConnect operation");
+    let EntityBody::Operation(relay_body) = &relay.body else {
+        panic!("expected operation body");
+    };
+    assert!(relay_body
+        .parameters
+        .iter()
+        .any(|p| p.name == "x-session-token" && p.location == "metadata" && p.required));
 }
 
 #[test]

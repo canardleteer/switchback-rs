@@ -9,6 +9,7 @@ package acme.example.v1;
 
 import "acme/example/v2/catalog.proto";
 import "acme/example/v2/types.proto";
+import "canardleteer/switchback/protocol/grpc/v1alpha1/metadata_options.proto";
 import "google/protobuf/timestamp.proto";
 
 // RelayFrame is one unit in a bidirectional relay stream.
@@ -95,7 +96,11 @@ message RotateKeysResponse {
 // GatewayService focuses on streaming patterns and catalog adjacency.
 service GatewayService {
   // RelayConnect opens a bidirectional stream for frame exchange.
-  rpc RelayConnect(stream RelayConnectRequest) returns (stream RelayConnectResponse);
+  rpc RelayConnect(stream RelayConnectRequest) returns (stream RelayConnectResponse) {
+    option (canardleteer.switchback.protocol.grpc.v1alpha1.switchback_rpc_metadata) = {
+      keys: [{ name: "x-session-token", required: true }]
+    };
+  }
 
   // PublishEvents accepts a client stream of PublishEventsRequest messages.
   rpc PublishEvents(stream PublishEventsRequest) returns (PublishEventsResponse);

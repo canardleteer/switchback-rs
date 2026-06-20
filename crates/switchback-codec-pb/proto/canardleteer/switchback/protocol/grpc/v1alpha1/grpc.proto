@@ -1,0 +1,54 @@
+// SPDX-FileCopyrightText: 2026 canardleteer
+// SPDX-License-Identifier: Apache-2.0
+
+syntax = "proto3";
+
+package canardleteer.switchback.protocol.grpc.v1alpha1;
+
+// Top-level oneof for all gRPC protocol attachments.
+message GrpcPayload {
+  oneof kind {
+    GrpcContractMeta contract = 1;
+    GrpcOperationMeta operation = 2;
+    GrpcStatusMeta status = 3;
+    GrpcErrorMeta error = 4;
+    GrpcMetadataMeta metadata = 5;
+  }
+}
+
+// Contract-level gRPC transport context.
+message GrpcContractMeta {
+  string package_name = 1;
+}
+
+// gRPC RPC invocation metadata.
+message GrpcOperationMeta {
+  string rpc_name = 1;
+  bool client_streaming = 2;
+  bool server_streaming = 3;
+}
+
+// Successful gRPC status metadata.
+message GrpcStatusMeta {
+  int32 code = 1;
+  string message = 2;
+}
+
+// gRPC error / fault metadata (google.rpc.Status aligned).
+message GrpcErrorMeta {
+  int32 code = 1;
+  string message = 2;
+  repeated GrpcErrorDetail details = 3;
+}
+
+// gRPC metadata key on an operation or parameter.
+message GrpcMetadataMeta {
+  string key = 1;
+  bool required = 2;
+}
+
+// Structured error detail (google.protobuf.Any aligned).
+message GrpcErrorDetail {
+  string type_url = 1;
+  bytes value = 2;
+}

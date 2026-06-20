@@ -48,6 +48,7 @@ pub fn build_reference_manual(
                 version: populated.version,
                 groups,
                 companions,
+                protocols: Vec::new(),
             }],
         }],
     })

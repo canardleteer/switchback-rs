@@ -84,4 +84,12 @@ impl ContractFamily for ProtobufFamily {
     fn link_extractor(&self) -> &Self::LinkExtractor {
         &ProtobufLinkExtractor
     }
+
+    fn supported_protocols(&self) -> &'static [&'static str] {
+        &["grpc"]
+    }
+
+    fn default_protocol(&self) -> &'static str {
+        "grpc"
+    }
 }

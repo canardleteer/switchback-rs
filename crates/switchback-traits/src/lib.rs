@@ -56,16 +56,13 @@ pub use model::{
     Anchor, ChannelBody, Companion, ContractRef, Document, EntityBody, EntityRef, ExtensionBody,
     ExternalUrl, Group, GroupRef, IndexedEntity, IntraLink, LinkTarget, ManualContract, ManualRef,
     ManualRefInner, MessageBody, Module, ModuleRef, OperationBody, OperationRequestBodyRef,
-    ParameterBody, ParameterRef, Property, RefKind, Reference, ReferenceManual, RequestBodyBody,
-    ResolvedManual, ResponseBody, ResponseRef, SchemaBody, SecuritySchemeBody, ServiceBody, Source,
-    SourceRef, Span, StoredEntity,
+    ParameterBody, ParameterRef, Property, ProtocolAttachment, RefKind, Reference, ReferenceManual,
+    RequestBodyBody, ResolvedManual, ResponseBody, ResponseRef, SchemaBody, SecuritySchemeBody,
+    ServiceBody, Source, SourceRef, Span, StoredEntity,
 };
 pub use options::{EscapeTags, Layout, OpenApiOperationSource, Options};
 pub use paths::{entity_category_dir, entity_rel_path};
-pub use response_severity::{
-    grpc_status_name_severity, grpc_status_severity, http_status_code_severity,
-    http_status_severity, ResponseSeverity,
-};
+pub use response_severity::ResponseSeverity;
 pub use traits::{
     companion_files_to_stored, AsyncCompanionStrategy, AsyncContractLoader, AsyncLinkExtractor,
     CompanionDiscovery, CompanionStrategy, Contract, ContractFamily, Entity, EntityCategory,

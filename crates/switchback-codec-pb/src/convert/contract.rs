@@ -7,7 +7,7 @@ use switchback_traits::{Companion, Group, GroupId, ManualContract, SpecVersion};
 use crate::convert::{manual, opt_string, string_opt};
 use crate::pb;
 
-use super::entity;
+use super::{entity, protocol};
 
 pub fn contract_to_proto(contract: &ManualContract) -> switchback_traits::Result<pb::Contract> {
     Ok(pb::Contract {
@@ -19,6 +19,7 @@ pub fn contract_to_proto(contract: &ManualContract) -> switchback_traits::Result
             .map(group_to_proto)
             .collect::<switchback_traits::Result<_>>()?,
         companions: contract.companions.iter().map(companion_to_proto).collect(),
+        protocols: protocol::protocols_to_proto(&contract.protocols),
         ..Default::default()
     })
 }
@@ -37,6 +38,7 @@ pub fn contract_from_proto(contract: pb::Contract) -> switchback_traits::Result<
             .into_iter()
             .map(companion_from_proto)
             .collect(),
+        protocols: protocol::protocols_from_proto(contract.protocols),
     })
 }
 

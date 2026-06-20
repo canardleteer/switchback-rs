@@ -1,0 +1,56 @@
+// SPDX-FileCopyrightText: 2026 canardleteer
+// SPDX-License-Identifier: Apache-2.0
+
+syntax = "proto3";
+
+package canardleteer.switchback.protocol.http.v1alpha1;
+
+// Top-level oneof for all HTTP protocol attachments.
+message HttpPayload {
+  oneof kind {
+    HttpContractMeta contract = 1;
+    HttpOperationMeta operation = 2;
+    HttpResponseMeta response = 3;
+    HttpErrorMeta error = 4;
+    HttpParameterMeta parameter = 5;
+  }
+}
+
+// Contract-level HTTP transport context (servers, base URL).
+message HttpContractMeta {
+  repeated string server_urls = 1;
+  string default_server_url = 2;
+}
+
+// HTTP operation invocation (method + path template).
+message HttpOperationMeta {
+  string method = 1;
+  string path_template = 2;
+  bool request_streaming = 3;
+  bool response_streaming = 4;
+}
+
+// Successful HTTP response metadata.
+message HttpResponseMeta {
+  uint32 status_code = 1;
+  string reason_phrase = 2;
+  string media_type = 3;
+  repeated string header_names = 4;
+}
+
+// HTTP error / fault metadata (Problem Details aligned).
+message HttpErrorMeta {
+  uint32 status_code = 1;
+  string reason_phrase = 2;
+  string problem_type = 3;
+  string problem_title = 4;
+  string detail = 5;
+  repeated string header_names = 6;
+}
+
+// HTTP parameter / header / cookie metadata.
+message HttpParameterMeta {
+  string name = 1;
+  string location = 2;
+  bool required = 3;
+}

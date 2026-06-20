@@ -20,6 +20,13 @@ EchoService exposes echo RPCs for documentation tests.
 
 **EchoUnary** ( [EchoUnaryRequest](../messages/EchoUnaryRequest.md) ) returns ( [EchoUnaryResponse](../messages/EchoUnaryResponse.md) )
 
+#### Metadata
+
+| Key | Required |
+| --- | --- |
+| `x-request-id` | required |
+| `authorization` | optional |
+
 ```protobuf
 option idempotency_level = NO_SIDE_EFFECTS;
 ```

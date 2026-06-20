@@ -6,6 +6,9 @@ Date: 2026-06-19
 
 Proposed
 
+Relates to
+[11. Protocol layer and contract family binding](0011-protocol-layer-and-contract-family-binding.md)
+
 ## Context
 
 switchback-rs serializes reference manuals to a binary switchback artifact

@@ -8,6 +8,7 @@ pub const MICRO_TAG_GROUPS: &str = "micro/tag-groups/openapi.yaml";
 pub const MICRO_NULLABLE_3_0: &str = "micro/nullable-3.0/openapi.yaml";
 pub const MICRO_COMPANION: &str = "micro/companion/openapi.yaml";
 pub const MICRO_MULTIFILE: &str = "micro/multifile/openapi.yaml";
+pub const MICRO_STREAMING: &str = "micro/streaming/openapi.yaml";
 
 pub const UPSTREAM_LOW_3_0: &str = "upstream/oas3.0-petstore/petstore.yaml";
 pub const UPSTREAM_HIGH_3_0: &str = "upstream/oas3.0-link-example/link-example.yaml";
@@ -92,6 +93,12 @@ pub const EXAMPLE_FIXTURES: &[ExampleFixture] = &[
         id: "multifile",
         relative: MICRO_MULTIFILE,
         label: "External $ref (micro)",
+        tier: ExampleTier::Micro,
+    },
+    ExampleFixture {
+        id: "streaming",
+        relative: MICRO_STREAMING,
+        label: "HTTP streaming (micro)",
         tier: ExampleTier::Micro,
     },
 ];

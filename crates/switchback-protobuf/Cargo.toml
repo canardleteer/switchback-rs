@@ -22,6 +22,7 @@ buf = ["dep:buf-tools"]
 [dependencies]
 switchback-traits.workspace = true
 switchback-codec-pb.workspace = true
+switchback-protocols.workspace = true
 buffa.workspace = true
 buffa-descriptor = { version = "0.6.0", default-features = false, features = ["std"] }
 anyhow = "1.0"

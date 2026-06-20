@@ -65,6 +65,8 @@ pub struct OperationBody {
     pub responses: Vec<ResponseRef>,
     /// Request body attachment when the operation defines one.
     pub request_body: Option<OperationRequestBodyRef>,
+    /// Protocol-specific invocation metadata (for example HTTP method/path).
+    pub protocols: Vec<crate::model::ProtocolAttachment>,
 }
 
 /// Request body attachment on an [`OperationBody`].
@@ -126,6 +128,8 @@ pub struct ParameterBody {
     pub fence_language: String,
     /// Fenced source excerpt for the parameter schema.
     pub fence_body: String,
+    /// Protocol-specific parameter metadata (for example HTTP header location).
+    pub protocols: Vec<crate::model::ProtocolAttachment>,
 }
 
 /// Response entity body (status, media type, schema excerpt).
@@ -141,6 +145,8 @@ pub struct ResponseBody {
     pub fence_language: String,
     /// Fenced source excerpt for the response schema.
     pub fence_body: String,
+    /// Protocol-specific response or error metadata.
+    pub protocols: Vec<crate::model::ProtocolAttachment>,
 }
 
 /// Request body entity (requirement flag and schema excerpt).
@@ -152,6 +158,8 @@ pub struct RequestBodyBody {
     pub fence_language: String,
     /// Fenced source excerpt for the request body schema.
     pub fence_body: String,
+    /// Protocol-specific request body metadata when applicable.
+    pub protocols: Vec<crate::model::ProtocolAttachment>,
 }
 
 /// Security scheme entity body.
@@ -215,6 +223,8 @@ pub struct ParameterRef {
     pub type_label: String,
     /// OpenAPI parameter description prose, when present.
     pub description: String,
+    /// Protocol-specific parameter metadata.
+    pub protocols: Vec<crate::model::ProtocolAttachment>,
 }
 
 /// Response attachment on an [`OperationBody`], referencing a schema entity.
@@ -230,4 +240,6 @@ pub struct ResponseRef {
     pub media_type: String,
     /// OpenAPI response description prose, when present.
     pub description: String,
+    /// Protocol-specific response or error metadata.
+    pub protocols: Vec<crate::model::ProtocolAttachment>,
 }

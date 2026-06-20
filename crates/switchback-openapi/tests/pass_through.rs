@@ -3,11 +3,12 @@ mod common;
 use common::{codec_roundtrip, count_entities, count_refs, fixtures_dir, load_fixture, normalize};
 use switchback_openapi::{
     examples::{
-        MICRO_COMPANION, MICRO_MULTIFILE, MICRO_NULLABLE_3_0, MICRO_TAG_GROUPS, UPSTREAM_HIGH_3_0,
-        UPSTREAM_HIGH_3_1_WEBHOOK, UPSTREAM_LOW_3_0, UPSTREAM_LOW_3_1,
+        MICRO_COMPANION, MICRO_MULTIFILE, MICRO_NULLABLE_3_0, MICRO_STREAMING, MICRO_TAG_GROUPS,
+        UPSTREAM_HIGH_3_0, UPSTREAM_HIGH_3_1_WEBHOOK, UPSTREAM_LOW_3_0, UPSTREAM_LOW_3_1,
     },
     restore_sources,
 };
+use switchback_protocols::ProtocolRegistry;
 use switchback_traits::{EntityBody, SyncSwitchbackCodec};
 use tempfile::tempdir;
 
@@ -128,6 +129,43 @@ fn upstream_high_3_1_loads() {
 }
 
 #[test]
+fn micro_streaming_flags() {
+    let manual = load_fixture(MICRO_STREAMING);
+    let contract = &manual.modules[0].contracts[0];
+    let registry = ProtocolRegistry::with_builtins();
+
+    let get_events = contract
+        .groups
+        .iter()
+        .find(|g| g.id.as_str() == "untagged")
+        .and_then(|g| g.entities.iter().find(|e| e.name == "GET /events"))
+        .expect("GET /events operation");
+    let EntityBody::Operation(get_body) = &get_events.body else {
+        panic!("expected operation body");
+    };
+    let get_meta = registry
+        .http_operation_from_attachments(&get_body.protocols)
+        .expect("HTTP operation meta");
+    assert!(get_meta.response_streaming);
+    assert!(!get_meta.request_streaming);
+
+    let put_upload = contract
+        .groups
+        .iter()
+        .find(|g| g.id.as_str() == "untagged")
+        .and_then(|g| g.entities.iter().find(|e| e.name == "PUT /upload"))
+        .expect("PUT /upload operation");
+    let EntityBody::Operation(put_body) = &put_upload.body else {
+        panic!("expected operation body");
+    };
+    let put_meta = registry
+        .http_operation_from_attachments(&put_body.protocols)
+        .expect("HTTP operation meta");
+    assert!(put_meta.request_streaming);
+    assert!(!put_meta.response_streaming);
+}
+
+#[test]
 fn upstream_tictactoe_operation_fields() {
     let path = fixtures_dir().join(UPSTREAM_LOW_3_1);
     if !path.is_file() {
@@ -179,6 +217,18 @@ fn upstream_tictactoe_operation_fields() {
         bad.severity,
         switchback_traits::ResponseSeverity::ClientError
     );
+    assert_eq!(body.protocols.len(), 1);
+    assert_eq!(body.protocols[0].protocol_id, "http");
+    assert!(progress.protocols.iter().any(|p| p.protocol_id == "http"));
+    assert!(ok.protocols.iter().any(|p| p.protocol_id == "http"));
+    assert!(bad.protocols.iter().any(|p| p.protocol_id == "http"));
+
+    let registry = ProtocolRegistry::with_builtins();
+    let put_meta = registry
+        .http_operation_from_attachments(&body.protocols)
+        .expect("HTTP operation meta");
+    assert!(!put_meta.request_streaming);
+    assert!(!put_meta.response_streaming);
 }
 
 #[test]
