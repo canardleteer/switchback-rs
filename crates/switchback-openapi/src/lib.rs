@@ -14,13 +14,30 @@
 //! `switchback-jsonschema`.
 
 pub mod category;
+pub mod companion;
+pub mod contract;
+pub mod examples;
 pub mod family;
 pub mod link;
+pub mod load;
+pub mod manual;
 pub mod meta_schemas;
+pub mod paths;
+pub mod populate;
 
 pub use category::OpenApiCategory;
+pub use contract::OpenApiContract;
+pub use examples::{
+    default_example_fixtures, example_fixture, fixture_path, fixtures_dir, fixtures_for_tier,
+    load_example, load_fixture_relative, ExampleFixture, ExampleTier, EXAMPLE_FIXTURES,
+    MICRO_COMPANION, MICRO_MULTIFILE, MICRO_NULLABLE_3_0, MICRO_TAG_GROUPS, UPSTREAM_HIGH_3_0,
+    UPSTREAM_HIGH_3_1_WEBHOOK, UPSTREAM_LOW_3_0, UPSTREAM_LOW_3_1,
+};
 pub use family::OpenApiFamily;
 pub use link::OpenApiLinkExtractor;
+pub use load::{load, LoadArgs};
+pub use manual::restore_sources;
+pub use populate::parse_openapi_version;
 
 #[cfg(test)]
 mod tests {

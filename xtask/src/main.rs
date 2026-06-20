@@ -7,6 +7,7 @@
 //! `check-highlight-rust`, `update-highlight-golden`, `update-golden`, and `check-toolchain`.
 
 mod ci;
+mod example_fixtures;
 mod highlight;
 mod link_check;
 mod render;
@@ -86,6 +87,18 @@ enum SpecVendorCmd {
         #[arg(long)]
         write_lock: bool,
     },
+    /// Validate SHA-256 of vendored OpenAPI example fixtures.
+    ValidateFixtures {
+        #[arg(long, default_value = "openapi")]
+        family: String,
+    },
+    /// Fetch OpenAPI example API descriptions from upstream.
+    FetchFixtures {
+        #[arg(long, default_value = "openapi")]
+        family: String,
+        #[arg(long)]
+        write_lock: bool,
+    },
 }
 
 fn main() -> Result<()> {
@@ -102,6 +115,9 @@ fn main() -> Result<()> {
             run("check-highlight-rust", highlight::check_highlight_rust)?;
             run("spec-vendor validate", || {
                 spec_vendor::validate(spec_vendor::Family::All)
+            })?;
+            run("example-fixtures validate", || {
+                example_fixtures::validate_openapi()
             })?;
             run("audit", ci::audit)?;
             run("rumdl check", ci::rumdl_check)?;
@@ -141,6 +157,14 @@ fn main() -> Result<()> {
             SpecVendorCmd::Fetch { family, write_lock } => {
                 spec_vendor::fetch(spec_vendor::Family::from_str(&family)?, write_lock)
             }
+            SpecVendorCmd::ValidateFixtures { family } => match family.as_str() {
+                "openapi" => example_fixtures::validate_openapi(),
+                other => bail!("validate-fixtures --family {other}: only openapi supported"),
+            },
+            SpecVendorCmd::FetchFixtures { family, write_lock } => match family.as_str() {
+                "openapi" => example_fixtures::fetch_openapi(write_lock),
+                other => bail!("fetch-fixtures --family {other}: only openapi supported"),
+            },
         },
     }
 }

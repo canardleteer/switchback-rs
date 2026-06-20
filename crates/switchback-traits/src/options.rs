@@ -31,6 +31,20 @@ pub enum EscapeTags {
     Entities,
 }
 
+/// How to render the raw OpenAPI operation YAML/JSON on operation pages.
+///
+/// Renderer-local option; not serialized on the wire.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub enum OpenApiOperationSource {
+    /// Wrap the full operation definition in a collapsed HTML `<details>` block.
+    #[default]
+    Collapsed,
+    /// Omit fields already rendered in structured sections (parameters, responses, etc.).
+    Trimmed,
+    /// Omit the operation definition fence entirely.
+    Hidden,
+}
+
 /// Spine options shared across renderers (subset ported from protobuf-mdbook).
 ///
 /// Passed to [`Contract::link_context`](crate::traits::Contract::link_context) and
@@ -80,6 +94,8 @@ pub struct Options {
     /// When true, sort package-layout `Messages and enums` headings by entity title
     /// (mdBook).
     pub alphabetize_messages: bool,
+    /// How to render raw OpenAPI operation source on operation pages.
+    pub openapi_operation_source: OpenApiOperationSource,
 }
 
 impl Default for Options {
@@ -106,6 +122,7 @@ impl Default for Options {
             explicit_book_root: false,
             alphabetize_services: false,
             alphabetize_messages: false,
+            openapi_operation_source: OpenApiOperationSource::default(),
         }
     }
 }
@@ -142,6 +159,6 @@ impl Options {
 
     /// Returns true when only package-level SUMMARY entries are needed (`init` mode).
     pub fn package_only_summary(&self) -> bool {
-        self.init
+        self.init && matches!(self.layout, Layout::Package)
     }
 }

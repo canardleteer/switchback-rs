@@ -8,6 +8,7 @@ use crate::render::fence::{
     operation_signature_markdown, proto_file_name, push_markdown_doc, push_proto_fence_body,
     render_proto_fence,
 };
+use crate::render::openapi::{is_openapi_family, render_openapi_package_sections};
 use crate::render::{md_heading, push_paragraph_break};
 
 const SECTION_LEVEL: usize = 2;
@@ -16,6 +17,7 @@ const ENTITY_LEVEL: usize = 3;
 pub fn render_package_page(
     group: &Group,
     entities: &[StoredEntity],
+    family: &str,
     links: &LinkContext,
     opts: &Options,
     formatter: &dyn LinkFormatter,
@@ -33,6 +35,11 @@ pub fn render_package_page(
         let overview = format_markdown_overview(group.overview.as_deref().unwrap(), opts);
         push_markdown_doc(&mut out, &overview, opts.escape_tags);
         push_paragraph_break(&mut out);
+    }
+
+    if is_openapi_family(family) {
+        render_openapi_package_sections(&mut out, entities, &ctx, opts, formatter);
+        return (path, out);
     }
 
     let mut services: Vec<_> = entities

@@ -35,6 +35,7 @@ mod link_context;
 mod model;
 mod options;
 mod paths;
+mod response_severity;
 mod traits;
 
 pub use companion::{
@@ -46,20 +47,25 @@ pub use error::{Result, SwitchbackError};
 pub use ids::{EntityId, GroupId, ModuleId, SpecVersion};
 pub use intra_links::{anchor, apply_intra_links, links_for_field};
 pub use layout_paths::{
-    heading_slug, layout_entity_rel_path, package_index_rel, package_page_rel,
-    relative_path_from_dir, unique_heading_ids, LayoutEntityKey, ProtobufEntityKind,
+    decode_markdown_link_path, encode_markdown_link_path, heading_slug, layout_entity_rel_path,
+    package_index_rel, package_page_rel, relative_path_from_dir, unique_heading_ids,
+    LayoutEntityKey, ProtobufEntityKind,
 };
 pub use link_context::LinkContext;
 pub use model::{
     Anchor, ChannelBody, Companion, ContractRef, Document, EntityBody, EntityRef, ExtensionBody,
     ExternalUrl, Group, GroupRef, IndexedEntity, IntraLink, LinkTarget, ManualContract, ManualRef,
-    ManualRefInner, MessageBody, Module, ModuleRef, OperationBody, ParameterBody, ParameterRef,
-    Property, RefKind, Reference, ReferenceManual, RequestBodyBody, ResolvedManual, ResponseBody,
-    ResponseRef, SchemaBody, SecuritySchemeBody, ServiceBody, Source, SourceRef, Span,
-    StoredEntity,
+    ManualRefInner, MessageBody, Module, ModuleRef, OperationBody, OperationRequestBodyRef,
+    ParameterBody, ParameterRef, Property, RefKind, Reference, ReferenceManual, RequestBodyBody,
+    ResolvedManual, ResponseBody, ResponseRef, SchemaBody, SecuritySchemeBody, ServiceBody, Source,
+    SourceRef, Span, StoredEntity,
 };
-pub use options::{EscapeTags, Layout, Options};
-pub use paths::entity_rel_path;
+pub use options::{EscapeTags, Layout, OpenApiOperationSource, Options};
+pub use paths::{entity_category_dir, entity_rel_path};
+pub use response_severity::{
+    grpc_status_name_severity, grpc_status_severity, http_status_code_severity,
+    http_status_severity, ResponseSeverity,
+};
 pub use traits::{
     companion_files_to_stored, AsyncCompanionStrategy, AsyncContractLoader, AsyncLinkExtractor,
     CompanionDiscovery, CompanionStrategy, Contract, ContractFamily, Entity, EntityCategory,

@@ -48,6 +48,7 @@ impl MdBookRenderer {
                             let (path, content) = render_package_page(
                                 group,
                                 &group.entities,
+                                &contract.family,
                                 &links,
                                 &opts,
                                 &formatter,
@@ -58,6 +59,7 @@ impl MdBookRenderer {
                             for (path, content) in render_entity_pages(
                                 group,
                                 &group.entities,
+                                &contract.family,
                                 &links,
                                 &opts,
                                 &formatter,

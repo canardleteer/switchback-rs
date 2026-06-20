@@ -5,7 +5,8 @@ how they move through parse → wire → render, and what they look like in each
 [contract family](GLOSSARY.md#contract-family). For hierarchy terms see
 [GLOSSARY.md](GLOSSARY.md); this file is the linking-specific companion.
 
-**Status:** protobuf examples reflect current behavior. OpenAPI, AsyncAPI, and
+**Status:** protobuf and OpenAPI structural `refs` reflect current behavior.
+OpenAPI, AsyncAPI, and
 OpenRPC examples are **synthetic** — intended naming and shape targets until
 those parsers land.
 
@@ -149,12 +150,12 @@ without FQN — those would need a different named extractor (future).
 
 ---
 
-## openapi *(synthetic — parser not implemented)*
+## openapi
 
-**Planned default extractor:** `OpenApiLinkExtractor` (stub today, name
-`"openapi-stub"`).
+**Default extractor:** `OpenApiLinkExtractor` (name `"openapi"`). Prose
+intra-links are **deferred** — extractor returns empty `intra_links` today.
 
-### Structural reference (`refs`)
+### Structural reference (`refs`) — implemented
 
 From OpenAPI component graph and operation/request/response wiring.
 

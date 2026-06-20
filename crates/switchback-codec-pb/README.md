@@ -10,7 +10,8 @@ through a
 implementation; this crate provides the protobuf wire encoding using
 [buffa](https://github.com/anthropics/buffa) types generated from
 [`switchback.proto`](https://github.com/canardleteer/switchback-rs/blob/main/crates/switchback-codec-pb/proto/canardleteer/switchback/v1alpha1/switchback.proto)
-(`canardleteer.switchback.v1alpha1`; repo-root [`proto/`](https://github.com/canardleteer/switchback-rs/tree/main/proto)
+(`canardleteer.switchback.v1alpha1`; repo-root
+[`proto/`](https://github.com/canardleteer/switchback-rs/tree/main/proto)
 symlinks here).
 
 The default on-disk filename is `switchback.binpb`

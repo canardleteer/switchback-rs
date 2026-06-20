@@ -1,0 +1,14 @@
+---
+openapi: 3.0.3
+info:
+  title: Nullable Example
+  version: 1.0.0
+paths: {}
+components:
+  schemas:
+    NullablePet:
+      type: object
+      nullable: true
+      properties:
+        name:
+          type: string

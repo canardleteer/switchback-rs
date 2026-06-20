@@ -1,0 +1,20 @@
+[package]
+name = "mdbook-openapi-example"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[[bin]]
+name = "mdbook-openapi"
+path = "main.rs"
+
+[dependencies]
+anyhow.workspace = true
+clap.workspace = true
+switchback-codec-pb.workspace = true
+switchback-mdbook.workspace = true
+switchback-openapi.workspace = true
+switchback-traits.workspace = true

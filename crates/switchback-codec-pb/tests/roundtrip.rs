@@ -107,12 +107,17 @@ fn fixture_manual() -> ReferenceManual {
                                     location: "path".into(),
                                     required: true,
                                     schema_ref: schema_ref.clone(),
+                                    type_label: "string".into(),
+                                    description: String::new(),
                                 }],
                                 responses: vec![ResponseRef {
                                     status: "200".into(),
+                                    severity: switchback_traits::ResponseSeverity::Success,
                                     media_type: "application/json".into(),
                                     schema_ref: schema_ref.clone(),
+                                    description: "OK".into(),
                                 }],
+                                request_body: None,
                             }),
                         },
                         StoredEntity {

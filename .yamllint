@@ -3,3 +3,4 @@ extends: default
 
 ignore: |
   crates/switchback-protobuf/tests/fixtures/**
+  crates/switchback-openapi/tests/fixtures/upstream/**

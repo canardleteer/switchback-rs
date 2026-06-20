@@ -56,6 +56,25 @@ pub fn load_fixture(name: &str) -> ReferenceManual {
     load(&args).expect("load fixture")
 }
 
+pub fn load_openapi_tictactoe() -> ReferenceManual {
+    use switchback_openapi::examples::{example_fixture, load_example, UPSTREAM_LOW_3_1};
+
+    load_example(example_fixture("tictactoe-3.1").expect("tictactoe fixture")).unwrap_or_else(
+        |e| panic!("load {UPSTREAM_LOW_3_1}: {e} (run cargo xtask spec-vendor fetch-fixtures --family openapi)"),
+    )
+}
+
+pub fn render_openapi(layout: Layout, extra: &str) -> tempfile::TempDir {
+    let manual = load_openapi_tictactoe();
+    let mut param = format!("layout={}", layout_name(layout));
+    if !extra.is_empty() {
+        param.push(',');
+        param.push_str(extra);
+    }
+    let opts = parse_parameter(&Some(param)).expect("parse options");
+    render_to_tempdir(&manual, &opts)
+}
+
 pub fn options_for(layout: Layout, extra: &str) -> Options {
     let mut param = format!("layout={}", layout_name(layout));
     if !extra.is_empty() {

@@ -34,8 +34,10 @@ tempfile.workspace = true
 async-trait = "0.1"
 clap.workspace = true
 serde_json.workspace = true
+serde-saphyr.workspace = true
 
 [dev-dependencies]
 switchback-codec-pb.workspace = true
+switchback-openapi.workspace = true
 switchback-protobuf = { workspace = true, features = ["buf", "protoc"] }
 tempfile.workspace = true

@@ -1,5 +1,6 @@
-//! `ContractFamily` stub for OpenAPI (parser behavior deferred).
+//! `ContractFamily` for OpenAPI.
 
+use serde_json::Value;
 use switchback_traits::{
     CompanionDiscovery, CompanionStrategy, ContractFamily, RawDoc, SpecVersion, SupportedVersion,
     VersionStatus,
@@ -8,6 +9,7 @@ use switchback_traits::{
 use crate::category::OpenApiCategory;
 use crate::link::OpenApiLinkExtractor;
 use crate::meta_schemas;
+use crate::populate::parse_openapi_version;
 
 #[derive(Clone, Copy, Debug, Default)]
 pub struct OpenApiCompanion;
@@ -17,8 +19,8 @@ impl CompanionStrategy for OpenApiCompanion {
         CompanionDiscovery::Beside
     }
 
-    fn output_name(&self, _source_dir: &[&str], stem: &str) -> String {
-        format!("{stem}.md")
+    fn output_name(&self, source_dir: &[&str], stem: &str) -> String {
+        switchback_traits::companion_output_name_from_segments(source_dir, stem)
     }
 
     fn companion_media_types(&self) -> &'static [&'static str] {
@@ -69,8 +71,13 @@ impl ContractFamily for OpenApiFamily {
         ]
     }
 
-    fn detect_version(&self, _raw: &RawDoc) -> Option<SpecVersion> {
-        None
+    fn detect_version(&self, raw: &RawDoc) -> Option<SpecVersion> {
+        let value: Value = if raw.media_type.contains("yaml") {
+            serde_saphyr::from_slice(&raw.bytes).ok()?
+        } else {
+            serde_json::from_slice(&raw.bytes).ok()?
+        };
+        parse_openapi_version(&value).ok()
     }
 
     fn supported_versions(&self) -> &'static [SupportedVersion] {

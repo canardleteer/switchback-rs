@@ -201,6 +201,7 @@ pub fn populate(resolved: &ResolvedInput) -> switchback_traits::Result<Populated
                                 fence_body,
                                 parameters: Vec::new(),
                                 responses: Vec::new(),
+                                request_body: None,
                             }),
                         },
                         refs: operation_refs(&module_id, method),

@@ -128,6 +128,13 @@ fn operation_body_to_proto(body: &OperationBody) -> switchback_traits::Result<pb
             .iter()
             .map(link::response_ref_to_proto)
             .collect::<switchback_traits::Result<_>>()?,
+        request_body: body
+            .request_body
+            .as_ref()
+            .map(link::operation_request_body_ref_to_proto)
+            .transpose()?
+            .map(buffa::MessageField::some)
+            .unwrap_or_default(),
         ..Default::default()
     })
 }
@@ -147,6 +154,11 @@ fn operation_body_from_proto(body: pb::OperationBody) -> switchback_traits::Resu
             .into_iter()
             .map(link::response_ref_from_proto)
             .collect::<switchback_traits::Result<_>>()?,
+        request_body: body
+            .request_body
+            .into_option()
+            .map(link::operation_request_body_ref_from_proto)
+            .transpose()?,
     })
 }
 
@@ -236,6 +248,7 @@ fn response_body_to_proto(body: &ResponseBody) -> pb::ResponseBody {
         media_type: body.media_type.clone(),
         fence_language: body.fence_language.clone(),
         fence_body: body.fence_body.clone(),
+        severity: buffa::EnumValue::from(link::response_severity_to_proto(body.severity)),
         ..Default::default()
     }
 }
@@ -243,6 +256,7 @@ fn response_body_to_proto(body: &ResponseBody) -> pb::ResponseBody {
 fn response_body_from_proto(body: pb::ResponseBody) -> ResponseBody {
     ResponseBody {
         status: body.status,
+        severity: link::response_severity_from_proto(&body.severity),
         media_type: body.media_type,
         fence_language: body.fence_language,
         fence_body: body.fence_body,

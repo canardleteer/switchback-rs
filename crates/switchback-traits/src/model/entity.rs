@@ -2,6 +2,7 @@
 
 use crate::model::link::{IntraLink, Reference};
 use crate::model::manual::Source;
+use crate::response_severity::ResponseSeverity;
 
 /// One entity as stored in a serialized switchback [`Group`](super::contract::Group).
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -62,6 +63,21 @@ pub struct OperationBody {
     pub parameters: Vec<ParameterRef>,
     /// Response references attached to the operation.
     pub responses: Vec<ResponseRef>,
+    /// Request body attachment when the operation defines one.
+    pub request_body: Option<OperationRequestBodyRef>,
+}
+
+/// Request body attachment on an [`OperationBody`].
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct OperationRequestBodyRef {
+    /// Whether the request body is required.
+    pub required: bool,
+    /// Primary content media type (e.g. `"application/json"`).
+    pub media_type: String,
+    /// Structural reference to the request body schema entity.
+    pub schema_ref: Reference,
+    /// Human-readable schema type label for rendering.
+    pub type_label: String,
 }
 
 /// Schema entity body (type definition with optional properties).
@@ -117,6 +133,8 @@ pub struct ParameterBody {
 pub struct ResponseBody {
     /// HTTP or RPC status label.
     pub status: String,
+    /// Outcome severity class derived from the status at populate time.
+    pub severity: ResponseSeverity,
     /// Response media type when applicable.
     pub media_type: String,
     /// Language tag for the fenced code block.
@@ -193,6 +211,10 @@ pub struct ParameterRef {
     pub required: bool,
     /// Structural reference to the parameter schema entity.
     pub schema_ref: Reference,
+    /// Human-readable schema type label for rendering (e.g. `"string"`, `"coordinate"`).
+    pub type_label: String,
+    /// OpenAPI parameter description prose, when present.
+    pub description: String,
 }
 
 /// Response attachment on an [`OperationBody`], referencing a schema entity.
@@ -200,8 +222,12 @@ pub struct ParameterRef {
 pub struct ResponseRef {
     /// HTTP or RPC status label.
     pub status: String,
+    /// Outcome severity class derived from the status at populate time.
+    pub severity: ResponseSeverity,
     /// Structural reference to the response schema entity.
     pub schema_ref: Reference,
     /// Response media type when applicable.
     pub media_type: String,
+    /// OpenAPI response description prose, when present.
+    pub description: String,
 }

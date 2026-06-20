@@ -11,7 +11,7 @@ impl LinkExtractor for OpenApiLinkExtractor {
     type Family = OpenApiFamily;
 
     fn name(&self) -> &'static str {
-        "openapi-stub"
+        "openapi"
     }
 
     fn extract<C: EntityCategory>(

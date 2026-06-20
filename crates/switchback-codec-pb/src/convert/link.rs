@@ -236,6 +236,8 @@ pub fn parameter_ref_to_proto(
         location: parameter.location.clone(),
         required: parameter.required,
         schema_ref: buffa::MessageField::some(reference_to_proto(&parameter.schema_ref)?),
+        type_label: parameter.type_label.clone(),
+        description: parameter.description.clone(),
         ..Default::default()
     })
 }
@@ -252,6 +254,8 @@ pub fn parameter_ref_from_proto(
         location: parameter.location,
         required: parameter.required,
         schema_ref: reference_from_proto(schema_ref)?,
+        type_label: parameter.type_label,
+        description: parameter.description,
     })
 }
 
@@ -262,6 +266,8 @@ pub fn response_ref_to_proto(
         status: response.status.clone(),
         schema_ref: buffa::MessageField::some(reference_to_proto(&response.schema_ref)?),
         media_type: response.media_type.clone(),
+        description: response.description.clone(),
+        severity: buffa::EnumValue::from(response_severity_to_proto(response.severity)),
         ..Default::default()
     })
 }
@@ -275,8 +281,88 @@ pub fn response_ref_from_proto(
         .ok_or_else(|| codec_err("response schema_ref missing on wire"))?;
     Ok(switchback_traits::ResponseRef {
         status: response.status,
+        severity: response_severity_from_proto(&response.severity),
         schema_ref: reference_from_proto(schema_ref)?,
         media_type: response.media_type,
+        description: response.description,
+    })
+}
+
+pub fn response_severity_to_proto(
+    severity: switchback_traits::ResponseSeverity,
+) -> pb::ResponseSeverity {
+    match severity {
+        switchback_traits::ResponseSeverity::Unspecified => {
+            pb::ResponseSeverity::RESPONSE_SEVERITY_UNSPECIFIED
+        }
+        switchback_traits::ResponseSeverity::Informational => {
+            pb::ResponseSeverity::RESPONSE_SEVERITY_INFORMATIONAL
+        }
+        switchback_traits::ResponseSeverity::Success => {
+            pb::ResponseSeverity::RESPONSE_SEVERITY_SUCCESS
+        }
+        switchback_traits::ResponseSeverity::Redirection => {
+            pb::ResponseSeverity::RESPONSE_SEVERITY_REDIRECTION
+        }
+        switchback_traits::ResponseSeverity::ClientError => {
+            pb::ResponseSeverity::RESPONSE_SEVERITY_CLIENT_ERROR
+        }
+        switchback_traits::ResponseSeverity::ServerError => {
+            pb::ResponseSeverity::RESPONSE_SEVERITY_SERVER_ERROR
+        }
+        _ => pb::ResponseSeverity::RESPONSE_SEVERITY_UNSPECIFIED,
+    }
+}
+
+pub fn response_severity_from_proto(
+    severity: &buffa::EnumValue<pb::ResponseSeverity>,
+) -> switchback_traits::ResponseSeverity {
+    match severity.as_known() {
+        Some(pb::ResponseSeverity::RESPONSE_SEVERITY_INFORMATIONAL) => {
+            switchback_traits::ResponseSeverity::Informational
+        }
+        Some(pb::ResponseSeverity::RESPONSE_SEVERITY_SUCCESS) => {
+            switchback_traits::ResponseSeverity::Success
+        }
+        Some(pb::ResponseSeverity::RESPONSE_SEVERITY_REDIRECTION) => {
+            switchback_traits::ResponseSeverity::Redirection
+        }
+        Some(pb::ResponseSeverity::RESPONSE_SEVERITY_CLIENT_ERROR) => {
+            switchback_traits::ResponseSeverity::ClientError
+        }
+        Some(pb::ResponseSeverity::RESPONSE_SEVERITY_SERVER_ERROR) => {
+            switchback_traits::ResponseSeverity::ServerError
+        }
+        Some(pb::ResponseSeverity::RESPONSE_SEVERITY_UNSPECIFIED) | None => {
+            switchback_traits::ResponseSeverity::Unspecified
+        }
+    }
+}
+
+pub fn operation_request_body_ref_to_proto(
+    body: &switchback_traits::OperationRequestBodyRef,
+) -> switchback_traits::Result<pb::OperationRequestBodyRef> {
+    Ok(pb::OperationRequestBodyRef {
+        required: body.required,
+        media_type: body.media_type.clone(),
+        schema_ref: buffa::MessageField::some(reference_to_proto(&body.schema_ref)?),
+        type_label: body.type_label.clone(),
+        ..Default::default()
+    })
+}
+
+pub fn operation_request_body_ref_from_proto(
+    body: pb::OperationRequestBodyRef,
+) -> switchback_traits::Result<switchback_traits::OperationRequestBodyRef> {
+    let schema_ref = body
+        .schema_ref
+        .into_option()
+        .ok_or_else(|| codec_err("operation request_body schema_ref missing on wire"))?;
+    Ok(switchback_traits::OperationRequestBodyRef {
+        required: body.required,
+        media_type: body.media_type,
+        schema_ref: reference_from_proto(schema_ref)?,
+        type_label: body.type_label,
     })
 }
 

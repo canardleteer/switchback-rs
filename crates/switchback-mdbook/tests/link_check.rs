@@ -225,12 +225,20 @@ fn package_layout_splits_message_cel_into_cel_fence() {
 }
 
 #[test]
-fn init_entity_layout_summary_is_package_only() {
+fn init_entity_layout_summary_lists_entities() {
     let out = render_examples(Layout::Entity, "init");
+    let sum = std::fs::read_to_string(out.path().join("src/SUMMARY.md")).expect("SUMMARY");
+    assert!(sum.contains("Message "));
+    assert_tree(out.path()).unwrap_or_else(|e| panic!("init entity links: {e}"));
+}
+
+#[test]
+fn init_package_layout_summary_is_package_only() {
+    let out = render_examples(Layout::Package, "init");
     let sum = std::fs::read_to_string(out.path().join("src/SUMMARY.md")).expect("SUMMARY");
     assert!(!sum.contains("Message "));
     assert!(!sum.contains("Enum "));
-    assert_tree(out.path()).unwrap_or_else(|e| panic!("init entity links: {e}"));
+    assert_tree(out.path()).unwrap_or_else(|e| panic!("init package links: {e}"));
 }
 
 #[test]

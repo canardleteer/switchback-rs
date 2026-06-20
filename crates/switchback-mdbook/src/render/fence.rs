@@ -1,11 +1,15 @@
 //! Protobuf fence wrapping and CEL splitting.
 
 use switchback_traits::{
-    apply_intra_links, EscapeTags, IntraLink, LinkContext, LinkFormatter, StoredEntity,
+    apply_intra_links, EscapeTags, IntraLink, LinkContext, LinkFormatter, OperationBody,
+    OperationRequestBodyRef, ParameterRef, RefKind, Reference, ResponseRef, StoredEntity,
 };
 
 use crate::highlight::split_message_cel_blocks;
 use crate::render::markdown_doc::format_markdown_doc;
+use crate::render::md_heading;
+
+const OPERATION_SUBSECTION_LEVEL: usize = 4;
 
 pub fn proto_file_name(entity: &StoredEntity) -> String {
     entity
@@ -24,6 +28,29 @@ pub fn render_proto_fence(
     formatter: &dyn LinkFormatter,
     ctx: &LinkContext,
 ) -> String {
+    render_schema_fence(
+        "protobuf",
+        file_name,
+        entity_doc,
+        body,
+        escape_tags,
+        intra_links,
+        formatter,
+        ctx,
+    )
+}
+
+#[allow(clippy::too_many_arguments)]
+pub fn render_schema_fence(
+    fence_language: &str,
+    file_name: &str,
+    entity_doc: Option<&str>,
+    body: &str,
+    escape_tags: EscapeTags,
+    intra_links: &[IntraLink],
+    formatter: &dyn LinkFormatter,
+    ctx: &LinkContext,
+) -> String {
     let mut out = String::new();
     if let Some(c) = entity_doc {
         let doc = apply_intra_links("doc", c, intra_links, formatter, ctx);
@@ -32,26 +59,25 @@ pub fn render_proto_fence(
     if !file_name.is_empty() {
         out.push_str(&format!("*`{file_name}`*\n\n"));
     }
-    let (body, cel_blocks) = split_message_cel_blocks(body);
-    push_proto_fence_body(&mut out, &body);
-    for block in cel_blocks {
-        out.push_str("**Protovalidate (CEL)**\n\n");
-        push_cel_fence_body(&mut out, &block);
+    if fence_language == "protobuf" {
+        let (body, cel_blocks) = split_message_cel_blocks(body);
+        push_fence_body(&mut out, fence_language, &body);
+        for block in cel_blocks {
+            out.push_str("**Protovalidate (CEL)**\n\n");
+            push_fence_body(&mut out, "cel", &block);
+        }
+    } else {
+        push_fence_body(&mut out, fence_language, body);
     }
     out
 }
 
 pub fn push_proto_fence_body(out: &mut String, body: &str) {
-    out.push_str("```protobuf\n");
-    out.push_str(body);
-    if !body.ends_with('\n') {
-        out.push('\n');
-    }
-    out.push_str("```\n\n");
+    push_fence_body(out, "protobuf", body);
 }
 
-fn push_cel_fence_body(out: &mut String, body: &str) {
-    out.push_str("```cel\n");
+pub fn push_fence_body(out: &mut String, language: &str, body: &str) {
+    out.push_str(&format!("```{language}\n"));
     out.push_str(body);
     if !body.ends_with('\n') {
         out.push('\n');
@@ -68,7 +94,7 @@ pub fn push_markdown_doc(out: &mut String, comment: &str, escape_tags: EscapeTag
 pub fn operation_signature_markdown(
     title: &str,
     signature: &str,
-    refs: &[switchback_traits::Reference],
+    refs: &[Reference],
     ctx: &LinkContext,
 ) -> String {
     let from = ctx
@@ -85,6 +111,159 @@ pub fn operation_signature_markdown(
         .map(|r| link_ref(r, ctx, from))
         .unwrap_or_else(|| out_part.clone());
     format!("**{title}** ( {input} ) returns ( {output} )")
+}
+
+pub fn openapi_operation_markdown(
+    body: &OperationBody,
+    entity_doc: Option<&str>,
+    intra_links: &[IntraLink],
+    escape_tags: EscapeTags,
+    formatter: &dyn LinkFormatter,
+    ctx: &LinkContext,
+) -> String {
+    let from = ctx
+        .render_from
+        .as_deref()
+        .unwrap_or_else(|| std::path::Path::new(&ctx.markdown_root));
+    let mut out = format_method_path_line(&body.signature);
+    if let Some(doc) = entity_doc {
+        let doc = apply_intra_links("doc", doc, intra_links, formatter, ctx);
+        push_markdown_doc(&mut out, &doc, escape_tags);
+    }
+    if !body.parameters.is_empty() {
+        out.push_str(&md_heading(OPERATION_SUBSECTION_LEVEL, "Parameters"));
+        out.push_str("| Name | In | Type | Required | Description |\n");
+        out.push_str("| --- | --- | --- | --- | --- |\n");
+        for param in &body.parameters {
+            out.push('|');
+            out.push(' ');
+            out.push_str(&format_openapi_parameter_name(param, ctx, from));
+            out.push_str(" | ");
+            out.push_str(&param.location);
+            out.push_str(" | ");
+            out.push_str(&format_openapi_type(
+                param.type_label.as_str(),
+                &param.schema_ref,
+                ctx,
+                from,
+            ));
+            out.push_str(" | ");
+            out.push_str(if param.required {
+                "required"
+            } else {
+                "optional"
+            });
+            out.push_str(" | ");
+            out.push_str(&escape_table_cell(&param.description));
+            out.push_str(" |\n");
+        }
+        out.push('\n');
+    }
+    if let Some(request_body) = &body.request_body {
+        out.push_str(&md_heading(OPERATION_SUBSECTION_LEVEL, "Request body"));
+        out.push_str(&format_openapi_request_body(request_body, ctx, from));
+        out.push('\n');
+    }
+    if !body.responses.is_empty() {
+        out.push_str(&md_heading(OPERATION_SUBSECTION_LEVEL, "Responses"));
+        out.push_str("| Status | Description | Media type | Schema |\n");
+        out.push_str("| --- | --- | --- | --- |\n");
+        for response in &body.responses {
+            out.push('|');
+            out.push(' ');
+            out.push_str(&response.status);
+            out.push_str(" | ");
+            out.push_str(&escape_table_cell(&response.description));
+            out.push_str(" | ");
+            if response.media_type.is_empty() {
+                out.push('—');
+            } else {
+                out.push_str(&escape_table_cell(&response.media_type));
+            }
+            out.push_str(" | ");
+            out.push_str(&format_openapi_response_schema(response, ctx, from));
+            out.push_str(" |\n");
+        }
+        out.push('\n');
+    }
+    out
+}
+
+fn format_method_path_line(signature: &str) -> String {
+    let Some((method, path)) = signature.split_once(' ') else {
+        return format!("**{signature}**\n\n");
+    };
+    format!("**{method}** `{path}`\n\n")
+}
+
+fn format_openapi_parameter_name(
+    param: &ParameterRef,
+    ctx: &LinkContext,
+    from: &std::path::Path,
+) -> String {
+    if param.schema_ref.kind == RefKind::Inline {
+        return format!("`{}`", param.name);
+    }
+    let target = switchback_traits::EntityRef {
+        module: param.schema_ref.target.module.clone(),
+        group: param.schema_ref.target.group.clone(),
+        category: "parameter".into(),
+        name: param.name.clone(),
+    };
+    ctx.link_entity(from, &target)
+}
+
+fn format_openapi_type(
+    type_label: &str,
+    schema_ref: &Reference,
+    ctx: &LinkContext,
+    from: &std::path::Path,
+) -> String {
+    if schema_ref.kind != RefKind::Inline && !schema_ref.target.category.is_empty() {
+        link_ref(schema_ref, ctx, from)
+    } else if type_label.is_empty() {
+        "—".into()
+    } else {
+        format!("`{type_label}`")
+    }
+}
+
+fn format_openapi_request_body(
+    body: &OperationRequestBodyRef,
+    ctx: &LinkContext,
+    from: &std::path::Path,
+) -> String {
+    let schema = format_openapi_type(body.type_label.as_str(), &body.schema_ref, ctx, from);
+    let required = if body.required {
+        "required"
+    } else {
+        "optional"
+    };
+    if body.media_type.is_empty() {
+        format!("{schema} ({required})\n\n")
+    } else {
+        format!("`{}`: {schema} ({required})\n\n", body.media_type)
+    }
+}
+
+fn format_openapi_response_schema(
+    response: &ResponseRef,
+    ctx: &LinkContext,
+    from: &std::path::Path,
+) -> String {
+    if response.schema_ref.kind != RefKind::Inline
+        && !response.schema_ref.target.category.is_empty()
+    {
+        format_openapi_type("", &response.schema_ref, ctx, from)
+    } else if response.status.chars().all(|c| c.is_ascii_digit()) {
+        format!("`{}`", response.status)
+    } else {
+        "—".into()
+    }
+}
+
+fn escape_table_cell(value: &str) -> String {
+    value.replace('|', "\\|")
 }
 
 fn split_signature_parts(signature: &str) -> (String, String) {
@@ -107,11 +286,10 @@ fn split_signature_parts(signature: &str) -> (String, String) {
     (input, output)
 }
 
-fn link_ref(
-    reference: &switchback_traits::Reference,
-    ctx: &LinkContext,
-    from: &std::path::Path,
-) -> String {
+pub fn link_ref(reference: &Reference, ctx: &LinkContext, from: &std::path::Path) -> String {
+    if !reference.target.category.is_empty() {
+        return ctx.link_entity(from, &reference.target);
+    }
     let fqn = format!(
         ".{}.{name}",
         reference.target.group,

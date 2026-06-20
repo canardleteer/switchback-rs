@@ -133,6 +133,14 @@ message OperationBody {
   string fence_body = 3;
   repeated ParameterRef parameters = 4;
   repeated ResponseRef responses = 5;
+  OperationRequestBodyRef request_body = 6;
+}
+
+message OperationRequestBodyRef {
+  bool required = 1;
+  string media_type = 2;
+  Reference schema_ref = 3;
+  string type_label = 4;
 }
 
 message SchemaBody {
@@ -166,6 +174,7 @@ message ResponseBody {
   string media_type = 2;
   string fence_language = 3;
   string fence_body = 4;
+  ResponseSeverity severity = 5;
 }
 
 message RequestBodyBody {
@@ -197,12 +206,25 @@ message ParameterRef {
   string location = 2;
   bool required = 3;
   Reference schema_ref = 4;
+  string type_label = 5;
+  string description = 6;
 }
 
 message ResponseRef {
   string status = 1;
   Reference schema_ref = 2;
   string media_type = 3;
+  string description = 4;
+  ResponseSeverity severity = 5;
+}
+
+enum ResponseSeverity {
+  RESPONSE_SEVERITY_UNSPECIFIED = 0;
+  RESPONSE_SEVERITY_INFORMATIONAL = 1;
+  RESPONSE_SEVERITY_SUCCESS = 2;
+  RESPONSE_SEVERITY_REDIRECTION = 3;
+  RESPONSE_SEVERITY_CLIENT_ERROR = 4;
+  RESPONSE_SEVERITY_SERVER_ERROR = 5;
 }
 
 message IntraLink {

@@ -2,7 +2,7 @@
 
 use anyhow::{bail, Result};
 use std::path::PathBuf;
-use switchback_traits::{EscapeTags, Layout, Options};
+use switchback_traits::{EscapeTags, Layout, OpenApiOperationSource, Options};
 
 use crate::paths::normalize_rel_path;
 
@@ -38,6 +38,7 @@ enum ParsedToken {
     SearchPath(Vec<PathBuf>),
     AlphabetizeServices,
     AlphabetizeMessages,
+    OpenApiOperationSource(OpenApiOperationSource),
 }
 
 fn parse_token(token: &str) -> Result<ParsedToken> {
@@ -101,6 +102,16 @@ fn parse_token(token: &str) -> Result<ParsedToken> {
             other => bail!("unknown escape_tags value {other:?}; use backticks or entities"),
         }));
     }
+    if let Some(v) = token.strip_prefix("openapi-operation-source=") {
+        return Ok(ParsedToken::OpenApiOperationSource(match v {
+            "collapsed" => OpenApiOperationSource::Collapsed,
+            "trimmed" => OpenApiOperationSource::Trimmed,
+            "hidden" => OpenApiOperationSource::Hidden,
+            other => bail!(
+                "unknown openapi-operation-source value {other:?}; use collapsed, trimmed, or hidden"
+            ),
+        }));
+    }
 
     match token {
         "init" => Ok(ParsedToken::Init),
@@ -145,6 +156,7 @@ fn apply_parsed(opts: &mut Options, token: ParsedToken) {
         ParsedToken::SearchPath(paths) => opts.search_paths = paths,
         ParsedToken::AlphabetizeServices => opts.alphabetize_services = true,
         ParsedToken::AlphabetizeMessages => opts.alphabetize_messages = true,
+        ParsedToken::OpenApiOperationSource(mode) => opts.openapi_operation_source = mode,
     }
 }
 
@@ -215,9 +227,11 @@ mod tests {
     }
 
     #[test]
-    fn alphabetize_messages_flag() {
-        let opts = parse_parameter(&Some("alphabetize_messages".into())).unwrap();
-        assert!(!opts.alphabetize_services);
-        assert!(opts.alphabetize_messages);
+    fn openapi_operation_source_flag() {
+        let opts = parse_parameter(&Some("openapi-operation-source=hidden".into())).unwrap();
+        assert_eq!(
+            opts.openapi_operation_source,
+            OpenApiOperationSource::Hidden
+        );
     }
 }

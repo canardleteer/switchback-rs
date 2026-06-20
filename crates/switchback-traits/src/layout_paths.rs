@@ -110,7 +110,7 @@ pub fn relative_path_from_dir(from_dir: &Path, target: &Path) -> String {
     for c in &target_parts[i..] {
         parts.push(c.as_os_str().to_string_lossy().into_owned());
     }
-    if parts.is_empty() {
+    let raw = if parts.is_empty() {
         target
             .file_name()
             .unwrap_or_default()
@@ -118,7 +118,55 @@ pub fn relative_path_from_dir(from_dir: &Path, target: &Path) -> String {
             .into_owned()
     } else {
         parts.join("/")
+    };
+    encode_markdown_link_path(&raw)
+}
+
+/// Percent-encode a relative path for use inside Markdown `](...)` link targets.
+///
+/// mdBook and CommonMark treat spaces as end-of-URL; encode every segment so paths
+/// like `operations/GET -board.md` resolve correctly.
+pub fn encode_markdown_link_path(path: &str) -> String {
+    path.split('/')
+        .map(encode_path_segment)
+        .collect::<Vec<_>>()
+        .join("/")
+}
+
+/// Decode a percent-encoded Markdown link path back to a filesystem path.
+pub fn decode_markdown_link_path(path: &str) -> String {
+    let mut out = String::new();
+    let bytes = path.as_bytes();
+    let mut i = 0;
+    while i < bytes.len() {
+        if bytes[i] == b'%' && i + 2 < bytes.len() {
+            if let Ok(s) = std::str::from_utf8(&bytes[i + 1..i + 3]) {
+                if let Ok(byte) = u8::from_str_radix(s, 16) {
+                    out.push(byte as char);
+                    i += 3;
+                    continue;
+                }
+            }
+        }
+        out.push(bytes[i] as char);
+        i += 1;
     }
+    out
+}
+
+fn encode_path_segment(segment: &str) -> String {
+    let mut out = String::new();
+    for ch in segment.chars() {
+        match ch {
+            'A'..='Z' | 'a'..='z' | '0'..='9' | '-' | '_' | '.' | '~' => out.push(ch),
+            _ => {
+                for b in ch.to_string().as_bytes() {
+                    out.push_str(&format!("%{b:02X}"));
+                }
+            }
+        }
+    }
+    out
 }
 
 fn id_from_content(content: &str) -> String {
@@ -166,6 +214,23 @@ mod tests {
         for (input, expected) in cases {
             assert_eq!(id_from_content(input), expected, "input: {input:?}");
         }
+    }
+
+    #[test]
+    fn encode_markdown_link_path_spaces() {
+        assert_eq!(
+            encode_markdown_link_path("operations/GET -board.md"),
+            "operations/GET%20-board.md"
+        );
+    }
+
+    #[test]
+    fn decode_markdown_link_path_roundtrip() {
+        let encoded = encode_markdown_link_path("operations/PUT -board-{row}-{column}.md");
+        assert_eq!(
+            decode_markdown_link_path(&encoded),
+            "operations/PUT -board-{row}-{column}.md"
+        );
     }
 
     #[test]

@@ -10,6 +10,7 @@ members = [
     "crates/switchback-asyncapi",
     "crates/switchback-openrpc",
     "examples/mdbook-protobuf",
+    "examples/mdbook-openapi",
     "xtask",
 ]
 

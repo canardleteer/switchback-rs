@@ -73,7 +73,9 @@ impl Contract for ProtobufContract {
                 ctx.register_stored_entity(
                     module_id,
                     group.id.as_str(),
+                    &group.dir,
                     &stored_entity_from_populated(pe),
+                    true,
                     opts.layout,
                     &opts.markdown_root,
                 );

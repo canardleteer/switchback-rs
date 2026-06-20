@@ -1,0 +1,35 @@
+[[asset]]
+id = "oas3.0-petstore"
+path = "tests/fixtures/upstream/oas3.0-petstore/petstore.yaml"
+url = "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/f8449d1a893cc6a811c6f3d87e88b05761dc5397/examples/v3.0/petstore.yaml"
+sha256 = "ab60f59da478d4ac312cd9fabcc6cbd06f8f975ab8a1a0c2029b2a41f65fedd5"
+license = "Apache-2.0"
+upstream_repo = "https://github.com/OAI/OpenAPI-Specification"
+upstream_commit = "f8449d1a893cc6a811c6f3d87e88b05761dc5397"
+
+[[asset]]
+id = "oas3.0-link-example"
+path = "tests/fixtures/upstream/oas3.0-link-example/link-example.yaml"
+url = "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/f8449d1a893cc6a811c6f3d87e88b05761dc5397/examples/v3.0/link-example.yaml"
+sha256 = "4b7b29d7bda1cf95f8c027500c86a9eb3761dfee42f1a8aeb095c5c0b5ccde3b"
+license = "Apache-2.0"
+upstream_repo = "https://github.com/OAI/OpenAPI-Specification"
+upstream_commit = "f8449d1a893cc6a811c6f3d87e88b05761dc5397"
+
+[[asset]]
+id = "oas3.1-tictactoe"
+path = "tests/fixtures/upstream/oas3.1-tictactoe/tictactoe.yaml"
+url = "https://raw.githubusercontent.com/OAI/learn.openapis.org/43756549c27cbf84107b190b82c65e0336f2f09f/examples/v3.1/tictactoe.yaml"
+sha256 = "772a199c00079409660f84ef7746f3f5f6cb3250945732bedd3529ff913d85d3"
+license = "Apache-2.0"
+upstream_repo = "https://github.com/OAI/learn.openapis.org"
+upstream_commit = "43756549c27cbf84107b190b82c65e0336f2f09f"
+
+[[asset]]
+id = "oas3.1-webhook"
+path = "tests/fixtures/upstream/oas3.1-webhook/webhook-example.yaml"
+url = "https://raw.githubusercontent.com/OAI/learn.openapis.org/43756549c27cbf84107b190b82c65e0336f2f09f/examples/v3.1/webhook-example.yaml"
+sha256 = "1bf9c928e1d42d5ffd3d793dbc6b569bd47a97a4679ee5c85cd78091136ab2a4"
+license = "Apache-2.0"
+upstream_repo = "https://github.com/OAI/learn.openapis.org"
+upstream_commit = "43756549c27cbf84107b190b82c65e0336f2f09f"

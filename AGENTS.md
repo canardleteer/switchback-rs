@@ -33,6 +33,26 @@ application), update
 examples and naming stay accurate. Prefer adjusting that doc over burying
 linking conventions in code comments.
 
+## Parser test fixtures
+
+Family parser crates may vend **upstream** example corpora and maintain
+**micro** hand-written regressions. Do not conflate the two.
+
+| Tier | Path (`switchback-openapi`) | Maintained how | Agent rule |
+| --- | --- | --- | --- |
+| **Upstream** | `crates/switchback-openapi/tests/fixtures/upstream/` | `cargo xtask spec-vendor fetch-fixtures --family openapi`; locked in `example-fixtures.lock.toml` | **Do not hand-edit.** Refresh from upstream, update lock SHA-256, run `validate-fixtures`. See `tests/fixtures/upstream/FIXTURES.md`. |
+| **Micro** | `crates/switchback-openapi/tests/fixtures/micro/` | Hand-maintained in-repo | **Safe to edit.** One isolated behavior each (`x-tagGroups`, `nullable` 3.0, beside companion, minimal multifile `$ref`). Keep tiny. |
+
+**Related locks (`switchback-openapi`):**
+
+- `meta-schemas/` + `meta-schemas.lock.toml` — JSON Schema meta-schemas only
+  (ADR 0005); `spec-vendor fetch --family openapi`.
+- `example-fixtures.lock.toml` — example API descriptions only;
+  `spec-vendor fetch-fixtures --family openapi`.
+
+Other family crates may adopt the same split later; protobuf/jsonschema fixtures
+keep their existing layouts until then.
+
 ## Markdown
 
 Use [`rumdl`](https://github.com/rvben/rumdl) to lint Markdown. Configuration

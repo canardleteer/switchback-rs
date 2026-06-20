@@ -31,6 +31,15 @@ impl LinkFormatter for MdBookRelativeFormatter {
 }
 
 fn format_entity(entity_ref: &EntityRef, ctx: &LinkContext) -> String {
+    if ctx.entity_path(entity_ref).is_some() {
+        let from = ctx
+            .render_from
+            .as_deref()
+            .or_else(|| ctx.entity_paths.get(entity_ref).map(|p| p.as_path()))
+            .unwrap_or_else(|| Path::new(&ctx.markdown_root));
+        return ctx.link_entity(from, entity_ref);
+    }
+
     let kind = if entity_ref.category == "service" {
         ProtobufEntityKind::Service
     } else if ctx

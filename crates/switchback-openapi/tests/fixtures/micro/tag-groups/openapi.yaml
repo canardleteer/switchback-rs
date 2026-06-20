@@ -1,0 +1,30 @@
+---
+openapi: 3.1.0
+info:
+  title: Tag Groups Example
+  version: 1.0.0
+tags:
+  - name: pets
+    description: Pet operations
+  - name: store
+    description: Store operations
+x-tagGroups:
+  - name: retail
+    tags:
+      - pets
+      - store
+paths:
+  /pets:
+    get:
+      tags: [pets]
+      summary: List pets
+      responses:
+        "200":
+          description: OK
+  /store:
+    get:
+      tags: [store]
+      summary: Store status
+      responses:
+        "200":
+          description: OK

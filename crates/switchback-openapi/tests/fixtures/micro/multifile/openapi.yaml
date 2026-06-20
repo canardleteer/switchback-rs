@@ -1,0 +1,20 @@
+---
+openapi: 3.1.0
+info:
+  title: Multifile Example
+  version: 1.0.0
+paths:
+  /pets:
+    get:
+      summary: List pets
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: schemas/Pet.yaml
+components:
+  schemas:
+    Pet:
+      $ref: schemas/Pet.yaml

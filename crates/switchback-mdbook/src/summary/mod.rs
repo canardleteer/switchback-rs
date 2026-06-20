@@ -5,13 +5,14 @@ mod nav_tree;
 mod render_md;
 
 use std::collections::BTreeMap;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use switchback_traits::{Group, LinkContext, Options, ReferenceManual, StoredEntity};
 
 use crate::companion::CompanionNav;
 use crate::init::DEFAULT_BOOK_TITLE;
 use crate::render::output_file;
+use crate::summary::chapters::{build_flat_summary, build_openapi_summary};
 use crate::summary::nav_tree::{build_summary, package_rel_dir, NavInput, PackageAtDir};
 
 pub fn render_summary(
@@ -27,9 +28,19 @@ pub fn render_summary(
     let summary_from = Path::new(&opts.summary_path);
     let package_only = opts.package_only_summary();
     let packages = packages_nav_input(manual);
+    let openapi_only = !packages.is_empty() && packages.iter().all(|p| p.family == "openapi");
 
-    let summary = if opts.no_proto_markdown {
-        chapters::build_flat_summary(
+    let summary = if openapi_only {
+        build_openapi_summary(
+            &h1,
+            &packages,
+            opts.layout,
+            package_only,
+            links,
+            summary_from,
+        )
+    } else if opts.no_proto_markdown {
+        build_flat_summary(
             &h1,
             &flat_packages_from_manual(manual),
             opts.layout,
@@ -67,8 +78,8 @@ fn summary_h1_title(manual: &ReferenceManual, opts: &Options) -> String {
     }
 }
 
-fn packages_nav_input(manual: &ReferenceManual) -> BTreeMap<String, PackageAtDir<'_>> {
-    let mut out = BTreeMap::new();
+fn packages_nav_input(manual: &ReferenceManual) -> Vec<PackageAtDir<'_>> {
+    let mut out = Vec::new();
     for module in &manual.modules {
         for contract in &module.contracts {
             for group in &contract.groups {
@@ -76,19 +87,23 @@ fn packages_nav_input(manual: &ReferenceManual) -> BTreeMap<String, PackageAtDir
                 if package.is_empty() {
                     continue;
                 }
-                let rel_dir = group
-                    .source
-                    .as_ref()
-                    .map(|s| package_rel_dir(&s.file))
-                    .unwrap_or_default();
-                out.insert(
-                    package.to_string(),
-                    PackageAtDir {
-                        rel_dir,
-                        package,
-                        entities: &group.entities,
-                    },
-                );
+                let rel_dir = if contract.family == "openapi" {
+                    PathBuf::from(&group.dir)
+                } else {
+                    group
+                        .source
+                        .as_ref()
+                        .map(|s| package_rel_dir(&s.file))
+                        .unwrap_or_default()
+                };
+                out.push(PackageAtDir {
+                    rel_dir,
+                    package,
+                    title: &group.title,
+                    group_dir: &group.dir,
+                    family: &contract.family,
+                    entities: &group.entities,
+                });
             }
         }
     }
@@ -97,7 +112,7 @@ fn packages_nav_input(manual: &ReferenceManual) -> BTreeMap<String, PackageAtDir
 
 fn flat_packages_from_manual(
     manual: &ReferenceManual,
-) -> BTreeMap<String, (Group, Vec<StoredEntity>)> {
+) -> BTreeMap<String, (String, Group, Vec<StoredEntity>)> {
     let mut packages = BTreeMap::new();
     for module in &manual.modules {
         for contract in &module.contracts {
@@ -107,7 +122,11 @@ fn flat_packages_from_manual(
                 }
                 packages.insert(
                     group.id.as_str().to_string(),
-                    (group.clone(), group.entities.clone()),
+                    (
+                        contract.family.clone(),
+                        group.clone(),
+                        group.entities.clone(),
+                    ),
                 );
             }
         }

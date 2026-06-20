@@ -1,5 +1,19 @@
 //! Format-agnostic path helpers for entity output layout.
 
+/// Relative output directory segment for a stored entity category slug.
+pub fn entity_category_dir(category: &str) -> &str {
+    match category {
+        "schema" => "schemas",
+        "operation" => "operations",
+        "parameter" => "parameters",
+        "response" => "responses",
+        "request-body" => "request-bodies",
+        "security-scheme" => "security-schemes",
+        "service" => "services",
+        other => other,
+    }
+}
+
 /// Relative output path for an entity page under a group's markdown tree.
 ///
 /// Shape: `{group_dir}/{category_dir}/{name}.md` using forward slashes.

@@ -3,6 +3,8 @@
 pub mod entity;
 pub mod fence;
 pub mod markdown_doc;
+pub mod openapi;
+pub mod operation_fence;
 pub mod package;
 
 use switchback_traits::OutputFile;

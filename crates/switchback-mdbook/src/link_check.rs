@@ -3,6 +3,7 @@
 use anyhow::{bail, Context, Result};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
+use switchback_traits::decode_markdown_link_path;
 use switchback_traits::unique_heading_ids;
 use walkdir::WalkDir;
 
@@ -53,10 +54,21 @@ pub fn check_tree(root: &Path) -> Result<Vec<LinkError>> {
                 continue;
             }
             let (file_part, anchor) = split_anchor(&target);
-            let resolved = if file_part.is_empty() {
+            if file_part.contains(' ') {
+                errors.push(LinkError {
+                    file: path.to_path_buf(),
+                    target: target.clone(),
+                    message: format!(
+                        "broken link at line {line}: unencoded space in URL (use %20)"
+                    ),
+                });
+                continue;
+            }
+            let decoded_file = decode_markdown_link_path(file_part);
+            let resolved = if decoded_file.is_empty() {
                 path.to_path_buf()
             } else {
-                path.parent().unwrap_or(root).join(file_part)
+                path.parent().unwrap_or(root).join(&decoded_file)
             };
             if !resolved.exists() {
                 errors.push(LinkError {
@@ -177,6 +189,25 @@ mod tests {
             "### EchoRequest\n\n### EchoResponse\n\n### EchoRequest\n\n[dup](page.md#echorequest-1)\n",
         )
         .expect("write");
+        let errors = check_tree(dir.path()).expect("check");
+        assert!(errors.is_empty(), "{errors:?}");
+    }
+
+    #[test]
+    fn check_tree_unencoded_space_in_link() {
+        let dir = tempfile::tempdir().expect("tempdir");
+        std::fs::write(dir.path().join("target file.md"), "# x\n").expect("write");
+        std::fs::write(dir.path().join("page.md"), "[bad](target file.md)\n").expect("write");
+        let errors = check_tree(dir.path()).expect("check");
+        assert_eq!(errors.len(), 1);
+        assert!(errors[0].message.contains("unencoded space"));
+    }
+
+    #[test]
+    fn check_tree_percent_encoded_space_resolves() {
+        let dir = tempfile::tempdir().expect("tempdir");
+        std::fs::write(dir.path().join("target file.md"), "# x\n").expect("write");
+        std::fs::write(dir.path().join("page.md"), "[ok](target%20file.md)\n").expect("write");
         let errors = check_tree(dir.path()).expect("check");
         assert!(errors.is_empty(), "{errors:?}");
     }

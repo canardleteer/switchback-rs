@@ -8,6 +8,7 @@ use crate::layout_paths::{
     relative_path_from_dir, LayoutEntityKey, ProtobufEntityKind,
 };
 use crate::options::{Layout, Options};
+use crate::paths::{entity_category_dir, entity_rel_path};
 use crate::EntityRef;
 use crate::{EntityBody, ReferenceManual, StoredEntity};
 
@@ -50,6 +51,7 @@ impl LinkContext {
         let mut ctx = Self::empty(opts.layout, &opts.book_root, &opts.markdown_root);
         for module in &manual.modules {
             for contract in &module.contracts {
+                let is_protobuf = contract.family == "protobuf";
                 for group in &contract.groups {
                     if group.id.as_str().is_empty() {
                         continue;
@@ -58,7 +60,9 @@ impl LinkContext {
                         ctx.register_stored_entity(
                             module.id.as_str(),
                             group.id.as_str(),
+                            &group.dir,
                             entity,
+                            is_protobuf,
                             opts.layout,
                             &opts.markdown_root,
                         );
@@ -70,39 +74,50 @@ impl LinkContext {
     }
 
     /// Registers one stored entity in the path index.
+    #[allow(clippy::too_many_arguments)]
     pub fn register_stored_entity(
         &mut self,
         module: &str,
-        package: &str,
+        group: &str,
+        group_dir: &str,
         entity: &StoredEntity,
+        is_protobuf: bool,
         layout: Layout,
         markdown_root: &str,
     ) {
-        if let Some(kind) = protobuf_entity_kind(entity) {
-            let key = LayoutEntityKey {
-                package: package.to_string(),
-                kind,
-                name: entity.name.clone(),
-            };
-            let path = layout_entity_rel_path(layout, markdown_root, &key);
-            self.layout_entities.insert(key, path);
-        }
         let entity_ref = EntityRef {
             module: module.to_string(),
-            group: package.to_string(),
+            group: group.to_string(),
             category: entity.category.clone(),
             name: entity.name.clone(),
         };
-        let path = layout_entity_rel_path(
-            layout,
-            markdown_root,
-            &LayoutEntityKey {
-                package: package.to_string(),
-                kind: protobuf_entity_kind(entity).unwrap_or(ProtobufEntityKind::Message),
-                name: entity.name.clone(),
-            },
-        );
-        self.entity_paths.insert(entity_ref, path);
+
+        if is_protobuf {
+            if let Some(kind) = protobuf_entity_kind(entity) {
+                let key = LayoutEntityKey {
+                    package: group.to_string(),
+                    kind,
+                    name: entity.name.clone(),
+                };
+                let path = layout_entity_rel_path(layout, markdown_root, &key);
+                self.layout_entities.insert(key, path.clone());
+                self.entity_paths.insert(entity_ref, path);
+            }
+            return;
+        }
+
+        let rel = match layout {
+            Layout::Package => package_page_rel(markdown_root, group),
+            Layout::Entity | Layout::Split => {
+                let rel_path = entity_rel_path(
+                    group_dir,
+                    entity_category_dir(&entity.category),
+                    &entity.name,
+                );
+                PathBuf::from(format!("{markdown_root}/{rel_path}"))
+            }
+        };
+        self.entity_paths.insert(entity_ref, rel);
     }
 
     /// Iterate layout entity keys registered in this context.
@@ -134,6 +149,11 @@ impl LinkContext {
         })
     }
 
+    /// Lookup entity path by [`EntityRef`].
+    pub fn entity_path(&self, entity_ref: &EntityRef) -> Option<&PathBuf> {
+        self.entity_paths.get(entity_ref)
+    }
+
     /// Format a markdown link to an entity from `from`.
     pub fn link_from(
         &self,
@@ -147,6 +167,17 @@ impl LinkContext {
         };
         match self.layout {
             Layout::Package => self.package_layout_link(from, target, name),
+            Layout::Entity | Layout::Split => self.file_link(from, target),
+        }
+    }
+
+    /// Format a markdown link to a stored entity from `from`.
+    pub fn link_entity(&self, from: &Path, entity_ref: &EntityRef) -> String {
+        let Some(target) = self.entity_paths.get(entity_ref) else {
+            return format!("`{}`", entity_ref.name);
+        };
+        match self.layout {
+            Layout::Package => self.package_layout_link(from, target, &entity_ref.name),
             Layout::Entity | Layout::Split => self.file_link(from, target),
         }
     }

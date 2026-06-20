@@ -12,7 +12,7 @@ use crate::summary::render_md::{link_path_for_summary, SUMMARY_MAX_DEPTH};
 
 pub struct NavInput<'a> {
     pub companions: &'a [CompanionNav],
-    pub packages: BTreeMap<String, PackageAtDir<'a>>,
+    pub packages: Vec<PackageAtDir<'a>>,
     pub summary_from: &'a Path,
     pub links: &'a LinkContext,
 }
@@ -20,6 +20,9 @@ pub struct NavInput<'a> {
 pub struct PackageAtDir<'a> {
     pub rel_dir: PathBuf,
     pub package: &'a str,
+    pub title: &'a str,
+    pub group_dir: &'a str,
+    pub family: &'a str,
     pub entities: &'a [StoredEntity],
 }
 
@@ -68,11 +71,18 @@ pub fn build_summary(
         );
     }
 
-    for info in input.packages.values() {
+    for info in &input.packages {
         let target = package_target(input.links, layout, info.package);
         let path = link_path_for_summary(input.summary_from, &target);
         let entity_items = if attach_entities {
-            entity_summary_items(info.package, info.entities, input.links, input.summary_from)
+            entity_summary_items(
+                info.package,
+                info.group_dir,
+                info.entities,
+                info.family,
+                input.links,
+                input.summary_from,
+            )
         } else {
             Vec::new()
         };
@@ -80,7 +90,7 @@ pub fn build_summary(
             &mut root,
             path_segments(&info.rel_dir),
             LinkEntry {
-                title: info.package.to_string(),
+                title: info.title.to_string(),
                 path,
                 stem: String::new(),
                 module_path: Some(info.package.to_string()),
@@ -347,15 +357,14 @@ mod tests {
                 module_path: Some("acme.example.v1".into()),
             },
         ];
-        let mut packages = BTreeMap::new();
-        packages.insert(
-            "acme.example.v1".into(),
-            PackageAtDir {
-                rel_dir: package_rel_dir("acme/example/v1/a.proto"),
-                package: "acme.example.v1",
-                entities: &[],
-            },
-        );
+        let packages = vec![PackageAtDir {
+            rel_dir: package_rel_dir("acme/example/v1/a.proto"),
+            package: "acme.example.v1",
+            title: "acme.example.v1",
+            group_dir: "acme.example.v1",
+            family: "protobuf",
+            entities: &[],
+        }];
         let manual = ReferenceManual {
             switchback_version: "v1alpha1".into(),
             title: "Protobuf documentation".into(),
@@ -398,23 +407,24 @@ mod tests {
             stem: "NOTES".into(),
             module_path: Some("a.b".into()),
         }];
-        let mut packages = BTreeMap::new();
-        packages.insert(
-            "shallow.v2".into(),
+        let packages = vec![
             PackageAtDir {
                 rel_dir: package_rel_dir("a/b/c/d/v2/e.proto"),
                 package: "shallow.v2",
+                title: "shallow.v2",
+                group_dir: "shallow.v2",
+                family: "protobuf",
                 entities: &[],
             },
-        );
-        packages.insert(
-            "deep.v1".into(),
             PackageAtDir {
                 rel_dir: package_rel_dir("a/b/c/d/e/f/g/h/v1/stuff.proto"),
                 package: "deep.v1",
+                title: "deep.v1",
+                group_dir: "deep.v1",
+                family: "protobuf",
                 entities: &[],
             },
-        );
+        ];
         let manual = ReferenceManual {
             switchback_version: "v1alpha1".into(),
             title: "Protobuf documentation".into(),
