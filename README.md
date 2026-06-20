@@ -1,5 +1,15 @@
 # switchback-rs
 
+> [!WARNING]
+> Early prototype while exploring design and aiming for equivalence
+> with [protobuf-mdbook](https://github.com/canardleteer/protobuf-mdbook), while
+> expanding scope through traits and intermediary on-disk representation.
+>
+> This is not ready for adoption, nor even stable at a `v1alpha1` yet.
+>
+> A lot of this is clanker driven, so vetting a good human read through pass
+> hasn't been completed yet.
+
 A three-layer toolchain for turning API **contracts** into rendered **reference
 manuals**. A contract is one family's description of a service: a set of
 `.proto` files, an `openapi.yaml` (and the files it `$ref`s), an
