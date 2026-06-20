@@ -54,6 +54,10 @@ struct StubLinkExtractor;
 impl LinkExtractor for StubLinkExtractor {
     type Family = StubFamily;
 
+    fn name(&self) -> &'static str {
+        "stub"
+    }
+
     fn extract<C: EntityCategory>(
         &self,
         _entity: &crate::Entity<C>,
@@ -231,6 +235,69 @@ impl AsyncLinkExtractor for StubAsyncExtractor {
     ) -> crate::Result<Vec<crate::IntraLink>> {
         Ok(Vec::new())
     }
+}
+
+#[test]
+fn entity_rel_path_smoke() {
+    assert_eq!(
+        crate::entity_rel_path("pets", "schemas", "Pet"),
+        "pets/schemas/Pet.md"
+    );
+}
+
+#[test]
+fn resolved_manual_from_reference_manual() {
+    use crate::{
+        EntityBody, Group, GroupId, ManualContract, Module, ModuleId, ReferenceManual, SchemaBody,
+        SpecVersion, StoredEntity,
+    };
+
+    let manual = ReferenceManual {
+        switchback_version: "v1alpha1".into(),
+        title: "Test".into(),
+        sources: Vec::new(),
+        modules: vec![Module {
+            id: ModuleId::from("mod"),
+            title: "Mod".into(),
+            overview: String::new(),
+            contracts: vec![ManualContract {
+                family: "jsonschema".into(),
+                version: SpecVersion::from("2020-12"),
+                groups: vec![Group {
+                    id: GroupId::from("g1"),
+                    dir: "g1".into(),
+                    title: "G1".into(),
+                    overview: None,
+                    source: None,
+                    entities: vec![StoredEntity {
+                        name: "Pet".into(),
+                        category: "schema".into(),
+                        title: "Pet".into(),
+                        doc: None,
+                        source: None,
+                        refs: Vec::new(),
+                        intra_links: Vec::new(),
+                        body: EntityBody::Schema(SchemaBody::default()),
+                    }],
+                    source_path: Default::default(),
+                }],
+                companions: Vec::new(),
+            }],
+        }],
+    };
+
+    let resolved = crate::ResolvedManual::from_reference_manual(&manual);
+    assert_eq!(resolved.entities.len(), 1);
+    assert_eq!(resolved.entities[0].module_id.as_str(), "mod");
+    assert_eq!(resolved.entities[0].contract_family, "jsonschema");
+    assert_eq!(resolved.entities[0].group_id.as_str(), "g1");
+    assert_eq!(resolved.by_ref.len(), 1);
+    assert!(resolved.by_ref.contains_key(&crate::EntityRef {
+        module: "mod".into(),
+        group: "g1".into(),
+        category: "schema".into(),
+        name: "Pet".into(),
+    }));
 }
 
 #[test]

@@ -50,6 +50,6 @@ pub use category::ProtobufCategory;
 pub use contract::ProtobufContract;
 pub use family::ProtobufFamily;
 pub use input::Compiler;
-pub use link::ProtobufLinkExtractor;
+pub use link::{ProtobufFqnLinkExtractor, ProtobufLinkExtractor};
 pub use load::{default_proto_deps_export, ensure_test_proto_deps, load, LoadArgs};
 pub use manual::restore_sources;

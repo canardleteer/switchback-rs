@@ -8,6 +8,7 @@ use std::collections::BTreeMap;
 use std::path::PathBuf;
 
 use buffa_descriptor::generated::descriptor::MethodDescriptorProto;
+use buffa_descriptor::generated::descriptor::{DescriptorProto, ServiceDescriptorProto};
 use switchback_traits::{
     CompanionFile, Entity, EntityBody, EntityCategory, EntityId, Group, GroupId, OperationBody,
     RefKind, Reference, SchemaBody, ServiceBody, Source, SpecVersion,
@@ -108,7 +109,7 @@ pub fn populate(resolved: &ResolvedInput) -> switchback_traits::Result<Populated
                                 properties: Vec::new(),
                             }),
                         },
-                        refs: Vec::new(),
+                        refs: message_field_refs(&module_id, msg),
                     });
                 }
                 EntityKind::Enum => {
@@ -163,7 +164,7 @@ pub fn populate(resolved: &ResolvedInput) -> switchback_traits::Result<Populated
                                 fence_body,
                             }),
                         },
-                        refs: Vec::new(),
+                        refs: service_method_refs(&module_id, svc),
                     });
                 }
                 EntityKind::Operation => {
@@ -224,21 +225,65 @@ pub fn populate(resolved: &ResolvedInput) -> switchback_traits::Result<Populated
 fn operation_refs(module_id: &str, method: &MethodDescriptorProto) -> Vec<Reference> {
     let mut refs = Vec::new();
     for fqn in [method.input_type.as_deref(), method.output_type.as_deref()] {
-        let Some(fqn) = fqn else { continue };
-        let Some((pkg, msg)) = split_proto_type_name(fqn) else {
-            continue;
-        };
-        refs.push(Reference {
-            target: switchback_traits::EntityRef {
-                module: module_id.to_string(),
-                group: pkg.to_string(),
-                category: ProtobufCategory::Schema.as_str().to_string(),
-                name: msg.to_string(),
-            },
-            kind: RefKind::Internal,
-        });
+        if let Some(reference) = fqn_type_ref(module_id, fqn) {
+            refs.push(reference);
+        }
     }
     refs
+}
+
+fn message_field_refs(module_id: &str, msg: &DescriptorProto) -> Vec<Reference> {
+    let mut refs = Vec::new();
+    let mut seen = std::collections::BTreeSet::new();
+    for field in &msg.field {
+        let Some(type_name) = field.type_name.as_deref() else {
+            continue;
+        };
+        if let Some(reference) = fqn_type_ref(module_id, Some(type_name)) {
+            let key = (
+                reference.target.group.clone(),
+                reference.target.name.clone(),
+            );
+            if seen.insert(key) {
+                refs.push(reference);
+            }
+        }
+    }
+    refs
+}
+
+fn service_method_refs(module_id: &str, svc: &ServiceDescriptorProto) -> Vec<Reference> {
+    let mut refs = Vec::new();
+    let mut seen = std::collections::BTreeSet::new();
+    for method in &svc.method {
+        for reference in operation_refs(module_id, method) {
+            let key = (
+                reference.target.group.clone(),
+                reference.target.name.clone(),
+            );
+            if seen.insert(key) {
+                refs.push(reference);
+            }
+        }
+    }
+    refs
+}
+
+fn fqn_type_ref(module_id: &str, fqn: Option<&str>) -> Option<Reference> {
+    let fqn = fqn?;
+    let (pkg, msg) = split_proto_type_name(fqn)?;
+    if pkg.starts_with("google.protobuf") {
+        return None;
+    }
+    Some(Reference {
+        target: switchback_traits::EntityRef {
+            module: module_id.to_string(),
+            group: pkg.to_string(),
+            category: ProtobufCategory::Schema.as_str().to_string(),
+            name: msg.to_string(),
+        },
+        kind: RefKind::Internal,
+    })
 }
 
 fn default_module_id(by_package: &BTreeMap<String, Vec<(&str, &FileDescriptorProto)>>) -> String {

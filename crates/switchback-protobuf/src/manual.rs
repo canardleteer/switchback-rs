@@ -5,12 +5,13 @@ use std::path::Path;
 use sha2::{Digest, Sha256};
 use switchback_codec_pb::WIRE_VERSION;
 use switchback_traits::{
-    companion_files_to_stored, ContractFamily, Document, EntityCategory, ManualContract, Module,
-    ModuleId, ReferenceManual, SourceRef, StoredEntity,
+    companion_files_to_stored, ContractFamily, Document, EntityCategory, LinkExtractor,
+    ManualContract, Module, ModuleId, ReferenceManual, ResolvedManual, SourceRef, StoredEntity,
 };
 
 use crate::family::ProtobufFamily;
 use crate::input::ResolvedInput;
+use crate::link::ProtobufLinkExtractor;
 use crate::populate::PopulatedContract;
 
 pub fn build_reference_manual(
@@ -19,47 +20,75 @@ pub fn build_reference_manual(
     title: Option<String>,
 ) -> switchback_traits::Result<ReferenceManual> {
     let family = ProtobufFamily;
-    let module_id = ModuleId::from(
-        populated
-            .groups
-            .first()
-            .map(|g| g.id.as_str())
-            .unwrap_or("default"),
-    );
+    let module_id = ModuleId::from(populated.module_id.as_str());
     let manual_title = title.unwrap_or_else(|| family.default_title().to_string());
 
     let sources = build_sources(resolved)?;
     let mut groups = populated.groups;
+    let extractor = ProtobufLinkExtractor;
+
     for group in &mut groups {
         let stored: Vec<StoredEntity> = populated
             .entities_by_group
             .get(&group.id)
-            .map(|entities| entities.iter().map(stored_entity_from_populated).collect())
+            .map(|entities| {
+                entities
+                    .iter()
+                    .map(|pe| stored_entity_from_populated(pe, &module_id, &extractor, None))
+                    .collect()
+            })
             .unwrap_or_default();
         group.entities = stored;
     }
 
-    let companions = companion_files_to_stored(&populated.companions, "text/markdown");
-
-    Ok(ReferenceManual {
+    let mut manual = ReferenceManual {
         switchback_version: WIRE_VERSION.to_string(),
         title: manual_title.clone(),
         sources,
         modules: vec![Module {
-            id: module_id,
+            id: module_id.clone(),
             title: manual_title,
             overview: String::new(),
             contracts: vec![ManualContract {
                 family: family.name().to_string(),
                 version: populated.version,
                 groups,
-                companions,
+                companions: companion_files_to_stored(&populated.companions, "text/markdown"),
             }],
         }],
-    })
+    };
+
+    let resolved_manual = ResolvedManual::from_reference_manual(&manual);
+    for contract in &mut manual.modules[0].contracts {
+        for group in &mut contract.groups {
+            if let Some(entities) = populated.entities_by_group.get(&group.id) {
+                group.entities = entities
+                    .iter()
+                    .map(|pe| {
+                        stored_entity_from_populated(
+                            pe,
+                            &module_id,
+                            &extractor,
+                            Some(&resolved_manual),
+                        )
+                    })
+                    .collect();
+            }
+        }
+    }
+
+    Ok(manual)
 }
 
-fn stored_entity_from_populated(pe: &crate::populate::PopulatedEntity) -> StoredEntity {
+fn stored_entity_from_populated(
+    pe: &crate::populate::PopulatedEntity,
+    _module_id: &ModuleId,
+    extractor: &ProtobufLinkExtractor,
+    resolved: Option<&ResolvedManual>,
+) -> StoredEntity {
+    let intra_links = resolved
+        .map(|manual| extractor.extract(&pe.entity, manual))
+        .unwrap_or_default();
     StoredEntity {
         name: pe.entity.id.name.clone(),
         category: pe.entity.category.as_str().to_string(),
@@ -67,7 +96,7 @@ fn stored_entity_from_populated(pe: &crate::populate::PopulatedEntity) -> Stored
         doc: pe.entity.doc.clone(),
         source: None,
         refs: pe.refs.clone(),
-        intra_links: Vec::new(),
+        intra_links,
         body: pe.entity.body.clone(),
     }
 }

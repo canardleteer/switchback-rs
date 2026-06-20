@@ -38,3 +38,17 @@ pub fn resolve_path(asset: &MetaSchemaAsset) -> PathBuf {
 pub fn read(asset: &MetaSchemaAsset) -> io::Result<String> {
     fs::read_to_string(resolve_path(asset))
 }
+
+const META_SCHEMA_OPENRPC_1_4: &[u8] = include_bytes!("../meta-schemas/spec/1.4/schema.json");
+const META_SCHEMA_OPENRPC_1_3: &[u8] = include_bytes!("../meta-schemas/spec/1.3/schema.json");
+
+/// Returns vendored document meta-schema bytes for a supported OpenRPC version label.
+pub fn meta_schema_bytes(version: &str) -> Option<&'static [u8]> {
+    if version == "1.4" || version.starts_with("1.4.") {
+        Some(META_SCHEMA_OPENRPC_1_4)
+    } else if version == "1.3" || version.starts_with("1.3.") {
+        Some(META_SCHEMA_OPENRPC_1_3)
+    } else {
+        None
+    }
+}

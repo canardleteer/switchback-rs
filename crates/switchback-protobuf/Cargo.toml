@@ -25,6 +25,7 @@ switchback-codec-pb.workspace = true
 buffa.workspace = true
 buffa-descriptor = { version = "0.6.0", default-features = false, features = ["std"] }
 anyhow = "1.0"
+regex = "1.11"
 sha2 = "0.10"
 walkdir = "2.5"
 tempfile = "3.19"

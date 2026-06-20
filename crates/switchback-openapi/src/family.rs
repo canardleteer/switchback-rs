@@ -1,0 +1,100 @@
+//! `ContractFamily` stub for OpenAPI (parser behavior deferred).
+
+use switchback_traits::{
+    CompanionDiscovery, CompanionStrategy, ContractFamily, RawDoc, SpecVersion, SupportedVersion,
+    VersionStatus,
+};
+
+use crate::category::OpenApiCategory;
+use crate::link::OpenApiLinkExtractor;
+use crate::meta_schemas;
+
+#[derive(Clone, Copy, Debug, Default)]
+pub struct OpenApiCompanion;
+
+impl CompanionStrategy for OpenApiCompanion {
+    fn discovery(&self) -> CompanionDiscovery {
+        CompanionDiscovery::Beside
+    }
+
+    fn output_name(&self, _source_dir: &[&str], stem: &str) -> String {
+        format!("{stem}.md")
+    }
+
+    fn companion_media_types(&self) -> &'static [&'static str] {
+        &["text/markdown"]
+    }
+}
+
+#[derive(Clone, Copy, Debug, Default)]
+pub struct OpenApiFamily;
+
+impl ContractFamily for OpenApiFamily {
+    type Category = OpenApiCategory;
+    type LinkExtractor = OpenApiLinkExtractor;
+    type CompanionStrategy = OpenApiCompanion;
+
+    fn name(&self) -> &'static str {
+        "openapi"
+    }
+
+    fn fence_language(&self) -> &'static str {
+        "yaml"
+    }
+
+    fn default_title(&self) -> &'static str {
+        "OpenAPI documentation"
+    }
+
+    fn default_markdown_root(&self) -> &'static str {
+        "src/contracts"
+    }
+
+    fn extensions(&self) -> &'static [&'static str] {
+        &[".yaml", ".yml", ".json"]
+    }
+
+    fn companion_strategy(&self) -> &Self::CompanionStrategy {
+        &OpenApiCompanion
+    }
+
+    fn category_names(&self) -> &'static [&'static str] {
+        &[
+            "schema",
+            "operation",
+            "parameter",
+            "response",
+            "request-body",
+            "security-scheme",
+        ]
+    }
+
+    fn detect_version(&self, _raw: &RawDoc) -> Option<SpecVersion> {
+        None
+    }
+
+    fn supported_versions(&self) -> &'static [SupportedVersion] {
+        &[
+            SupportedVersion {
+                version: "3.1.0",
+                status: VersionStatus::Latest,
+            },
+            SupportedVersion {
+                version: "3.0.3",
+                status: VersionStatus::WidelyDeployed,
+            },
+            SupportedVersion {
+                version: "2.0",
+                status: VersionStatus::Legacy,
+            },
+        ]
+    }
+
+    fn meta_schema(&self, version: &SpecVersion) -> Option<&'static [u8]> {
+        meta_schemas::meta_schema_bytes(version.as_str())
+    }
+
+    fn link_extractor(&self) -> &Self::LinkExtractor {
+        &OpenApiLinkExtractor
+    }
+}

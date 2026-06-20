@@ -15,6 +15,9 @@ pub trait LinkExtractor: Send + Sync {
     /// Contract family this extractor belongs to.
     type Family: ContractFamily;
 
+    /// Short extractor name (e.g. `"protobuf-fqn"`).
+    fn name(&self) -> &'static str;
+
     /// Extracts prose-level links from `entity` against the `manual` address space.
     fn extract<C: EntityCategory>(
         &self,

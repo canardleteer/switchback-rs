@@ -13,4 +13,28 @@
 //! It reuses the loader, `$ref` resolver, envelope, and schema renderer from
 //! `switchback-jsonschema`.
 
+pub mod category;
+pub mod family;
+pub mod link;
 pub mod meta_schemas;
+
+pub use category::OpenApiCategory;
+pub use family::OpenApiFamily;
+pub use link::OpenApiLinkExtractor;
+
+#[cfg(test)]
+mod tests {
+    use switchback_traits::{ContractFamily, SpecVersion};
+
+    use crate::OpenApiFamily;
+
+    #[test]
+    fn meta_schema_returns_bytes_for_latest_version() {
+        let family = OpenApiFamily;
+        let bytes = family
+            .meta_schema(&SpecVersion::from("3.1.0"))
+            .expect("3.1 meta-schema");
+        assert!(!bytes.is_empty());
+        assert!(bytes.starts_with(b"{"));
+    }
+}

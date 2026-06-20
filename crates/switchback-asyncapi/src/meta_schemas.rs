@@ -39,3 +39,19 @@ pub fn resolve_path(asset: &MetaSchemaAsset) -> PathBuf {
 pub fn read(asset: &MetaSchemaAsset) -> io::Result<String> {
     fs::read_to_string(resolve_path(asset))
 }
+
+const META_SCHEMA_ASYNCAPI_3_0: &[u8] =
+    include_bytes!("../meta-schemas/schemas/3.0.0-without-$id.json");
+const META_SCHEMA_ASYNCAPI_2_X: &[u8] =
+    include_bytes!("../meta-schemas/schemas/2.6.0-without-$id.json");
+
+/// Returns vendored document meta-schema bytes for a supported AsyncAPI version label.
+pub fn meta_schema_bytes(version: &str) -> Option<&'static [u8]> {
+    if version.starts_with('3') {
+        Some(META_SCHEMA_ASYNCAPI_3_0)
+    } else if version.starts_with('2') {
+        Some(META_SCHEMA_ASYNCAPI_2_X)
+    } else {
+        None
+    }
+}

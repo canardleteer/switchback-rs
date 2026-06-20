@@ -3,7 +3,8 @@
 use std::collections::BTreeMap;
 
 use switchback_traits::{
-    CompanionFile, Contract, Entity, Group, GroupId, LinkContext, Options, Reference,
+    CompanionFile, Contract, Entity, EntityCategory, Group, GroupId, LinkContext, Options,
+    Reference, StoredEntity,
 };
 
 use crate::category::ProtobufCategory;
@@ -58,7 +59,27 @@ impl Contract for ProtobufContract {
     }
 
     fn link_context(&self, opts: &Options) -> LinkContext {
-        LinkContext::empty(opts.layout, &opts.book_root, &opts.markdown_root)
+        let mut ctx = LinkContext::empty(opts.layout, &opts.book_root, &opts.markdown_root);
+        let module_id = self
+            .groups
+            .first()
+            .map(|g| g.id.as_str())
+            .unwrap_or("default");
+        for group in &self.groups {
+            if group.id.as_str().is_empty() {
+                continue;
+            }
+            for pe in self.populated_entities(group) {
+                ctx.register_stored_entity(
+                    module_id,
+                    group.id.as_str(),
+                    &stored_entity_from_populated(pe),
+                    opts.layout,
+                    &opts.markdown_root,
+                );
+            }
+        }
+        ctx
     }
 
     fn companions(&self) -> &[CompanionFile] {
@@ -75,5 +96,18 @@ impl ProtobufContract {
             .iter()
             .map(|pe| (&pe.entity, pe.refs.as_slice()))
             .collect()
+    }
+}
+
+fn stored_entity_from_populated(pe: &PopulatedEntity) -> StoredEntity {
+    StoredEntity {
+        name: pe.entity.id.name.clone(),
+        category: pe.entity.category.as_str().to_string(),
+        title: pe.entity.title.clone(),
+        doc: pe.entity.doc.clone(),
+        source: None,
+        refs: pe.refs.clone(),
+        intra_links: Vec::new(),
+        body: pe.entity.body.clone(),
     }
 }

@@ -10,6 +10,10 @@ pub struct JsonSchemaLinkExtractor;
 impl LinkExtractor for JsonSchemaLinkExtractor {
     type Family = JsonSchemaFamily;
 
+    fn name(&self) -> &'static str {
+        "jsonschema-stub"
+    }
+
     fn extract<C: EntityCategory>(
         &self,
         _entity: &Entity<C>,

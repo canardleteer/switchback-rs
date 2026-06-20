@@ -14,6 +14,28 @@ path = "src/lib.rs"
 name = "switchback-mdbook"
 path = "src/bin/switchback-mdbook.rs"
 
+[[bin]]
+name = "mdbook-protobuf-highlight"
+path = "src/bin/mdbook-protobuf-highlight.rs"
+
 [dependencies]
 switchback-traits.workspace = true
 switchback-codec-pb.workspace = true
+anyhow.workspace = true
+mdbook-core.workspace = true
+mdbook-driver.workspace = true
+mdbook-summary.workspace = true
+mdbook-preprocessor.workspace = true
+pulldown-cmark.workspace = true
+regex.workspace = true
+toml_edit.workspace = true
+walkdir.workspace = true
+tempfile.workspace = true
+async-trait = "0.1"
+clap.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+switchback-codec-pb.workspace = true
+switchback-protobuf = { workspace = true, features = ["buf", "protoc"] }
+tempfile.workspace = true

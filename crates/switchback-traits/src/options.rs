@@ -61,6 +61,14 @@ pub struct Options {
     pub search_paths: Vec<PathBuf>,
     /// How to escape HTML-like tags in prose comments.
     pub escape_tags: EscapeTags,
+    /// Selected link formatter name (default `mdbook-relative`).
+    pub link_format: Option<String>,
+    /// When true, skip copying companion proto markdown files.
+    pub no_proto_markdown: bool,
+    /// When true, skip protobuf syntax highlighting in init scaffold.
+    pub no_proto_highlight: bool,
+    /// When true, skip CEL syntax highlighting in init scaffold.
+    pub no_cel_highlight: bool,
 }
 
 impl Default for Options {
@@ -78,11 +86,39 @@ impl Default for Options {
             layout: Layout::default(),
             search_paths: Vec::new(),
             escape_tags: EscapeTags::default(),
+            link_format: None,
+            no_proto_markdown: false,
+            no_proto_highlight: false,
+            no_cel_highlight: false,
         }
     }
 }
 
 impl Options {
+    /// Default link formatter name.
+    pub fn link_format_name(&self) -> &str {
+        self.link_format.as_deref().unwrap_or("mdbook-relative")
+    }
+
+    /// Join `book_root` with a relative output path.
+    pub fn output_path(&self, rel: &str) -> String {
+        let rel = rel.trim_start_matches('/');
+        if self.book_root == "." || self.book_root.is_empty() {
+            rel.to_string()
+        } else {
+            format!("{}/{rel}", self.book_root.trim_end_matches('/'))
+        }
+    }
+
+    /// Returns true when protobuf highlight preprocessor should be configured.
+    pub fn proto_highlight(&self) -> bool {
+        self.init && !self.no_proto_highlight
+    }
+
+    /// Returns true when CEL highlight preprocessor should be configured.
+    pub fn cel_highlight(&self) -> bool {
+        self.init && !self.no_cel_highlight
+    }
     /// Returns true when a SUMMARY file should be rendered (`summary` or `init`).
     pub fn render_summary(&self) -> bool {
         self.summary || self.init

@@ -5,6 +5,7 @@ use std::collections::HashMap;
 use crate::ids::{EntityId, GroupId, ModuleId};
 use crate::model::entity::StoredEntity;
 use crate::model::link::EntityRef;
+use crate::model::manual::ReferenceManual;
 
 /// Flat index entry for one entity in a resolved manual.
 ///
@@ -34,6 +35,30 @@ pub struct ResolvedManual {
 }
 
 impl ResolvedManual {
+    /// Builds a resolved manual from a wire-safe [`ReferenceManual`].
+    ///
+    /// Walks all modules, contracts, groups, and stored entities. When duplicate
+    /// `(module, group, category, name)` keys appear, the last entity wins in
+    /// [`Self::by_ref`].
+    pub fn from_reference_manual(manual: &ReferenceManual) -> Self {
+        let mut indexed = Vec::new();
+        for module in &manual.modules {
+            for contract in &module.contracts {
+                for group in &contract.groups {
+                    for entity in &group.entities {
+                        indexed.push(IndexedEntity {
+                            module_id: module.id.clone(),
+                            contract_family: contract.family.clone(),
+                            group_id: group.id.clone(),
+                            entity: entity.clone(),
+                        });
+                    }
+                }
+            }
+        }
+        Self::new(indexed)
+    }
+
     /// Builds a resolved manual and populates `by_ref` from the entity list.
     pub fn new(entities: Vec<IndexedEntity>) -> Self {
         let mut by_ref = HashMap::new();

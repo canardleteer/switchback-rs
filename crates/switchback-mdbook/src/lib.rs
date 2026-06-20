@@ -2,9 +2,24 @@
 
 //! The mdBook renderer of the switchback-rs toolchain.
 //!
-//! `switchback-mdbook` turns a switchback binary file into an mdBook. It
-//! implements the `Renderer` trait from `switchback-traits` as `MdBookRenderer`
-//! and owns the mdBook-specific scaffolding lifted from `protobuf-mdbook`:
-//! `book.toml` inference, `init` scaffolding, SUMMARY generation, and the
-//! mdBook render driver. mdBook is one renderer impl, not the center of the
-//! pipeline.
+//! `switchback-mdbook` turns a [`ReferenceManual`] into an mdBook project tree.
+//! It implements [`Renderer`] and [`SyncRenderer`] as [`MdBookRenderer`].
+
+mod book_config;
+mod companion;
+mod formatter;
+pub mod highlight;
+mod init;
+mod options;
+mod paths;
+mod render;
+mod renderer;
+mod summary;
+
+pub use formatter::MdBookRelativeFormatter;
+pub use options::parse_parameter;
+pub use renderer::{write_output_files, MdBookRenderer};
+
+pub fn mdbook_version() -> &'static str {
+    mdbook_preprocessor::MDBOOK_VERSION
+}

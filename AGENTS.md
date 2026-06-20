@@ -23,6 +23,16 @@ creating, and updating ADRs from agents.
   it from the repository root (`adrs mcp serve --ng`) or pass `-C` with the
   path to this checkout.
 
+## Documentation linking
+
+When you change structural references (`Reference`, `StoredEntity.refs`),
+intra-links (`IntraLink`, `LinkExtractor`, populate/extract wiring), or
+render-time link formatting (`LinkFormatter`, `LinkContext`, mdBook link
+application), update
+[`docs/documentation-linking.md`](docs/documentation-linking.md) so family
+examples and naming stay accurate. Prefer adjusting that doc over burying
+linking conventions in code comments.
+
 ## Markdown
 
 Use [`rumdl`](https://github.com/rvben/rumdl) to lint Markdown. Configuration

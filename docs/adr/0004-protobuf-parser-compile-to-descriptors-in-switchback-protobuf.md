@@ -6,6 +6,9 @@ Date: 2026-06-19
 
 Proposed
 
+Relates to
+[7. Parser library conventions for switchback family crates](0007-parser-library-conventions-for-switchback-family-crates.md)
+
 ## Context
 
 spread-it-out Phase 5 decomposes protobuf-mdbook into parser, codec, and

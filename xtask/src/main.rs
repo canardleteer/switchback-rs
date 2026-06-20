@@ -7,6 +7,7 @@
 //! `update-golden`, and `check-toolchain`.
 
 mod ci;
+mod render;
 mod spec_vendor;
 mod workspace;
 
@@ -109,9 +110,15 @@ fn main() -> Result<()> {
         Cmd::Ryl => ci::ryl_check(),
         Cmd::CheckToolchain { strict } => ci::check_toolchain(strict),
         Cmd::Parse { parser } => bail!("parse --parser {parser}: not implemented yet"),
-        Cmd::Render { renderer } => bail!("render --renderer {renderer}: not implemented yet"),
+        Cmd::Render { renderer } => {
+            if renderer == "mdbook" {
+                render::render_mdbook()
+            } else {
+                bail!("render --renderer {renderer}: unknown renderer (supported: mdbook)")
+            }
+        }
         Cmd::LinkCheck => bail!("link-check: not implemented yet"),
-        Cmd::UpdateGolden => bail!("update-golden: not implemented yet"),
+        Cmd::UpdateGolden => render::update_golden(),
         Cmd::SpecVendor { cmd } => match cmd {
             SpecVendorCmd::Validate { family } => {
                 spec_vendor::validate(spec_vendor::Family::from_str(&family)?)

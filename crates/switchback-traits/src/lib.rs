@@ -23,17 +23,26 @@
 //! types must traverse async task boundaries (`Send` / `Sync` as appropriate).
 //!
 //! Helper implementations (slug, link check, paths, prose escaping) are deferred
-//! to follow-up work; this crate ships trait definitions and model types only.
+//! to follow-up work; this crate ships trait definitions, model types, and
+//! [`entity_rel_path`] / [`ResolvedManual::from_reference_manual`].
 
 mod error;
 mod ids;
+mod intra_links;
+mod layout_paths;
 mod link_context;
 mod model;
 mod options;
+mod paths;
 mod traits;
 
 pub use error::{Result, SwitchbackError};
 pub use ids::{EntityId, GroupId, ModuleId, SpecVersion};
+pub use intra_links::{anchor, apply_intra_links, links_for_field};
+pub use layout_paths::{
+    heading_slug, layout_entity_rel_path, package_index_rel, package_page_rel,
+    relative_path_from_dir, LayoutEntityKey, ProtobufEntityKind,
+};
 pub use link_context::LinkContext;
 pub use model::{
     Anchor, ChannelBody, Companion, ContractRef, Document, EntityBody, EntityRef, ExtensionBody,
@@ -44,6 +53,7 @@ pub use model::{
     StoredEntity,
 };
 pub use options::{EscapeTags, Layout, Options};
+pub use paths::entity_rel_path;
 pub use traits::{
     companion_files_to_stored, AsyncCompanionStrategy, AsyncContractLoader, AsyncLinkExtractor,
     CompanionDiscovery, CompanionStrategy, Contract, ContractFamily, Entity, EntityCategory,

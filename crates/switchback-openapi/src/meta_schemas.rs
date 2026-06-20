@@ -38,3 +38,20 @@ pub fn resolve_path(asset: &MetaSchemaAsset) -> PathBuf {
 pub fn read(asset: &MetaSchemaAsset) -> io::Result<String> {
     fs::read_to_string(resolve_path(asset))
 }
+
+const META_SCHEMA_OAS_3_1: &[u8] = include_bytes!("../meta-schemas/oas/3.1/schema/2025-09-15");
+const META_SCHEMA_OAS_3_0: &[u8] = include_bytes!("../meta-schemas/oas/3.0/schema/2024-10-18");
+const META_SCHEMA_OAS_2_0: &[u8] = include_bytes!("../meta-schemas/oas/2.0/schema/2017-08-27");
+
+/// Returns vendored document meta-schema bytes for a supported OpenAPI version label.
+pub fn meta_schema_bytes(version: &str) -> Option<&'static [u8]> {
+    if version.starts_with("3.1") {
+        Some(META_SCHEMA_OAS_3_1)
+    } else if version.starts_with("3.0") {
+        Some(META_SCHEMA_OAS_3_0)
+    } else if version == "2.0" || version.starts_with("2.") {
+        Some(META_SCHEMA_OAS_2_0)
+    } else {
+        None
+    }
+}

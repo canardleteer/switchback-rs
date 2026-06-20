@@ -15,4 +15,28 @@
 //! generated from operations and replies (an AsyncAPI-specific feature with no
 //! OpenAPI analog).
 
+pub mod category;
+pub mod family;
+pub mod link;
 pub mod meta_schemas;
+
+pub use category::AsyncApiCategory;
+pub use family::AsyncApiFamily;
+pub use link::AsyncApiLinkExtractor;
+
+#[cfg(test)]
+mod tests {
+    use switchback_traits::{ContractFamily, SpecVersion};
+
+    use crate::AsyncApiFamily;
+
+    #[test]
+    fn meta_schema_returns_bytes_for_latest_version() {
+        let family = AsyncApiFamily;
+        let bytes = family
+            .meta_schema(&SpecVersion::from("3.0.0"))
+            .expect("3.0 meta-schema");
+        assert!(!bytes.is_empty());
+        assert!(bytes.starts_with(b"{"));
+    }
+}

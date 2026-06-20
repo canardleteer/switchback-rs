@@ -6,6 +6,12 @@ Date: 2026-06-20
 
 Proposed
 
+Relates to
+[7. Parser library conventions for switchback family crates](0007-parser-library-conventions-for-switchback-family-crates.md)
+
+Relates to
+[8. Per-family grouping rules and jsonschema shared-layer boundary](0008-per-family-grouping-rules-and-jsonschema-shared-layer-boundary.md)
+
 ## Context
 
 Phase 1 of spread-it-out requires a shared JSON-Schema-document parser layer

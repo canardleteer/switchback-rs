@@ -6,6 +6,9 @@ Date: 2026-06-19
 
 Proposed
 
+Relates to
+[8. Per-family grouping rules and jsonschema shared-layer boundary](0008-per-family-grouping-rules-and-jsonschema-shared-layer-boundary.md)
+
 ## Context
 
 Before implementing `switchback-jsonschema`, we need real JSON Schema corpora to

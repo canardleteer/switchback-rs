@@ -2,6 +2,7 @@
 line-length = 80
 exclude = [
     "crates/switchback-protobuf/tests/fixtures/**",
+    "crates/switchback-mdbook/tests/fixtures/golden/**",
 ]
 
 [MD013]
