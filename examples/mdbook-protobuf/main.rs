@@ -1,8 +1,13 @@
-//! Buf-driven end-to-end example: load protobuf fixtures → render mdBook markdown.
+//! Buf-driven end-to-end example: load protobuf fixtures → render an mdBook project.
+//!
+//! Default output matches `protobuf-mdbook --init` (scaffold + package SUMMARY +
+//! API markdown). Use `--markdown-only` for refresh-style output without
+//! `book.toml` / theme / README.
 //!
 //! ```text
 //! cargo run -p mdbook-protobuf-example -- -o /tmp/api-book
-//! cargo run -p mdbook-protobuf-example -- --layout entity --summary -o /tmp/api-book
+//! cargo run -p mdbook-protobuf-example -- --layout entity -o /tmp/api-book
+//! cargo run -p mdbook-protobuf-example -- --markdown-only -o /tmp/api-book-out
 //! cargo run -p mdbook-protobuf-example -- --via-binpb /tmp/switchback.binpb -o /tmp/api-book
 //! ```
 
@@ -21,18 +26,27 @@ use switchback_traits::{Layout, Options, ReferenceManual, SyncRenderer, SyncSwit
 #[derive(Parser)]
 #[command(name = "mdbook-protobuf")]
 struct Cli {
-    /// Output directory for the mdBook tree (markdown under `src/packages/`).
+    /// Output directory for the mdBook project (default `./api-book`).
     #[arg(short, long, default_value = "api-book")]
     output: PathBuf,
     /// Page layout: package, entity, or split.
     #[arg(long, value_parser = parse_layout, default_value = "package")]
     layout: Layout,
-    /// Regenerate `src/SUMMARY.md`.
-    #[arg(long)]
+    /// Emit API markdown only (no mdBook scaffold; protobuf-mdbook without `--init`).
+    #[arg(long, visible_alias = "no-init")]
+    markdown_only: bool,
+    /// Regenerate `src/SUMMARY.md` (only with `--markdown-only`; init includes SUMMARY).
+    #[arg(long, requires = "markdown_only")]
     summary: bool,
-    /// Scaffold a full mdBook project (`book.toml`, theme, README).
+    /// `book.toml` title when init (default **Protobuf documentation**).
     #[arg(long)]
-    init: bool,
+    title: Option<String>,
+    /// Skip protobuf highlighting in init `book.toml`.
+    #[arg(long)]
+    no_proto_highlight: bool,
+    /// Skip CEL highlighting in init `book.toml`.
+    #[arg(long)]
+    no_cel_highlight: bool,
     /// Link formatter name (default mdbook-relative).
     #[arg(long)]
     link_format: Option<String>,
@@ -83,12 +97,17 @@ fn main() -> Result<()> {
     let cli = Cli::parse();
     let manual = load_manual(&cli)?;
 
+    let init = !cli.markdown_only;
     let opts = Options {
         layout: cli.layout,
         summary: cli.summary,
-        init: cli.init,
+        init,
+        title: cli.title,
+        no_proto_highlight: cli.no_proto_highlight,
+        no_cel_highlight: cli.no_cel_highlight,
         link_format: cli.link_format,
         no_proto_markdown: cli.no_proto_markdown,
+        ignore_git: true,
         ..Default::default()
     };
 
