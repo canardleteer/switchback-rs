@@ -1,4 +1,4 @@
-//! Shared helpers for repo-root `examples/jsonschema/`.
+//! Shared helpers for `tests/fixtures/catalog/` used by integration tests.
 
 use std::path::PathBuf;
 
@@ -10,7 +10,7 @@ pub const EXAMPLE_CATALOG_INPUTS: &[&str] = &[
     "schemas/cyclic.yaml",
 ];
 
-/// Path to the JSON Schema catalog under `examples/jsonschema/`.
-pub fn examples_catalog_dir() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../examples/jsonschema")
+/// Path to the JSON Schema catalog under `tests/fixtures/catalog/`.
+pub fn fixtures_catalog_dir() -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/catalog")
 }

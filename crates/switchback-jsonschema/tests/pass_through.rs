@@ -1,7 +1,7 @@
 mod common;
 
 use common::{
-    assert_sources_match_inputs, codec_roundtrip, count_entities, count_refs, examples_catalog_dir,
+    assert_sources_match_inputs, codec_roundtrip, count_entities, count_refs, fixtures_catalog_dir,
     load_catalog, load_meta_schema_fixture, normalize, restore_sources_map, META_SCHEMA_FIXTURES,
 };
 use switchback_jsonschema::examples::EXAMPLE_CATALOG_INPUTS;
@@ -11,7 +11,7 @@ use tempfile::tempdir;
 
 #[test]
 fn loader_internal_and_external_refs() {
-    let module_root = examples_catalog_dir();
+    let module_root = fixtures_catalog_dir();
     let inputs = vec![module_root.join("schemas/foo.yaml")];
     let resolved = resolve_inputs(&module_root, &inputs, std::slice::from_ref(&module_root))
         .expect("resolve foo.yaml");
@@ -24,7 +24,7 @@ fn loader_internal_and_external_refs() {
 
 #[test]
 fn loader_cycle_terminates() {
-    let module_root = examples_catalog_dir();
+    let module_root = fixtures_catalog_dir();
     let inputs = vec![module_root.join("schemas/cyclic.yaml")];
     let resolved = resolve_inputs(&module_root, &inputs, std::slice::from_ref(&module_root))
         .expect("resolve cyclic.yaml");
@@ -33,7 +33,7 @@ fn loader_cycle_terminates() {
 
 #[test]
 fn examples_catalog_load_codec_roundtrip_and_source_restore() {
-    let fixture_dir = examples_catalog_dir();
+    let fixture_dir = fixtures_catalog_dir();
     let manual = normalize(load_catalog());
     assert_sources_match_inputs(&manual, &fixture_dir, EXAMPLE_CATALOG_INPUTS);
 
@@ -96,7 +96,7 @@ fn companion_markdown_discovered() {
 
 #[test]
 fn directory_input_expands_to_all_schemas() {
-    let module_root = examples_catalog_dir();
+    let module_root = fixtures_catalog_dir();
     let args = LoadArgs {
         module_root: module_root.clone(),
         inputs: vec![module_root.join("schemas")],

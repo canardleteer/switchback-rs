@@ -45,8 +45,9 @@ Implement `switchback-jsonschema` as a library-first parser crate with:
 - **Optional features** — `validate` (`jsonschema` crate) for meta-schema
   validation hook; not wired to CLI in this pass. Default features empty; CI
   runs without network.
-- **Fixtures** — repo-root `examples/jsonschema/` catalog; curated vendored
-  meta-schema paths from sibling crates (ADR 0005) in integration tests.
+- **Fixtures** — in-crate `tests/fixtures/catalog/` catalog (protobuf-style
+  layout); curated vendored meta-schema paths from sibling crates (ADR 0005) in
+  integration tests.
 
 ## Consequences
 

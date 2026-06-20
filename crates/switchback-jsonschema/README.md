@@ -19,11 +19,11 @@ deferred.
 ```rust
 use std::path::PathBuf;
 use switchback_jsonschema::{
-    examples::{examples_catalog_dir, EXAMPLE_CATALOG_INPUTS},
+    examples::{fixtures_catalog_dir, EXAMPLE_CATALOG_INPUTS},
     load, LoadArgs,
 };
 
-let module_root = examples_catalog_dir();
+let module_root = fixtures_catalog_dir();
 let args = LoadArgs {
     module_root: module_root.clone(),
     inputs: EXAMPLE_CATALOG_INPUTS
@@ -71,12 +71,13 @@ See
 
 ## Fixtures
 
-- Repo-root catalog:
-  [`examples/jsonschema/`](https://github.com/canardleteer/switchback-rs/tree/main/examples/jsonschema/)
-  (external/internal `$ref`, cyclic chain, companion markdown).
-- Curated vendored meta-schema paths from
-  [`switchback-openapi`](../switchback-openapi/),
-  [`switchback-openrpc`](../switchback-openrpc/) (see ADR 0005).
+Integration tests use a catalog under
+[`tests/fixtures/catalog/`](tests/fixtures/catalog/) (external/internal `$ref`,
+cyclic chain, companion markdown), mirroring
+[`switchback-protobuf`](../switchback-protobuf/)'s in-crate fixture layout.
+Curated vendored meta-schema paths from
+[`switchback-openapi`](../switchback-openapi/),
+[`switchback-openrpc`](../switchback-openrpc/) (see ADR 0005).
 
 Tests assert loader resolution, `ProtobufCodec` round-trip, directory-faithful
 source restoration, and structural smoke on `$ref` indexes.

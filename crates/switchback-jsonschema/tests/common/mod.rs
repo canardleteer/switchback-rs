@@ -23,12 +23,10 @@ pub fn manifest_dir() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
 }
 
-pub fn examples_catalog_dir() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../examples/jsonschema")
-}
+pub use switchback_jsonschema::examples::fixtures_catalog_dir;
 
 pub fn load_catalog() -> ReferenceManual {
-    let module_root = examples_catalog_dir();
+    let module_root = fixtures_catalog_dir();
     let args = LoadArgs {
         module_root: module_root.clone(),
         inputs: EXAMPLE_CATALOG_INPUTS
