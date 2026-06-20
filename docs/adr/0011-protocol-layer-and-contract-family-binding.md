@@ -18,6 +18,7 @@ motivates `repeated ProtocolAttachment` on the wire.
 
 The entity attachment matrix below lists which `HttpPayload` / `GrpcPayload`
 arm typically appears on each IR node.
+
 ## Decision
 
 Introduce a protocol dimension orthogonal to contract family:

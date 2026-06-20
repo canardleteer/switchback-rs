@@ -67,7 +67,8 @@ RPC `OperationBody` with `location: "metadata"`, `protocols` carrying
 not a response outcome).
 
 **Not implemented:** inferring metadata keys from `UninterpretedOption` on
-method options. See `planning/PROGRESS.md` deferred alternatives.
+method options. See `planning/PROGRESS.md` (local; gitignored) deferred
+alternatives.
 
 ## Consequences
 

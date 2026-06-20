@@ -70,6 +70,5 @@ and handle `DecodedAttachment::Opaque` for unknown ids until you add a decoder.
 - [ADR 0012](https://github.com/canardleteer/switchback-rs/blob/main/docs/adr/0012-http-streaming-inference-and-grpc-metadata-from-protobuf-options.md)
   — streaming inference and protobuf metadata extension
 - [Glossary — protocol](https://github.com/canardleteer/switchback-rs/blob/main/docs/GLOSSARY.md#protocol)
-- [PROGRESS.md](https://github.com/canardleteer/switchback-rs/blob/main/planning/PROGRESS.md)
-  — protocol layer status (**Implemented**); AsyncAPI multi-binding remains
-  follow-on
+- `planning/PROGRESS.md` (local; gitignored) — protocol layer status
+  (**Implemented**); AsyncAPI multi-binding remains follow-on
