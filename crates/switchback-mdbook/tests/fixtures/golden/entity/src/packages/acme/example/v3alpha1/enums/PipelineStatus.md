@@ -2,8 +2,10 @@
 
 PipelineStatus tracks synthetic workflow execution.
 
+*`acme/example/v3alpha1/pipeline.proto`*
+
 ```protobuf
-enum [PipelineStatus](PipelineStatus.md) {
+enum PipelineStatus {
   PIPELINE_STATUS_UNSPECIFIED = 0;
   PIPELINE_STATUS_QUEUED = 1;
   PIPELINE_STATUS_RUNNING = 2;

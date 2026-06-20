@@ -5,7 +5,9 @@ use switchback_traits::{
     StoredEntity,
 };
 
-use crate::render::fence::{operation_signature_markdown, render_proto_fence};
+use crate::render::fence::{
+    operation_signature_markdown, proto_file_name, push_proto_fence_body, render_proto_fence,
+};
 use crate::render::markdown_doc::format_markdown_doc;
 use crate::render::{md_heading, push_paragraph_break};
 
@@ -76,7 +78,7 @@ fn render_entity_page(
         EntityBody::Schema(body) => {
             let mut page = md_heading(1, &entity.title);
             page.push_str(&render_proto_fence(
-                "",
+                &proto_file_name(entity),
                 entity.doc.as_deref(),
                 &body.fence_body,
                 opts.escape_tags,
@@ -88,6 +90,10 @@ fn render_entity_page(
         }
         EntityBody::Service(_) => {
             let mut page = md_heading(1, &entity.title);
+            let file_name = proto_file_name(entity);
+            if !file_name.is_empty() {
+                page.push_str(&format!("*`{file_name}`*\n\n"));
+            }
             if let Some(doc) = entity.doc.as_deref() {
                 let doc = apply_intra_links("doc", doc, &entity.intra_links, formatter, ctx);
                 page.push_str(&format_markdown_doc(&doc, opts.escape_tags));
@@ -117,15 +123,12 @@ fn render_operation_block(
     let mut out = operation_signature_markdown(&op.title, &body.signature, &op.refs, ctx);
     out.push_str("\n\n");
     if !body.fence_body.trim().is_empty() {
-        out.push_str(&render_proto_fence(
-            "",
-            op.doc.as_deref(),
-            &body.fence_body,
-            opts.escape_tags,
-            &op.intra_links,
-            formatter,
-            ctx,
-        ));
+        push_proto_fence_body(&mut out, &body.fence_body);
+    }
+    if let Some(doc) = op.doc.as_deref() {
+        let doc = apply_intra_links("doc", doc, &op.intra_links, formatter, ctx);
+        out.push_str(&format_markdown_doc(&doc, opts.escape_tags));
+        push_paragraph_break(&mut out);
     }
     out
 }

@@ -69,6 +69,17 @@ pub struct Options {
     pub no_proto_highlight: bool,
     /// When true, skip CEL syntax highlighting in init scaffold.
     pub no_cel_highlight: bool,
+    /// Set when `markdown_root=` appears in plugin options (preserved under `book=`).
+    pub explicit_markdown_root: bool,
+    /// Set when `summary_path=` appears in plugin options (preserved under `book=`).
+    pub explicit_summary_path: bool,
+    /// Set when `book_root=` appears in plugin options (preserved under `book=`).
+    pub explicit_book_root: bool,
+    /// When true, sort package-layout `Services` headings by entity title (mdBook).
+    pub alphabetize_services: bool,
+    /// When true, sort package-layout `Messages and enums` headings by entity title
+    /// (mdBook).
+    pub alphabetize_messages: bool,
 }
 
 impl Default for Options {
@@ -90,6 +101,11 @@ impl Default for Options {
             no_proto_markdown: false,
             no_proto_highlight: false,
             no_cel_highlight: false,
+            explicit_markdown_root: false,
+            explicit_summary_path: false,
+            explicit_book_root: false,
+            alphabetize_services: false,
+            alphabetize_messages: false,
         }
     }
 }

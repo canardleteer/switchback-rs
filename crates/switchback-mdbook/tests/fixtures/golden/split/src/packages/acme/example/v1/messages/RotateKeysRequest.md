@@ -2,9 +2,11 @@
 
 RotateKeysRequest triggers a long-running operation example.
 
+*`acme/example/v1/gateway.proto`*
+
 ```protobuf
-message [RotateKeysRequest](RotateKeysRequest.md) {
-  acme.example.v2.[TenantRef](../../v2/messages/TenantRef.md) tenant = 1;
+message RotateKeysRequest {
+  acme.example.v2.TenantRef tenant = 1;
   bool dry_run = 2;
 }
 ```

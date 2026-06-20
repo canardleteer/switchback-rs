@@ -2,11 +2,13 @@
 
 ResourceIdentity combines tenant, labels, and metadata.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [ResourceIdentity](ResourceIdentity.md) {
-  [TenantRef](TenantRef.md) tenant = 1;
-  [LabelSet](LabelSet.md) labels = 2;
-  [SharedMetadata](SharedMetadata.md) metadata = 3;
+message ResourceIdentity {
+  TenantRef tenant = 1;
+  LabelSet labels = 2;
+  SharedMetadata metadata = 3;
   string resource_name = 4;
 }
 ```

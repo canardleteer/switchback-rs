@@ -6,51 +6,29 @@
 
 CatalogService documents commerce and inventory RPCs in the v2 package.
 
-**ListProducts** ( [ListProductsRequest](#listproductsrequest) ) returns ( [ListProductsResponse](#listproductsresponse) )
+*`acme/example/v2/services.proto`*
 
-```protobuf
-rpc ListProducts (acme.example.v2.[ListProductsRequest](#listproductsrequest)) returns (acme.example.v2.[ListProductsResponse](#listproductsresponse));
-```
+**ListProducts** ( [ListProductsRequest](#listproductsrequest) ) returns ( [ListProductsResponse](#listproductsresponse) )
 
 ListProducts returns a paginated product catalog page.
 
 **GetProduct** ( [GetProductRequest](#getproductrequest) ) returns ( [GetProductResponse](#getproductresponse) )
 
-```protobuf
-rpc GetProduct (acme.example.v2.[GetProductRequest](#getproductrequest)) returns (acme.example.v2.[GetProductResponse](#getproductresponse));
-```
-
 GetProduct fetches a single product by identifier.
 
 **ApplyInventoryAdjustments** ( [ApplyInventoryAdjustmentsRequest](#applyinventoryadjustmentsrequest) ) returns ( [ApplyInventoryAdjustmentsResponse](#applyinventoryadjustmentsresponse) )
-
-```protobuf
-rpc ApplyInventoryAdjustments (acme.example.v2.[ApplyInventoryAdjustmentsRequest](#applyinventoryadjustmentsrequest)) returns (acme.example.v2.[ApplyInventoryAdjustmentsResponse](#applyinventoryadjustmentsresponse));
-```
 
 ApplyInventoryAdjustments applies batched stock deltas.
 
 **WatchInventory** ( [WatchInventoryRequest](#watchinventoryrequest) ) returns ( [WatchInventoryResponse](#watchinventoryresponse) )
 
-```protobuf
-rpc WatchInventory (acme.example.v2.[WatchInventoryRequest](#watchinventoryrequest)) returns (stream acme.example.v2.[WatchInventoryResponse](#watchinventoryresponse));
-```
-
 WatchInventory streams inventory adjustments for a warehouse.
 
 **UploadDrafts** ( [UploadDraftsRequest](#uploaddraftsrequest) ) returns ( [UploadDraftsResponse](#uploaddraftsresponse) )
 
-```protobuf
-rpc UploadDrafts (stream acme.example.v2.[UploadDraftsRequest](#uploaddraftsrequest)) returns (acme.example.v2.[UploadDraftsResponse](#uploaddraftsresponse));
-```
-
 UploadDrafts accepts a client stream of draft SKU payloads.
 
 **SyncCatalog** ( [SyncCatalogRequest](#synccatalogrequest) ) returns ( [SyncCatalogResponse](#synccatalogresponse) )
-
-```protobuf
-rpc SyncCatalog (stream acme.example.v2.[SyncCatalogRequest](#synccatalogrequest)) returns (stream acme.example.v2.[SyncCatalogResponse](#synccatalogresponse));
-```
 
 SyncCatalog synchronizes catalog revisions over a bidirectional stream.
 
@@ -58,35 +36,21 @@ SyncCatalog synchronizes catalog revisions over a bidirectional stream.
 
 PlatformService documents cross-cutting telemetry and health RPCs.
 
-**ExportAuditBatch** ( [ExportAuditBatchRequest](#exportauditbatchrequest) ) returns ( [ExportAuditBatchResponse](#exportauditbatchresponse) )
+*`acme/example/v2/services.proto`*
 
-```protobuf
-rpc ExportAuditBatch (acme.example.v2.[ExportAuditBatchRequest](#exportauditbatchrequest)) returns (acme.example.v2.[ExportAuditBatchResponse](#exportauditbatchresponse));
-```
+**ExportAuditBatch** ( [ExportAuditBatchRequest](#exportauditbatchrequest) ) returns ( [ExportAuditBatchResponse](#exportauditbatchresponse) )
 
 ExportAuditBatch returns a snapshot of audit records (unary).
 
 **StreamAuditRecords** ( [StreamAuditRecordsRequest](#streamauditrecordsrequest) ) returns ( [StreamAuditRecordsResponse](#streamauditrecordsresponse) )
 
-```protobuf
-rpc StreamAuditRecords (acme.example.v2.[StreamAuditRecordsRequest](#streamauditrecordsrequest)) returns (stream acme.example.v2.[StreamAuditRecordsResponse](#streamauditrecordsresponse));
-```
-
 StreamAuditRecords pushes audit rows over a server stream.
 
 **IngestTelemetry** ( [IngestTelemetryRequest](#ingesttelemetryrequest) ) returns ( [IngestTelemetryResponse](#ingesttelemetryresponse) )
 
-```protobuf
-rpc IngestTelemetry (stream acme.example.v2.[IngestTelemetryRequest](#ingesttelemetryrequest)) returns (acme.example.v2.[IngestTelemetryResponse](#ingesttelemetryresponse));
-```
-
 IngestTelemetry accepts a client stream of metric samples.
 
 **GetAggregateHealth** ( [GetAggregateHealthRequest](#getaggregatehealthrequest) ) returns ( [GetAggregateHealthResponse](#getaggregatehealthresponse) )
-
-```protobuf
-rpc GetAggregateHealth (acme.example.v2.[GetAggregateHealthRequest](#getaggregatehealthrequest)) returns (acme.example.v2.[GetAggregateHealthResponse](#getaggregatehealthresponse));
-```
 
 GetAggregateHealth returns synthetic component health.
 
@@ -96,8 +60,10 @@ GetAggregateHealth returns synthetic component health.
 
 ProductSku identifies a sellable item in documentation tables.
 
+*`acme/example/v2/catalog.proto`*
+
 ```protobuf
-message [ProductSku](#productsku) {
+message ProductSku {
   string sku = 1 [
       (buf.validate.field).required = true,
       (buf.validate.field).string.min_len = 1,
@@ -105,9 +71,9 @@ message [ProductSku](#productsku) {
     ];
   string title = 2;
   string description = 3;
-  [Money](#money) price = 4;
-  [ProductStatus](#productstatus) status = 5;
-  repeated [Label](#label) labels = 6;
+  Money price = 4;
+  ProductStatus status = 5;
+  repeated Label labels = 6;
 }
 ```
 
@@ -115,8 +81,10 @@ message [ProductSku](#productsku) {
 
 Money represents a decimal amount with currency code.
 
+*`acme/example/v2/catalog.proto`*
+
 ```protobuf
-message [Money](#money) {
+message Money {
   int64 units = 1;
   int32 nanos = 2;
   string currency_code = 3 [
@@ -130,15 +98,17 @@ message [Money](#money) {
 
 Product bundles many SKUs for list RPC examples.
 
+*`acme/example/v2/catalog.proto`*
+
 ```protobuf
-message [Product](#product) {
+message Product {
   string product_id = 1;
   string display_name = 2;
-  repeated [ProductSku](#productsku) skus = 3;
-  [TenantRef](#tenantref) owner = 4;
+  repeated ProductSku skus = 3;
+  TenantRef owner = 4;
   google.protobuf.Timestamp created_at = 5;
   google.protobuf.Timestamp updated_at = 6;
-  [Address](#address) warehouse = 7;
+  Address warehouse = 7;
 }
 ```
 
@@ -146,10 +116,12 @@ message [Product](#product) {
 
 ListProductsRequest paginates catalog inventory.
 
+*`acme/example/v2/catalog.proto`*
+
 ```protobuf
-message [ListProductsRequest](#listproductsrequest) {
-  [ListOptions](#listoptions) options = 1;
-  [ProductStatus](#productstatus) status_filter = 2;
+message ListProductsRequest {
+  ListOptions options = 1;
+  ProductStatus status_filter = 2;
   string search_query = 3 [(buf.validate.field).string.max_len = 256];
 }
 ```
@@ -158,10 +130,12 @@ message [ListProductsRequest](#listproductsrequest) {
 
 ListProductsResponse returns a page of products.
 
+*`acme/example/v2/catalog.proto`*
+
 ```protobuf
-message [ListProductsResponse](#listproductsresponse) {
-  repeated [Product](#product) products = 1;
-  [PageResult](#pageresult) page = 2;
+message ListProductsResponse {
+  repeated Product products = 1;
+  PageResult page = 2;
 }
 ```
 
@@ -169,8 +143,10 @@ message [ListProductsResponse](#listproductsresponse) {
 
 GetProductRequest fetches a single product by id.
 
+*`acme/example/v2/catalog.proto`*
+
 ```protobuf
-message [GetProductRequest](#getproductrequest) {
+message GetProductRequest {
   string product_id = 1 [
       (buf.validate.field).required = true,
       (buf.validate.field).string.uuid = true
@@ -182,9 +158,11 @@ message [GetProductRequest](#getproductrequest) {
 
 GetProductResponse returns one product.
 
+*`acme/example/v2/catalog.proto`*
+
 ```protobuf
-message [GetProductResponse](#getproductresponse) {
-  [Product](#product) product = 1;
+message GetProductResponse {
+  Product product = 1;
 }
 ```
 
@@ -192,8 +170,10 @@ message [GetProductResponse](#getproductresponse) {
 
 InventoryAdjustment documents stock changes for admin RPCs.
 
+*`acme/example/v2/catalog.proto`*
+
 ```protobuf
-message [InventoryAdjustment](#inventoryadjustment) {
+message InventoryAdjustment {
   string sku = 1;
   int64 delta = 2;
   string reason = 3;
@@ -205,10 +185,12 @@ message [InventoryAdjustment](#inventoryadjustment) {
 
 ApplyInventoryAdjustmentsRequest batches adjustments.
 
+*`acme/example/v2/catalog.proto`*
+
 ```protobuf
-message [ApplyInventoryAdjustmentsRequest](#applyinventoryadjustmentsrequest) {
-  repeated [InventoryAdjustment](#inventoryadjustment) adjustments = 1;
-  [ResourceIdentity](#resourceidentity) actor = 2;
+message ApplyInventoryAdjustmentsRequest {
+  repeated InventoryAdjustment adjustments = 1;
+  ResourceIdentity actor = 2;
 }
 ```
 
@@ -216,10 +198,12 @@ message [ApplyInventoryAdjustmentsRequest](#applyinventoryadjustmentsrequest) {
 
 ApplyInventoryAdjustmentsResponse summarizes applied rows.
 
+*`acme/example/v2/catalog.proto`*
+
 ```protobuf
-message [ApplyInventoryAdjustmentsResponse](#applyinventoryadjustmentsresponse) {
+message ApplyInventoryAdjustmentsResponse {
   uint32 applied = 1;
-  repeated [ErrorDetail](#errordetail) failures = 2;
+  repeated ErrorDetail failures = 2;
 }
 ```
 
@@ -227,8 +211,10 @@ message [ApplyInventoryAdjustmentsResponse](#applyinventoryadjustmentsresponse) 
 
 ProductStatus lifecycle for catalog stories.
 
+*`acme/example/v2/catalog.proto`*
+
 ```protobuf
-enum [ProductStatus](#productstatus) {
+enum ProductStatus {
   PRODUCT_STATUS_UNSPECIFIED = 0;
   PRODUCT_STATUS_DRAFT = 1;
   PRODUCT_STATUS_ACTIVE = 2;
@@ -241,15 +227,17 @@ enum [ProductStatus](#productstatus) {
 
 WatchInventoryRequest subscribes to inventory change events.
 
+*`acme/example/v2/services.proto`*
+
 ```protobuf
-message [WatchInventoryRequest](#watchinventoryrequest) {
+message WatchInventoryRequest {
   string warehouse_id = 1 [
       (buf.validate.field).required = true,
       (buf.validate.field).string.min_len = 1,
       (buf.validate.field).string.max_len = 128
     ];
-  [TimeWindow](#timewindow) window = 2;
-  repeated [FilterExpression](#filterexpression) filters = 3;
+  TimeWindow window = 2;
+  repeated FilterExpression filters = 3;
 }
 ```
 
@@ -257,12 +245,14 @@ message [WatchInventoryRequest](#watchinventoryrequest) {
 
 WatchInventoryResponse is one event on the WatchInventory server stream.
 
+*`acme/example/v2/services.proto`*
+
 ```protobuf
-message [WatchInventoryResponse](#watchinventoryresponse) {
+message WatchInventoryResponse {
   string event_id = 1;
-  [InventoryAdjustment](#inventoryadjustment) adjustment = 2;
+  InventoryAdjustment adjustment = 2;
   google.protobuf.Timestamp observed_at = 3;
-  [StreamCursor](#streamcursor) cursor = 4;
+  StreamCursor cursor = 4;
 }
 ```
 
@@ -270,10 +260,12 @@ message [WatchInventoryResponse](#watchinventoryresponse) {
 
 UploadDraftsRequest is one client-streaming product draft chunk.
 
+*`acme/example/v2/services.proto`*
+
 ```protobuf
-message [UploadDraftsRequest](#uploaddraftsrequest) {
+message UploadDraftsRequest {
   string draft_id = 1;
-  [ProductSku](#productsku) sku = 2;
+  ProductSku sku = 2;
   uint32 part_index = 3;
   bool last_part = 4;
 }
@@ -283,11 +275,13 @@ message [UploadDraftsRequest](#uploaddraftsrequest) {
 
 UploadDraftsResponse aggregates uploaded draft parts.
 
+*`acme/example/v2/services.proto`*
+
 ```protobuf
-message [UploadDraftsResponse](#uploaddraftsresponse) {
+message UploadDraftsResponse {
   string draft_id = 1;
   uint32 parts_received = 2;
-  [Product](#product) product = 3;
+  Product product = 3;
 }
 ```
 
@@ -295,11 +289,13 @@ message [UploadDraftsResponse](#uploaddraftsresponse) {
 
 SyncCatalogRequest is one frame in a bidirectional catalog sync session.
 
+*`acme/example/v2/services.proto`*
+
 ```protobuf
-message [SyncCatalogRequest](#synccatalogrequest) {
+message SyncCatalogRequest {
   uint64 sequence = 1;
   string catalog_revision = 2;
-  [PayloadEnvelope](#payloadenvelope) payload = 3;
+  PayloadEnvelope payload = 3;
   bool fin = 4;
 }
 ```
@@ -308,11 +304,13 @@ message [SyncCatalogRequest](#synccatalogrequest) {
 
 SyncCatalogResponse mirrors a bidirectional catalog sync frame.
 
+*`acme/example/v2/services.proto`*
+
 ```protobuf
-message [SyncCatalogResponse](#synccatalogresponse) {
+message SyncCatalogResponse {
   uint64 sequence = 1;
-  [StreamCursor](#streamcursor) cursor = 2;
-  [ErrorDetail](#errordetail) error = 3;
+  StreamCursor cursor = 2;
+  ErrorDetail error = 3;
   bool fin = 4;
 }
 ```
@@ -321,11 +319,13 @@ message [SyncCatalogResponse](#synccatalogresponse) {
 
 ExportAuditBatchRequest exports a batch of audit rows (unary).
 
+*`acme/example/v2/services.proto`*
+
 ```protobuf
-message [ExportAuditBatchRequest](#exportauditbatchrequest) {
-  [ResourceIdentity](#resourceidentity) identity = 1;
-  [TimeWindow](#timewindow) window = 2;
-  [ListOptions](#listoptions) options = 3;
+message ExportAuditBatchRequest {
+  ResourceIdentity identity = 1;
+  TimeWindow window = 2;
+  ListOptions options = 3;
 }
 ```
 
@@ -333,10 +333,12 @@ message [ExportAuditBatchRequest](#exportauditbatchrequest) {
 
 ExportAuditBatchResponse returns exported audit data.
 
+*`acme/example/v2/services.proto`*
+
 ```protobuf
-message [ExportAuditBatchResponse](#exportauditbatchresponse) {
-  [AuditBatch](#auditbatch) batch = 1;
-  [PageResult](#pageresult) page = 2;
+message ExportAuditBatchResponse {
+  AuditBatch batch = 1;
+  PageResult page = 2;
 }
 ```
 
@@ -344,10 +346,12 @@ message [ExportAuditBatchResponse](#exportauditbatchresponse) {
 
 StreamAuditRecordsRequest opens a server stream of audit rows.
 
+*`acme/example/v2/services.proto`*
+
 ```protobuf
-message [StreamAuditRecordsRequest](#streamauditrecordsrequest) {
-  [TenantRef](#tenantref) tenant = 1;
-  repeated [FilterExpression](#filterexpression) filters = 2;
+message StreamAuditRecordsRequest {
+  TenantRef tenant = 1;
+  repeated FilterExpression filters = 2;
 }
 ```
 
@@ -355,10 +359,12 @@ message [StreamAuditRecordsRequest](#streamauditrecordsrequest) {
 
 StreamAuditRecordsResponse is one audit row on the stream.
 
+*`acme/example/v2/services.proto`*
+
 ```protobuf
-message [StreamAuditRecordsResponse](#streamauditrecordsresponse) {
-  [AuditRecord](#auditrecord) record = 1;
-  [StreamCursor](#streamcursor) cursor = 2;
+message StreamAuditRecordsResponse {
+  AuditRecord record = 1;
+  StreamCursor cursor = 2;
 }
 ```
 
@@ -366,12 +372,14 @@ message [StreamAuditRecordsResponse](#streamauditrecordsresponse) {
 
 IngestTelemetryRequest is one client-streaming telemetry point.
 
+*`acme/example/v2/services.proto`*
+
 ```protobuf
-message [IngestTelemetryRequest](#ingesttelemetryrequest) {
+message IngestTelemetryRequest {
   string metric_name = 1;
   double value = 2;
   google.protobuf.Timestamp observed_at = 3;
-  [LabelSet](#labelset) labels = 4;
+  LabelSet labels = 4;
 }
 ```
 
@@ -379,8 +387,10 @@ message [IngestTelemetryRequest](#ingesttelemetryrequest) {
 
 IngestTelemetryResponse acknowledges ingested points.
 
+*`acme/example/v2/services.proto`*
+
 ```protobuf
-message [IngestTelemetryResponse](#ingesttelemetryresponse) {
+message IngestTelemetryResponse {
   uint64 accepted = 1;
   uint64 rejected = 2;
 }
@@ -390,8 +400,10 @@ message [IngestTelemetryResponse](#ingesttelemetryresponse) {
 
 GetAggregateHealthRequest is an empty platform health request.
 
+*`acme/example/v2/services.proto`*
+
 ```protobuf
-message [GetAggregateHealthRequest](#getaggregatehealthrequest) {
+message GetAggregateHealthRequest {
 }
 ```
 
@@ -399,9 +411,11 @@ message [GetAggregateHealthRequest](#getaggregatehealthrequest) {
 
 GetAggregateHealthResponse returns rolled-up health from types.proto.
 
+*`acme/example/v2/services.proto`*
+
 ```protobuf
-message [GetAggregateHealthResponse](#getaggregatehealthresponse) {
-  [AggregateHealth](#aggregatehealth) health = 1;
+message GetAggregateHealthResponse {
+  AggregateHealth health = 1;
 }
 ```
 
@@ -412,8 +426,10 @@ SharedMetadata is referenced from v1 echo and gateway messages.
  Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
  laudantium. Keep `trace_id` opaque to callers; format is service-specific.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [SharedMetadata](#sharedmetadata) {
+message SharedMetadata {
 // Distributed trace id (W3C `traceparent` or equivalent).
   string trace_id = 1 [(buf.validate.field).string.min_len = 1];
 // Optional parent span for nested calls.
@@ -423,7 +439,7 @@ message [SharedMetadata](#sharedmetadata) {
 // Arbitrary baggage for examples (not a production pattern).
   map<string, string> baggage = 4;
 // Classification for routing in docs.
-  [SharedKind](#sharedkind) kind = 5;
+  SharedKind kind = 5;
 }
 ```
 
@@ -431,8 +447,10 @@ message [SharedMetadata](#sharedmetadata) {
 
 TraceContext duplicates some metadata for nested RPC examples.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [TraceContext](#tracecontext) {
+message TraceContext {
   string trace_id = 1;
   string span_id = 2;
   google.protobuf.Duration sampling_delay = 3;
@@ -443,12 +461,14 @@ message [TraceContext](#tracecontext) {
 
 PayloadHeader precedes user bytes in envelope examples.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [PayloadHeader](#payloadheader) {
+message PayloadHeader {
   string content_type = 1;
   uint64 content_length = 2;
   string checksum_sha256 = 3;
-  [Priority](#priority) priority = 4;
+  Priority priority = 4;
 }
 ```
 
@@ -456,11 +476,13 @@ message [PayloadHeader](#payloadheader) {
 
 PayloadEnvelope wraps opaque bytes with metadata.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [PayloadEnvelope](#payloadenvelope) {
-  [PayloadHeader](#payloadheader) header = 1;
+message PayloadEnvelope {
+  PayloadHeader header = 1;
   bytes body = 2;
-  [SharedMetadata](#sharedmetadata) metadata = 3;
+  SharedMetadata metadata = 3;
 }
 ```
 
@@ -468,8 +490,10 @@ message [PayloadEnvelope](#payloadenvelope) {
 
 AuditRecord captures a single synthetic audit line.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [AuditRecord](#auditrecord) {
+message AuditRecord {
   string actor = 1;
   string action = 2;
   google.protobuf.Timestamp occurred_at = 3;
@@ -481,9 +505,11 @@ message [AuditRecord](#auditrecord) {
 
 AuditBatch groups records for batch RPC demonstrations.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [AuditBatch](#auditbatch) {
-  repeated [AuditRecord](#auditrecord) records = 1;
+message AuditBatch {
+  repeated AuditRecord records = 1;
   string batch_id = 2;
 }
 ```
@@ -492,8 +518,10 @@ message [AuditBatch](#auditbatch) {
 
 Location describes a fictional region for catalog cross-links.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [Location](#location) {
+message Location {
   string region_code = 1;
   string display_name = 2;
   double latitude = 3;
@@ -505,13 +533,15 @@ message [Location](#location) {
 
 Address is a postal-style structure used in nested messages.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [Address](#address) {
+message Address {
   string line1 = 1;
   string line2 = 2;
   string city = 3;
   string postal_code = 4;
-  [Location](#location) region = 5;
+  Location region = 5;
 }
 ```
 
@@ -519,8 +549,10 @@ message [Address](#address) {
 
 ContactInfo supports oneof-based documentation rendering.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [ContactInfo](#contactinfo) {
+message ContactInfo {
   oneof channel {
       string email = 1;
       string phone_e164 = 2;
@@ -534,15 +566,17 @@ message [ContactInfo](#contactinfo) {
 
 TenantRef identifies a fictional tenant for multi-tenant stories.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [TenantRef](#tenantref) {
+message TenantRef {
   string tenant_id = 1 [(buf.validate.field).string.uuid = true];
   string slug = 2 [
       (buf.validate.field).string.min_len = 1,
       (buf.validate.field).string.max_len = 64,
       (buf.validate.field).string.pattern = "^[a-z0-9-]+$"
     ];
-  [SharedKind](#sharedkind) tier = 3;
+  SharedKind tier = 3;
 }
 ```
 
@@ -550,8 +584,10 @@ message [TenantRef](#tenantref) {
 
 QuotaLimits documents soft limits referenced from gateway RPCs.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [QuotaLimits](#quotalimits) {
+message QuotaLimits {
   uint32 max_requests_per_minute = 1;
   uint32 max_stream_duration_seconds = 2;
   uint64 max_payload_bytes = 3;
@@ -562,8 +598,10 @@ message [QuotaLimits](#quotalimits) {
 
 ErrorDetail mirrors a simplified rich error shape for docs.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [ErrorDetail](#errordetail) {
+message ErrorDetail {
   string code = 1;
   string message = 2;
   map<string, string> metadata = 3;
@@ -575,8 +613,10 @@ message [ErrorDetail](#errordetail) {
 
 RetryPolicy is embedded in long-running operation messages.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [RetryPolicy](#retrypolicy) {
+message RetryPolicy {
   uint32 max_attempts = 1;
   google.protobuf.Duration initial_backoff = 2;
   google.protobuf.Duration max_backoff = 3;
@@ -588,14 +628,16 @@ message [RetryPolicy](#retrypolicy) {
 
 LongRunningOperation is returned by admin-style RPCs in v1.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [LongRunningOperation](#longrunningoperation) {
+message LongRunningOperation {
   string name = 1;
-  [OperationStatus](#operationstatus) status = 2;
+  OperationStatus status = 2;
   google.protobuf.Timestamp start_time = 3;
   google.protobuf.Timestamp end_time = 4;
-  [RetryPolicy](#retrypolicy) retry_policy = 5;
-  [ErrorDetail](#errordetail) error = 6;
+  RetryPolicy retry_policy = 5;
+  ErrorDetail error = 6;
   double percent_complete = 7;
 }
 ```
@@ -604,8 +646,10 @@ message [LongRunningOperation](#longrunningoperation) {
 
 Label is a key/value tag used across catalog and echo fixtures.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [Label](#label) {
+message Label {
   string key = 1;
   string value = 2;
 }
@@ -615,9 +659,11 @@ message [Label](#label) {
 
 LabelSet aggregates labels for resource descriptions.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [LabelSet](#labelset) {
-  repeated [Label](#label) labels = 1;
+message LabelSet {
+  repeated Label labels = 1;
 }
 ```
 
@@ -625,11 +671,13 @@ message [LabelSet](#labelset) {
 
 ResourceIdentity combines tenant, labels, and metadata.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [ResourceIdentity](#resourceidentity) {
-  [TenantRef](#tenantref) tenant = 1;
-  [LabelSet](#labelset) labels = 2;
-  [SharedMetadata](#sharedmetadata) metadata = 3;
+message ResourceIdentity {
+  TenantRef tenant = 1;
+  LabelSet labels = 2;
+  SharedMetadata metadata = 3;
   string resource_name = 4;
 }
 ```
@@ -638,8 +686,10 @@ message [ResourceIdentity](#resourceidentity) {
 
 NumericRange supports validation comment examples.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [NumericRange](#numericrange) {
+message NumericRange {
   
   int64 min_inclusive = 1;
   int64 max_inclusive = 2;
@@ -658,8 +708,10 @@ id: "numeric_range.min_lte_max"
 
 TimeWindow defines inclusive bounds for queries.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [TimeWindow](#timewindow) {
+message TimeWindow {
   google.protobuf.Timestamp start = 1;
   google.protobuf.Timestamp end = 2;
 }
@@ -669,12 +721,14 @@ message [TimeWindow](#timewindow) {
 
 FilterExpression is a intentionally verbose filter AST placeholder.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [FilterExpression](#filterexpression) {
+message FilterExpression {
   string field = 1;
   string op = 2;
   string value = 3;
-  repeated [FilterExpression](#filterexpression) children = 4;
+  repeated FilterExpression children = 4;
 }
 ```
 
@@ -682,8 +736,10 @@ message [FilterExpression](#filterexpression) {
 
 PageToken supports pagination narrative in list RPCs.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [PageToken](#pagetoken) {
+message PageToken {
   string opaque = 1;
   uint32 page_size = 2;
 }
@@ -693,9 +749,11 @@ message [PageToken](#pagetoken) {
 
 PageResult completes a paginated list response.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [PageResult](#pageresult) {
-  [PageToken](#pagetoken) next_page_token = 1;
+message PageResult {
+  PageToken next_page_token = 1;
   uint32 total_size = 2;
 }
 ```
@@ -704,10 +762,12 @@ message [PageResult](#pageresult) {
 
 SortKey pairs a field name with an order.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [SortKey](#sortkey) {
+message SortKey {
   string field = 1;
-  [SortOrder](#sortorder) order = 2;
+  SortOrder order = 2;
 }
 ```
 
@@ -715,11 +775,13 @@ message [SortKey](#sortkey) {
 
 ListOptions bundles pagination and sorting for list RPCs.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [ListOptions](#listoptions) {
-  [PageToken](#pagetoken) page = 1;
-  repeated [SortKey](#sortkey) sort = 2;
-  repeated [FilterExpression](#filterexpression) filters = 3;
+message ListOptions {
+  PageToken page = 1;
+  repeated SortKey sort = 2;
+  repeated FilterExpression filters = 3;
 }
 ```
 
@@ -727,10 +789,12 @@ message [ListOptions](#listoptions) {
 
 ComponentHealth describes one sub-system in aggregate health.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [ComponentHealth](#componenthealth) {
+message ComponentHealth {
   string component = 1;
-  [HealthStatus](#healthstatus) status = 2;
+  HealthStatus status = 2;
   string detail = 3;
 }
 ```
@@ -739,10 +803,12 @@ message [ComponentHealth](#componenthealth) {
 
 AggregateHealth rolls up component statuses.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [AggregateHealth](#aggregatehealth) {
-  [HealthStatus](#healthstatus) overall = 1;
-  repeated [ComponentHealth](#componenthealth) components = 2;
+message AggregateHealth {
+  HealthStatus overall = 1;
+  repeated ComponentHealth components = 2;
   google.protobuf.Timestamp evaluated_at = 3;
 }
 ```
@@ -751,8 +817,10 @@ message [AggregateHealth](#aggregatehealth) {
 
 StreamCursor supports resumable stream examples.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [StreamCursor](#streamcursor) {
+message StreamCursor {
   string stream_id = 1;
   uint64 sequence = 2;
   google.protobuf.Timestamp emitted_at = 3;
@@ -763,10 +831,12 @@ message [StreamCursor](#streamcursor) {
 
 StreamChunk is a unit payload in streaming RPC fixtures.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [StreamChunk](#streamchunk) {
-  [StreamCursor](#streamcursor) cursor = 1;
-  [PayloadEnvelope](#payloadenvelope) payload = 2;
+message StreamChunk {
+  StreamCursor cursor = 1;
+  PayloadEnvelope payload = 2;
   bool terminal = 3;
 }
 ```
@@ -775,8 +845,10 @@ message [StreamChunk](#streamchunk) {
 
 BatchKey identifies an item inside batch requests.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [BatchKey](#batchkey) {
+message BatchKey {
   string id = 1;
   string correlation_id = 2;
 }
@@ -786,10 +858,12 @@ message [BatchKey](#batchkey) {
 
 BatchItem pairs a key with an envelope for batch APIs.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [BatchItem](#batchitem) {
-  [BatchKey](#batchkey) key = 1;
-  [PayloadEnvelope](#payloadenvelope) envelope = 2;
+message BatchItem {
+  BatchKey key = 1;
+  PayloadEnvelope envelope = 2;
 }
 ```
 
@@ -797,10 +871,12 @@ message [BatchItem](#batchitem) {
 
 BatchRequest aggregates many items for BatchEcho RPCs.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [BatchRequest](#batchrequest) {
-  repeated [BatchItem](#batchitem) items = 1 [(buf.validate.field).repeated.min_items = 1];
-  [ResourceIdentity](#resourceidentity) identity = 2;
+message BatchRequest {
+  repeated BatchItem items = 1 [(buf.validate.field).repeated.min_items = 1];
+  ResourceIdentity identity = 2;
   bool partial_failure_allowed = 3;
 }
 ```
@@ -809,12 +885,14 @@ message [BatchRequest](#batchrequest) {
 
 BatchItemResult reports per-item outcomes.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [BatchItemResult](#batchitemresult) {
-  [BatchKey](#batchkey) key = 1;
+message BatchItemResult {
+  BatchKey key = 1;
   bool ok = 2;
-  [ErrorDetail](#errordetail) error = 3;
-  [PayloadEnvelope](#payloadenvelope) response_envelope = 4;
+  ErrorDetail error = 3;
+  PayloadEnvelope response_envelope = 4;
 }
 ```
 
@@ -822,10 +900,12 @@ message [BatchItemResult](#batchitemresult) {
 
 BatchResponse collects results for batch RPC documentation.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [BatchResponse](#batchresponse) {
-  repeated [BatchItemResult](#batchitemresult) results = 1;
-  [PageResult](#pageresult) page = 2;
+message BatchResponse {
+  repeated BatchItemResult results = 1;
+  PageResult page = 2;
 }
 ```
 
@@ -833,12 +913,14 @@ message [BatchResponse](#batchresponse) {
 
 EchoExtension carries optional hints from v2 into v1 echo flows.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [EchoExtension](#echoextension) {
+message EchoExtension {
   string locale = 1;
   repeated string keywords = 2;
   map<string, string> annotations = 3;
-  [NumericRange](#numericrange) length_bounds = 4;
+  NumericRange length_bounds = 4;
 }
 ```
 
@@ -846,8 +928,10 @@ message [EchoExtension](#echoextension) {
 
 DocumentationAnchor is a meta-message for cross-link stress tests.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [DocumentationAnchor](#documentationanchor) {
+message DocumentationAnchor {
   string title = 1;
   string href = 2;
   string summary = 3;
@@ -858,9 +942,11 @@ message [DocumentationAnchor](#documentationanchor) {
 
 SeeAlsoBlock groups anchors for See Also sections in comments.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [SeeAlsoBlock](#seealsoblock) {
-  repeated [DocumentationAnchor](#documentationanchor) anchors = 1;
+message SeeAlsoBlock {
+  repeated DocumentationAnchor anchors = 1;
 }
 ```
 
@@ -875,8 +961,10 @@ SharedKind classifies metadata rows in examples.
  | BETA | second variant |
  | GAMMA | third variant |
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-enum [SharedKind](#sharedkind) {
+enum SharedKind {
   SHARED_KIND_UNSPECIFIED = 0;
   SHARED_KIND_ALPHA = 1;
   SHARED_KIND_BETA = 2;
@@ -888,8 +976,10 @@ enum [SharedKind](#sharedkind) {
 
 Priority influences scheduler hints in narrative docs only.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-enum [Priority](#priority) {
+enum Priority {
   PRIORITY_UNSPECIFIED = 0;
   PRIORITY_LOW = 1;
   PRIORITY_NORMAL = 2;
@@ -902,8 +992,10 @@ enum [Priority](#priority) {
 
 OperationStatus tracks synthetic long-running work.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-enum [OperationStatus](#operationstatus) {
+enum OperationStatus {
   OPERATION_STATUS_UNSPECIFIED = 0;
   OPERATION_STATUS_PENDING = 1;
   OPERATION_STATUS_RUNNING = 2;
@@ -917,8 +1009,10 @@ enum [OperationStatus](#operationstatus) {
 
 SortOrder documents ascending/descending list semantics.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-enum [SortOrder](#sortorder) {
+enum SortOrder {
   SORT_ORDER_UNSPECIFIED = 0;
   SORT_ORDER_ASC = 1;
   SORT_ORDER_DESC = 2;
@@ -929,8 +1023,10 @@ enum [SortOrder](#sortorder) {
 
 HealthStatus is reported by gateway health RPCs.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-enum [HealthStatus](#healthstatus) {
+enum HealthStatus {
   HEALTH_STATUS_UNSPECIFIED = 0;
   HEALTH_STATUS_SERVING = 1;
   HEALTH_STATUS_NOT_SERVING = 2;

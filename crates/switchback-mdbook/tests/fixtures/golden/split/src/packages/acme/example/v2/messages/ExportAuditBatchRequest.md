@@ -2,11 +2,13 @@
 
 ExportAuditBatchRequest exports a batch of audit rows (unary).
 
+*`acme/example/v2/services.proto`*
+
 ```protobuf
-message [ExportAuditBatchRequest](ExportAuditBatchRequest.md) {
-  [ResourceIdentity](ResourceIdentity.md) identity = 1;
-  [TimeWindow](TimeWindow.md) window = 2;
-  [ListOptions](ListOptions.md) options = 3;
+message ExportAuditBatchRequest {
+  ResourceIdentity identity = 1;
+  TimeWindow window = 2;
+  ListOptions options = 3;
 }
 ```
 

@@ -6,35 +6,21 @@
 
 FeatureFlagService documents flag and override RPCs.
 
-**ListFeatureFlags** ( [ListFeatureFlagsRequest](#listfeatureflagsrequest) ) returns ( [ListFeatureFlagsResponse](#listfeatureflagsresponse) )
+*`acme/example/v3alpha1/services.proto`*
 
-```protobuf
-rpc ListFeatureFlags (acme.example.v3alpha1.[ListFeatureFlagsRequest](#listfeatureflagsrequest)) returns (acme.example.v3alpha1.[ListFeatureFlagsResponse](#listfeatureflagsresponse));
-```
+**ListFeatureFlags** ( [ListFeatureFlagsRequest](#listfeatureflagsrequest) ) returns ( [ListFeatureFlagsResponse](#listfeatureflagsresponse) )
 
 ListFeatureFlags returns a paginated flag catalog page.
 
 **UpsertFlagOverride** ( [UpsertFlagOverrideRequest](#upsertflagoverriderequest) ) returns ( [UpsertFlagOverrideResponse](#upsertflagoverrideresponse) )
 
-```protobuf
-rpc UpsertFlagOverride (acme.example.v3alpha1.[UpsertFlagOverrideRequest](#upsertflagoverriderequest)) returns (acme.example.v3alpha1.[UpsertFlagOverrideResponse](#upsertflagoverrideresponse));
-```
-
 UpsertFlagOverride stores a tenant override row.
 
 **PublishHints** ( [PublishHintsRequest](#publishhintsrequest) ) returns ( [PublishHintsResponse](#publishhintsresponse) )
 
-```protobuf
-rpc PublishHints (stream acme.example.v3alpha1.[PublishHintsRequest](#publishhintsrequest)) returns (acme.example.v3alpha1.[PublishHintsResponse](#publishhintsresponse));
-```
-
 PublishHints accepts a client stream of platform hints.
 
 **SyncFlags** ( [SyncFlagsRequest](#syncflagsrequest) ) returns ( [SyncFlagsResponse](#syncflagsresponse) )
-
-```protobuf
-rpc SyncFlags (stream acme.example.v3alpha1.[SyncFlagsRequest](#syncflagsrequest)) returns (stream acme.example.v3alpha1.[SyncFlagsResponse](#syncflagsresponse));
-```
 
 SyncFlags synchronizes flag revisions over a bidirectional stream.
 
@@ -42,19 +28,13 @@ SyncFlags synchronizes flag revisions over a bidirectional stream.
 
 ExperimentService documents assignment and streaming experiment RPCs.
 
-**AssignExperiment** ( [AssignExperimentRequest](#assignexperimentrequest) ) returns ( [AssignExperimentResponse](#assignexperimentresponse) )
+*`acme/example/v3alpha1/services.proto`*
 
-```protobuf
-rpc AssignExperiment (acme.example.v3alpha1.[AssignExperimentRequest](#assignexperimentrequest)) returns (acme.example.v3alpha1.[AssignExperimentResponse](#assignexperimentresponse));
-```
+**AssignExperiment** ( [AssignExperimentRequest](#assignexperimentrequest) ) returns ( [AssignExperimentResponse](#assignexperimentresponse) )
 
 AssignExperiment picks an arm for a subject.
 
 **StreamAssignments** ( [StreamAssignmentsRequest](#streamassignmentsrequest) ) returns ( [StreamAssignmentsResponse](#streamassignmentsresponse) )
-
-```protobuf
-rpc StreamAssignments (acme.example.v3alpha1.[StreamAssignmentsRequest](#streamassignmentsrequest)) returns (stream acme.example.v3alpha1.[StreamAssignmentsResponse](#streamassignmentsresponse));
-```
 
 StreamAssignments pushes assignment events for an experiment.
 
@@ -62,27 +42,17 @@ StreamAssignments pushes assignment events for an experiment.
 
 PipelineService documents orchestration RPCs in the alpha package.
 
-**StartPipeline** ( [StartPipelineRequest](#startpipelinerequest) ) returns ( [StartPipelineResponse](#startpipelineresponse) )
+*`acme/example/v3alpha1/services.proto`*
 
-```protobuf
-rpc StartPipeline (acme.example.v3alpha1.[StartPipelineRequest](#startpipelinerequest)) returns (acme.example.v3alpha1.[StartPipelineResponse](#startpipelineresponse));
-```
+**StartPipeline** ( [StartPipelineRequest](#startpipelinerequest) ) returns ( [StartPipelineResponse](#startpipelineresponse) )
 
 StartPipeline creates a pipeline run from staged inputs.
 
 **WatchPipeline** ( [WatchPipelineRequest](#watchpipelinerequest) ) returns ( [WatchPipelineResponse](#watchpipelineresponse) )
 
-```protobuf
-rpc WatchPipeline (acme.example.v3alpha1.[WatchPipelineRequest](#watchpipelinerequest)) returns (stream acme.example.v3alpha1.[WatchPipelineResponse](#watchpipelineresponse));
-```
-
 WatchPipeline streams step results for a run.
 
 **CancelPipeline** ( [CancelPipelineRequest](#cancelpipelinerequest) ) returns ( [CancelPipelineResponse](#cancelpipelineresponse) )
-
-```protobuf
-rpc CancelPipeline (acme.example.v3alpha1.[CancelPipelineRequest](#cancelpipelinerequest)) returns (acme.example.v3alpha1.[CancelPipelineResponse](#cancelpipelineresponse));
-```
 
 CancelPipeline stops a run by identifier.
 
@@ -92,15 +62,17 @@ CancelPipeline stops a run by identifier.
 
 PipelineStepInput is one unit of work inside a pipeline run.
 
+*`acme/example/v3alpha1/pipeline.proto`*
+
 ```protobuf
-message [PipelineStepInput](#pipelinestepinput) {
+message PipelineStepInput {
   string step_name = 1 [
       (buf.validate.field).required = true,
       (buf.validate.field).string.min_len = 1,
       (buf.validate.field).string.max_len = 64
     ];
-  acme.example.v2.[PayloadEnvelope](acme.example.v2.md#payloadenvelope) input = 2;
-  [RolloutStage](#rolloutstage) rollout = 3;
+  acme.example.v2.PayloadEnvelope input = 2;
+  RolloutStage rollout = 3;
 }
 ```
 
@@ -108,12 +80,14 @@ message [PipelineStepInput](#pipelinestepinput) {
 
 PipelineStepResult reports completion for a single step.
 
+*`acme/example/v3alpha1/pipeline.proto`*
+
 ```protobuf
-message [PipelineStepResult](#pipelinestepresult) {
+message PipelineStepResult {
   string step_name = 1;
-  [PipelineStatus](#pipelinestatus) status = 2;
-  acme.example.v2.[ErrorDetail](acme.example.v2.md#errordetail) error = 3;
-  acme.example.v2.[StreamCursor](acme.example.v2.md#streamcursor) cursor = 4;
+  PipelineStatus status = 2;
+  acme.example.v2.ErrorDetail error = 3;
+  acme.example.v2.StreamCursor cursor = 4;
   google.protobuf.Timestamp finished_at = 5;
 }
 ```
@@ -122,12 +96,14 @@ message [PipelineStepResult](#pipelinestepresult) {
 
 PipelineStage is a oneof-heavy stage definition for doc rendering.
 
+*`acme/example/v3alpha1/pipeline.proto`*
+
 ```protobuf
-message [PipelineStage](#pipelinestage) {
+message PipelineStage {
   oneof stage {
-      [PipelineStepInput](#pipelinestepinput) step = 1;
-      [RolloutStage](#rolloutstage) rollout_only = 2;
-      acme.example.v2.[AuditBatch](acme.example.v2.md#auditbatch) audit_snapshot = 3;
+      PipelineStepInput step = 1;
+      RolloutStage rollout_only = 2;
+      acme.example.v2.AuditBatch audit_snapshot = 3;
     }
 }
 ```
@@ -136,17 +112,19 @@ message [PipelineStage](#pipelinestage) {
 
 PipelineRun identifies a long-lived orchestration instance.
 
+*`acme/example/v3alpha1/pipeline.proto`*
+
 ```protobuf
-message [PipelineRun](#pipelinerun) {
+message PipelineRun {
   
   string run_id = 1 [
       (buf.validate.field).required = true,
       (buf.validate.field).string.uuid = true
     ];
   string pipeline_name = 2 [(buf.validate.field).string.min_len = 1];
-  [PipelineStatus](#pipelinestatus) status = 3;
-  repeated [PipelineStepResult](#pipelinestepresult) results = 4;
-  acme.example.v2.[ResourceIdentity](acme.example.v2.md#resourceidentity) owner = 5;
+  PipelineStatus status = 3;
+  repeated PipelineStepResult results = 4;
+  acme.example.v2.ResourceIdentity owner = 5;
   google.protobuf.Timestamp started_at = 6;
   google.protobuf.Timestamp completed_at = 7;
 }
@@ -164,14 +142,16 @@ id: "pipeline_run.completed_after_started"
 
 StartPipelineRequest kicks off a pipeline from staged inputs.
 
+*`acme/example/v3alpha1/pipeline.proto`*
+
 ```protobuf
-message [StartPipelineRequest](#startpipelinerequest) {
+message StartPipelineRequest {
   string pipeline_name = 1 [
       (buf.validate.field).required = true,
       (buf.validate.field).string.pattern = "^[a-z][a-z0-9-]*$"
     ];
-  repeated [PipelineStage](#pipelinestage) stages = 2 [(buf.validate.field).repeated.min_items = 1];
-  acme.example.v2.[ResourceIdentity](acme.example.v2.md#resourceidentity) actor = 3;
+  repeated PipelineStage stages = 2 [(buf.validate.field).repeated.min_items = 1];
+  acme.example.v2.ResourceIdentity actor = 3;
 }
 ```
 
@@ -179,9 +159,11 @@ message [StartPipelineRequest](#startpipelinerequest) {
 
 StartPipelineResponse returns the created run handle.
 
+*`acme/example/v3alpha1/pipeline.proto`*
+
 ```protobuf
-message [StartPipelineResponse](#startpipelineresponse) {
-  [PipelineRun](#pipelinerun) run = 1;
+message StartPipelineResponse {
+  PipelineRun run = 1;
 }
 ```
 
@@ -189,11 +171,13 @@ message [StartPipelineResponse](#startpipelineresponse) {
 
 WatchPipelineRequest subscribes to pipeline step events.
 
+*`acme/example/v3alpha1/pipeline.proto`*
+
 ```protobuf
-message [WatchPipelineRequest](#watchpipelinerequest) {
+message WatchPipelineRequest {
   string run_id = 1 [(buf.validate.field).string.uuid = true];
-  acme.example.v2.[TimeWindow](acme.example.v2.md#timewindow) window = 2;
-  repeated acme.example.v2.[FilterExpression](acme.example.v2.md#filterexpression) filters = 3;
+  acme.example.v2.TimeWindow window = 2;
+  repeated acme.example.v2.FilterExpression filters = 3;
 }
 ```
 
@@ -201,12 +185,14 @@ message [WatchPipelineRequest](#watchpipelinerequest) {
 
 WatchPipelineResponse is one event on the WatchPipeline server stream.
 
+*`acme/example/v3alpha1/pipeline.proto`*
+
 ```protobuf
-message [WatchPipelineResponse](#watchpipelineresponse) {
+message WatchPipelineResponse {
   string event_id = 1;
-  [PipelineStepResult](#pipelinestepresult) step = 2;
+  PipelineStepResult step = 2;
   google.protobuf.Timestamp observed_at = 3;
-  acme.example.v2.[StreamCursor](acme.example.v2.md#streamcursor) cursor = 4;
+  acme.example.v2.StreamCursor cursor = 4;
 }
 ```
 
@@ -214,8 +200,10 @@ message [WatchPipelineResponse](#watchpipelineresponse) {
 
 CancelPipelineRequest stops a run by id.
 
+*`acme/example/v3alpha1/pipeline.proto`*
+
 ```protobuf
-message [CancelPipelineRequest](#cancelpipelinerequest) {
+message CancelPipelineRequest {
   string run_id = 1 [(buf.validate.field).string.uuid = true];
   string reason = 2 [(buf.validate.field).string.max_len = 512];
 }
@@ -225,9 +213,11 @@ message [CancelPipelineRequest](#cancelpipelinerequest) {
 
 CancelPipelineResponse acknowledges cancellation.
 
+*`acme/example/v3alpha1/pipeline.proto`*
+
 ```protobuf
-message [CancelPipelineResponse](#cancelpipelineresponse) {
-  [PipelineRun](#pipelinerun) run = 1;
+message CancelPipelineResponse {
+  PipelineRun run = 1;
 }
 ```
 
@@ -235,8 +225,10 @@ message [CancelPipelineResponse](#cancelpipelineresponse) {
 
 PipelineStatus tracks synthetic workflow execution.
 
+*`acme/example/v3alpha1/pipeline.proto`*
+
 ```protobuf
-enum [PipelineStatus](#pipelinestatus) {
+enum PipelineStatus {
   PIPELINE_STATUS_UNSPECIFIED = 0;
   PIPELINE_STATUS_QUEUED = 1;
   PIPELINE_STATUS_RUNNING = 2;
@@ -250,11 +242,13 @@ enum [PipelineStatus](#pipelinestatus) {
 
 ListFeatureFlagsRequest paginates feature flags for a tenant.
 
+*`acme/example/v3alpha1/services.proto`*
+
 ```protobuf
-message [ListFeatureFlagsRequest](#listfeatureflagsrequest) {
-  acme.example.v2.[ListOptions](acme.example.v2.md#listoptions) options = 1;
-  acme.example.v2.[TenantRef](acme.example.v2.md#tenantref) tenant = 2;
-  [ReleaseChannel](#releasechannel) channel_filter = 3;
+message ListFeatureFlagsRequest {
+  acme.example.v2.ListOptions options = 1;
+  acme.example.v2.TenantRef tenant = 2;
+  ReleaseChannel channel_filter = 3;
 }
 ```
 
@@ -262,10 +256,12 @@ message [ListFeatureFlagsRequest](#listfeatureflagsrequest) {
 
 ListFeatureFlagsResponse returns a page of flags.
 
+*`acme/example/v3alpha1/services.proto`*
+
 ```protobuf
-message [ListFeatureFlagsResponse](#listfeatureflagsresponse) {
-  repeated [FeatureFlag](#featureflag) flags = 1;
-  acme.example.v2.[PageResult](acme.example.v2.md#pageresult) page = 2;
+message ListFeatureFlagsResponse {
+  repeated FeatureFlag flags = 1;
+  acme.example.v2.PageResult page = 2;
 }
 ```
 
@@ -273,9 +269,11 @@ message [ListFeatureFlagsResponse](#listfeatureflagsresponse) {
 
 UpsertFlagOverrideRequest writes a tenant-specific override.
 
+*`acme/example/v3alpha1/services.proto`*
+
 ```protobuf
-message [UpsertFlagOverrideRequest](#upsertflagoverriderequest) {
-  [FlagOverride](#flagoverride) override = 1;
+message UpsertFlagOverrideRequest {
+  FlagOverride override = 1;
 }
 ```
 
@@ -283,9 +281,11 @@ message [UpsertFlagOverrideRequest](#upsertflagoverriderequest) {
 
 UpsertFlagOverrideResponse echoes the stored override.
 
+*`acme/example/v3alpha1/services.proto`*
+
 ```protobuf
-message [UpsertFlagOverrideResponse](#upsertflagoverrideresponse) {
-  [FlagOverride](#flagoverride) override = 1;
+message UpsertFlagOverrideResponse {
+  FlagOverride override = 1;
 }
 ```
 
@@ -293,10 +293,12 @@ message [UpsertFlagOverrideResponse](#upsertflagoverrideresponse) {
 
 AssignExperimentRequest assigns a subject to an experiment arm.
 
+*`acme/example/v3alpha1/services.proto`*
+
 ```protobuf
-message [AssignExperimentRequest](#assignexperimentrequest) {
-  [ExperimentSpec](#experimentspec) spec = 1;
-  [SubjectRef](#subjectref) subject = 2;
+message AssignExperimentRequest {
+  ExperimentSpec spec = 1;
+  SubjectRef subject = 2;
   repeated string exclusion_keys = 3 [(buf.validate.field).repeated.max_items = 32];
 }
 ```
@@ -305,9 +307,11 @@ message [AssignExperimentRequest](#assignexperimentrequest) {
 
 AssignExperimentResponse returns the assignment row.
 
+*`acme/example/v3alpha1/services.proto`*
+
 ```protobuf
-message [AssignExperimentResponse](#assignexperimentresponse) {
-  [ExperimentAssignment](#experimentassignment) assignment = 1;
+message AssignExperimentResponse {
+  ExperimentAssignment assignment = 1;
 }
 ```
 
@@ -315,10 +319,12 @@ message [AssignExperimentResponse](#assignexperimentresponse) {
 
 StreamAssignmentsRequest opens a server stream of assignment events.
 
+*`acme/example/v3alpha1/services.proto`*
+
 ```protobuf
-message [StreamAssignmentsRequest](#streamassignmentsrequest) {
+message StreamAssignmentsRequest {
   string experiment_id = 1 [(buf.validate.field).string.uuid = true];
-  acme.example.v2.[TimeWindow](acme.example.v2.md#timewindow) window = 2;
+  acme.example.v2.TimeWindow window = 2;
 }
 ```
 
@@ -326,10 +332,12 @@ message [StreamAssignmentsRequest](#streamassignmentsrequest) {
 
 StreamAssignmentsResponse is one assignment event on the stream.
 
+*`acme/example/v3alpha1/services.proto`*
+
 ```protobuf
-message [StreamAssignmentsResponse](#streamassignmentsresponse) {
-  [ExperimentAssignment](#experimentassignment) assignment = 1;
-  acme.example.v2.[StreamCursor](acme.example.v2.md#streamcursor) cursor = 2;
+message StreamAssignmentsResponse {
+  ExperimentAssignment assignment = 1;
+  acme.example.v2.StreamCursor cursor = 2;
   google.protobuf.Timestamp observed_at = 3;
 }
 ```
@@ -338,10 +346,12 @@ message [StreamAssignmentsResponse](#streamassignmentsresponse) {
 
 PublishHintsRequest is one client-streaming platform hint chunk.
 
+*`acme/example/v3alpha1/services.proto`*
+
 ```protobuf
-message [PublishHintsRequest](#publishhintsrequest) {
+message PublishHintsRequest {
   string batch_id = 1;
-  [PlatformHint](#platformhint) hint = 2;
+  PlatformHint hint = 2;
   uint32 part_index = 3;
   bool last_part = 4;
 }
@@ -351,11 +361,13 @@ message [PublishHintsRequest](#publishhintsrequest) {
 
 PublishHintsResponse aggregates uploaded hint parts.
 
+*`acme/example/v3alpha1/services.proto`*
+
 ```protobuf
-message [PublishHintsResponse](#publishhintsresponse) {
+message PublishHintsResponse {
   string batch_id = 1;
   uint32 parts_received = 2;
-  acme.example.v2.[PageResult](acme.example.v2.md#pageresult) page = 3;
+  acme.example.v2.PageResult page = 3;
 }
 ```
 
@@ -363,10 +375,12 @@ message [PublishHintsResponse](#publishhintsresponse) {
 
 SyncFlagsRequest is one frame in a bidirectional flag sync session.
 
+*`acme/example/v3alpha1/services.proto`*
+
 ```protobuf
-message [SyncFlagsRequest](#syncflagsrequest) {
+message SyncFlagsRequest {
   uint64 sequence = 1;
-  [FeatureFlag](#featureflag) flag = 2;
+  FeatureFlag flag = 2;
   bool fin = 3;
 }
 ```
@@ -375,11 +389,13 @@ message [SyncFlagsRequest](#syncflagsrequest) {
 
 SyncFlagsResponse mirrors a bidirectional flag sync frame.
 
+*`acme/example/v3alpha1/services.proto`*
+
 ```protobuf
-message [SyncFlagsResponse](#syncflagsresponse) {
+message SyncFlagsResponse {
   uint64 sequence = 1;
-  acme.example.v2.[StreamCursor](acme.example.v2.md#streamcursor) cursor = 2;
-  acme.example.v2.[ErrorDetail](acme.example.v2.md#errordetail) error = 3;
+  acme.example.v2.StreamCursor cursor = 2;
+  acme.example.v2.ErrorDetail error = 3;
   bool fin = 4;
 }
 ```
@@ -388,8 +404,10 @@ message [SyncFlagsResponse](#syncflagsresponse) {
 
 FeatureFlag describes a toggle evaluated by fictional clients.
 
+*`acme/example/v3alpha1/types.proto`*
+
 ```protobuf
-message [FeatureFlag](#featureflag) {
+message FeatureFlag {
 // Stable identifier (slug).
   string key = 1 [
       (buf.validate.field).required = true,
@@ -400,8 +418,8 @@ message [FeatureFlag](#featureflag) {
   string display_name = 2 [(buf.validate.field).string.max_len = 256];
   string description = 3;
   bool default_enabled = 4;
-  [ReleaseChannel](#releasechannel) channel = 5;
-  acme.example.v2.[SharedMetadata](acme.example.v2.md#sharedmetadata) metadata = 6;
+  ReleaseChannel channel = 5;
+  acme.example.v2.SharedMetadata metadata = 6;
   google.protobuf.Timestamp updated_at = 7;
 }
 ```
@@ -410,9 +428,11 @@ message [FeatureFlag](#featureflag) {
 
 FlagOverride pins a flag value for one tenant.
 
+*`acme/example/v3alpha1/types.proto`*
+
 ```protobuf
-message [FlagOverride](#flagoverride) {
-  acme.example.v2.[TenantRef](acme.example.v2.md#tenantref) tenant = 1;
+message FlagOverride {
+  acme.example.v2.TenantRef tenant = 1;
   string flag_key = 2 [(buf.validate.field).string.min_len = 1];
   bool enabled = 3;
   google.protobuf.Timestamp expires_at = 4;
@@ -423,8 +443,10 @@ message [FlagOverride](#flagoverride) {
 
 ExperimentArm is one variant in an A/B style experiment.
 
+*`acme/example/v3alpha1/types.proto`*
+
 ```protobuf
-message [ExperimentArm](#experimentarm) {
+message ExperimentArm {
   string arm_id = 1 [
       (buf.validate.field).required = true,
       (buf.validate.field).string.pattern = "^arm_[a-z0-9]+$"
@@ -442,17 +464,19 @@ message [ExperimentArm](#experimentarm) {
 
 ExperimentSpec defines arms and eligibility for assignment RPCs.
 
+*`acme/example/v3alpha1/types.proto`*
+
 ```protobuf
-message [ExperimentSpec](#experimentspec) {
+message ExperimentSpec {
   
   string experiment_id = 1 [
       (buf.validate.field).required = true,
       (buf.validate.field).string.uuid = true
     ];
   string hypothesis = 2;
-  repeated [ExperimentArm](#experimentarm) arms = 3 [(buf.validate.field).repeated.min_items = 2];
-  acme.example.v2.[TimeWindow](acme.example.v2.md#timewindow) enrollment_window = 4;
-  acme.example.v2.[LabelSet](acme.example.v2.md#labelset) audience = 5;
+  repeated ExperimentArm arms = 3 [(buf.validate.field).repeated.min_items = 2];
+  acme.example.v2.TimeWindow enrollment_window = 4;
+  acme.example.v2.LabelSet audience = 5;
 }
 ```
 
@@ -468,13 +492,15 @@ id: "experiment.arms_weights_positive"
 
 ExperimentAssignment records which arm a subject received.
 
+*`acme/example/v3alpha1/types.proto`*
+
 ```protobuf
-message [ExperimentAssignment](#experimentassignment) {
+message ExperimentAssignment {
   string experiment_id = 1;
   string subject_id = 2 [(buf.validate.field).string.min_len = 1];
   string arm_id = 3;
   google.protobuf.Timestamp assigned_at = 4;
-  acme.example.v2.[TraceContext](acme.example.v2.md#tracecontext) trace = 5;
+  acme.example.v2.TraceContext trace = 5;
 }
 ```
 
@@ -482,13 +508,15 @@ message [ExperimentAssignment](#experimentassignment) {
 
 SubjectRef identifies a user or device for experiment assignment.
 
+*`acme/example/v3alpha1/types.proto`*
+
 ```protobuf
-message [SubjectRef](#subjectref) {
+message SubjectRef {
   oneof identity {
       string user_id = 1 [(buf.validate.field).string.uuid = true];
       string device_id = 2 [(buf.validate.field).string.min_len = 8];
     }
-  acme.example.v2.[TenantRef](acme.example.v2.md#tenantref) tenant = 3;
+  acme.example.v2.TenantRef tenant = 3;
 }
 ```
 
@@ -496,9 +524,11 @@ message [SubjectRef](#subjectref) {
 
 RolloutStage documents progressive delivery for pipeline stories.
 
+*`acme/example/v3alpha1/types.proto`*
+
 ```protobuf
-message [RolloutStage](#rolloutstage) {
-  [ReleaseChannel](#releasechannel) channel = 1;
+message RolloutStage {
+  ReleaseChannel channel = 1;
   google.protobuf.Duration bake_time = 2;
   uint32 max_parallel = 3 [(buf.validate.field).uint32.lte = 1000];
 }
@@ -508,11 +538,13 @@ message [RolloutStage](#rolloutstage) {
 
 PlatformHint links alpha metadata back into v2 envelopes.
 
+*`acme/example/v3alpha1/types.proto`*
+
 ```protobuf
-message [PlatformHint](#platformhint) {
+message PlatformHint {
   string hint_id = 1;
-  acme.example.v2.[PayloadEnvelope](acme.example.v2.md#payloadenvelope) envelope = 2;
-  repeated acme.example.v2.[Label](acme.example.v2.md#label) labels = 3;
+  acme.example.v2.PayloadEnvelope envelope = 2;
+  repeated acme.example.v2.Label labels = 3;
 }
 ```
 
@@ -520,8 +552,10 @@ message [PlatformHint](#platformhint) {
 
 ReleaseChannel classifies how aggressively a flag rolls out.
 
+*`acme/example/v3alpha1/types.proto`*
+
 ```protobuf
-enum [ReleaseChannel](#releasechannel) {
+enum ReleaseChannel {
   RELEASE_CHANNEL_UNSPECIFIED = 0;
   RELEASE_CHANNEL_INTERNAL = 1;
   RELEASE_CHANNEL_CANARY = 2;

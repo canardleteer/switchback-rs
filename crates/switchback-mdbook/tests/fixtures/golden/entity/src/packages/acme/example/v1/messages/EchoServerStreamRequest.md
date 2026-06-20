@@ -2,12 +2,14 @@
 
 EchoServerStreamRequest opens a server-streaming RPC.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [EchoServerStreamRequest](EchoServerStreamRequest.md) {
+message EchoServerStreamRequest {
   string message = 1;
   uint32 chunk_count = 2;
   google.protobuf.Duration inter_chunk_delay = 3;
-  acme.example.v2.[SharedMetadata](../../v2/messages/SharedMetadata.md) metadata = 4;
+  acme.example.v2.SharedMetadata metadata = 4;
 }
 ```
 

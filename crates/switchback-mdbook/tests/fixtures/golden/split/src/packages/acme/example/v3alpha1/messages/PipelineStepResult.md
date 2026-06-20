@@ -2,12 +2,14 @@
 
 PipelineStepResult reports completion for a single step.
 
+*`acme/example/v3alpha1/pipeline.proto`*
+
 ```protobuf
-message [PipelineStepResult](PipelineStepResult.md) {
+message PipelineStepResult {
   string step_name = 1;
-  [PipelineStatus](../enums/PipelineStatus.md) status = 2;
-  acme.example.v2.[ErrorDetail](../../v2/messages/ErrorDetail.md) error = 3;
-  acme.example.v2.[StreamCursor](../../v2/messages/StreamCursor.md) cursor = 4;
+  PipelineStatus status = 2;
+  acme.example.v2.ErrorDetail error = 3;
+  acme.example.v2.StreamCursor cursor = 4;
   google.protobuf.Timestamp finished_at = 5;
 }
 ```

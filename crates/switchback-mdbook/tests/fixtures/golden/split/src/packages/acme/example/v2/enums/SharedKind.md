@@ -9,8 +9,10 @@ SharedKind classifies metadata rows in examples.
  | BETA | second variant |
  | GAMMA | third variant |
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-enum [SharedKind](SharedKind.md) {
+enum SharedKind {
   SHARED_KIND_UNSPECIFIED = 0;
   SHARED_KIND_ALPHA = 1;
   SHARED_KIND_BETA = 2;

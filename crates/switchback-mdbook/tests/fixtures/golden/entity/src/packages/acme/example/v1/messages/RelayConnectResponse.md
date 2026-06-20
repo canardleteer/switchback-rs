@@ -2,12 +2,14 @@
 
 RelayConnectResponse is one server-to-client frame in RelayConnect.
 
+*`acme/example/v1/gateway.proto`*
+
 ```protobuf
-message [RelayConnectResponse](RelayConnectResponse.md) {
+message RelayConnectResponse {
   oneof payload {
-      [RelayAck](RelayAck.md) ack = 1;
-      [RelayFrame](RelayFrame.md) frame = 2;
-      [RelayClose](RelayClose.md) close = 3;
+      RelayAck ack = 1;
+      RelayFrame frame = 2;
+      RelayClose close = 3;
     }
 }
 ```

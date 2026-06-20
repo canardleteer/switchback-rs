@@ -2,10 +2,12 @@
 
 PublishEventsResponse acknowledges a published event stream.
 
+*`acme/example/v1/gateway.proto`*
+
 ```protobuf
-message [PublishEventsResponse](PublishEventsResponse.md) {
+message PublishEventsResponse {
   string event_id = 1;
-  acme.example.v2.[StreamCursor](../../v2/messages/StreamCursor.md) cursor = 2;
+  acme.example.v2.StreamCursor cursor = 2;
 }
 ```
 

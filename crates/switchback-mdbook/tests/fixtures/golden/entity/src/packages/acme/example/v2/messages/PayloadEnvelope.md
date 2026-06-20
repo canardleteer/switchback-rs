@@ -2,11 +2,13 @@
 
 PayloadEnvelope wraps opaque bytes with metadata.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [PayloadEnvelope](PayloadEnvelope.md) {
-  [PayloadHeader](PayloadHeader.md) header = 1;
+message PayloadEnvelope {
+  PayloadHeader header = 1;
   bytes body = 2;
-  [SharedMetadata](SharedMetadata.md) metadata = 3;
+  SharedMetadata metadata = 3;
 }
 ```
 

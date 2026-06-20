@@ -2,10 +2,12 @@
 
 ApplyInventoryAdjustmentsRequest batches adjustments.
 
+*`acme/example/v2/catalog.proto`*
+
 ```protobuf
-message [ApplyInventoryAdjustmentsRequest](ApplyInventoryAdjustmentsRequest.md) {
-  repeated [InventoryAdjustment](InventoryAdjustment.md) adjustments = 1;
-  [ResourceIdentity](ResourceIdentity.md) actor = 2;
+message ApplyInventoryAdjustmentsRequest {
+  repeated InventoryAdjustment adjustments = 1;
+  ResourceIdentity actor = 2;
 }
 ```
 

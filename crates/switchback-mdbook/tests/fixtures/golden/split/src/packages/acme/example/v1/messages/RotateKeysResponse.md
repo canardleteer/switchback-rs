@@ -2,9 +2,11 @@
 
 RotateKeysResponse returns an operation handle.
 
+*`acme/example/v1/gateway.proto`*
+
 ```protobuf
-message [RotateKeysResponse](RotateKeysResponse.md) {
-  acme.example.v2.[LongRunningOperation](../../v2/messages/LongRunningOperation.md) operation = 1;
+message RotateKeysResponse {
+  acme.example.v2.LongRunningOperation operation = 1;
 }
 ```
 

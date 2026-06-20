@@ -92,4 +92,10 @@ pub struct CompanionFile {
     ///
     /// Parser-local provenance only; not serialized on the wire.
     pub source_path: PathBuf,
+    /// Human nav label (first markdown heading or humanized stem).
+    pub title: String,
+    /// Logical source directory relative to corpus root (slash-separated).
+    pub source_dir: String,
+    /// Source filename stem (e.g. `README`, `MOVING-TO-V2`).
+    pub stem: String,
 }

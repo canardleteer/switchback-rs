@@ -2,10 +2,12 @@
 
 ListEchoHistoryResponse returns history rows.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [ListEchoHistoryResponse](ListEchoHistoryResponse.md) {
-  repeated [EchoHistoryEntry](EchoHistoryEntry.md) entries = 1;
-  acme.example.v2.[PageResult](../../v2/messages/PageResult.md) page = 2;
+message ListEchoHistoryResponse {
+  repeated EchoHistoryEntry entries = 1;
+  acme.example.v2.PageResult page = 2;
 }
 ```
 

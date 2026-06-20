@@ -2,12 +2,14 @@
 
 WatchInventoryResponse is one event on the WatchInventory server stream.
 
+*`acme/example/v2/services.proto`*
+
 ```protobuf
-message [WatchInventoryResponse](WatchInventoryResponse.md) {
+message WatchInventoryResponse {
   string event_id = 1;
-  [InventoryAdjustment](InventoryAdjustment.md) adjustment = 2;
+  InventoryAdjustment adjustment = 2;
   google.protobuf.Timestamp observed_at = 3;
-  [StreamCursor](StreamCursor.md) cursor = 4;
+  StreamCursor cursor = 4;
 }
 ```
 

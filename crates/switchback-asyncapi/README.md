@@ -12,7 +12,7 @@ family parser lands.
 
 JSON Schema alone does not fully validate AsyncAPI — custom parser rules are
 deferred. See
-[`planning/PROGRESS.md`](https://github.com/canardleteer/switchback-rs/blob/main/planning/PROGRESS.md).
+[ADR 0005](https://github.com/canardleteer/switchback-rs/blob/main/docs/adr/0005-vendored-json-schema-meta-schemas-per-parser-crate.md).
 
 ```rust
 use switchback_asyncapi::meta_schemas::{self, SCHEMAS_3_1_0};

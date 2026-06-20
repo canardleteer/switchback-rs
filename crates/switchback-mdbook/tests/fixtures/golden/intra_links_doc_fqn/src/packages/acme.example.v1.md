@@ -20,10 +20,11 @@ EchoService exposes echo RPCs for documentation tests.
    E-->>C: EchoBidiStreamResponse
  ```
 
+*`acme/example/v1/echo.proto`*
+
 **EchoUnary** ( [EchoUnaryRequest](#echounaryrequest) ) returns ( [EchoUnaryResponse](#echounaryresponse) )
 
 ```protobuf
-rpc EchoUnary (acme.example.v1.[EchoUnaryRequest](#echounaryrequest)) returns (acme.example.v1.[EchoUnaryResponse](#echounaryresponse));
 option idempotency_level = NO_SIDE_EFFECTS;
 ```
 
@@ -38,33 +39,17 @@ EchoUnary is the hello-world RPC for this fixture.
 
 **EchoServerStream** ( [EchoServerStreamRequest](#echoserverstreamrequest) ) returns ( [EchoServerStreamResponse](#echoserverstreamresponse) )
 
-```protobuf
-rpc EchoServerStream (acme.example.v1.[EchoServerStreamRequest](#echoserverstreamrequest)) returns (stream acme.example.v1.[EchoServerStreamResponse](#echoserverstreamresponse));
-```
-
 EchoServerStream demonstrates server streaming in generated docs.
 
 **EchoClientStream** ( [EchoClientStreamRequest](#echoclientstreamrequest) ) returns ( [EchoClientStreamResponse](#echoclientstreamresponse) )
-
-```protobuf
-rpc EchoClientStream (stream acme.example.v1.[EchoClientStreamRequest](#echoclientstreamrequest)) returns (acme.example.v1.[EchoClientStreamResponse](#echoclientstreamresponse));
-```
 
 EchoClientStream demonstrates client streaming uploads.
 
 **EchoBidiStream** ( [EchoBidiStreamRequest](#echobidistreamrequest) ) returns ( [EchoBidiStreamResponse](#echobidistreamresponse) )
 
-```protobuf
-rpc EchoBidiStream (stream acme.example.v1.[EchoBidiStreamRequest](#echobidistreamrequest)) returns (stream acme.example.v1.[EchoBidiStreamResponse](#echobidistreamresponse));
-```
-
 EchoBidiStream demonstrates bidirectional streaming.
 
 **BatchEcho** ( [BatchEchoRequest](#batchechorequest) ) returns ( [BatchEchoResponse](#batchechoresponse) )
-
-```protobuf
-rpc BatchEcho (acme.example.v1.[BatchEchoRequest](#batchechorequest)) returns (acme.example.v1.[BatchEchoResponse](#batchechoresponse));
-```
 
 BatchEcho sends many envelopes in one unary call.
 
@@ -72,37 +57,23 @@ BatchEcho sends many envelopes in one unary call.
 
 **WatchEcho** ( [WatchEchoRequest](#watchechorequest) ) returns ( [WatchEchoResponse](#watchechoresponse) )
 
-```protobuf
-rpc WatchEcho (acme.example.v1.[WatchEchoRequest](#watchechorequest)) returns (stream acme.example.v1.[WatchEchoResponse](#watchechoresponse));
-```
-
 WatchEcho pushes events for a subscription (server streaming).
 
 ### GatewayService
 
 GatewayService focuses on streaming patterns and catalog adjacency.
 
-**RelayConnect** ( [RelayConnectRequest](#relayconnectrequest) ) returns ( [RelayConnectResponse](#relayconnectresponse) )
+*`acme/example/v1/gateway.proto`*
 
-```protobuf
-rpc RelayConnect (stream acme.example.v1.[RelayConnectRequest](#relayconnectrequest)) returns (stream acme.example.v1.[RelayConnectResponse](#relayconnectresponse));
-```
+**RelayConnect** ( [RelayConnectRequest](#relayconnectrequest) ) returns ( [RelayConnectResponse](#relayconnectresponse) )
 
 RelayConnect opens a bidirectional stream for frame exchange.
 
 **PublishEvents** ( [PublishEventsRequest](#publisheventsrequest) ) returns ( [PublishEventsResponse](#publisheventsresponse) )
 
-```protobuf
-rpc PublishEvents (stream acme.example.v1.[PublishEventsRequest](#publisheventsrequest)) returns (acme.example.v1.[PublishEventsResponse](#publisheventsresponse));
-```
-
 PublishEvents accepts a client stream of PublishEventsRequest messages.
 
 **ListCatalogProducts** ( [ListCatalogProductsRequest](#listcatalogproductsrequest) ) returns ( [ListCatalogProductsResponse](#listcatalogproductsresponse) )
-
-```protobuf
-rpc ListCatalogProducts (acme.example.v1.[ListCatalogProductsRequest](#listcatalogproductsrequest)) returns (acme.example.v1.[ListCatalogProductsResponse](#listcatalogproductsresponse));
-```
 
 ListCatalogProducts bridges to v2 catalog types for cross-package links.
 
@@ -110,11 +81,9 @@ ListCatalogProducts bridges to v2 catalog types for cross-package links.
 
 AdminService documents infrequent control-plane RPCs.
 
-**RotateKeys** ( [RotateKeysRequest](#rotatekeysrequest) ) returns ( [RotateKeysResponse](#rotatekeysresponse) )
+*`acme/example/v1/gateway.proto`*
 
-```protobuf
-rpc RotateKeys (acme.example.v1.[RotateKeysRequest](#rotatekeysrequest)) returns (acme.example.v1.[RotateKeysResponse](#rotatekeysresponse));
-```
+**RotateKeys** ( [RotateKeysRequest](#rotatekeysrequest) ) returns ( [RotateKeysResponse](#rotatekeysresponse) )
 
 RotateKeys starts a synthetic long-running operation.
 
@@ -127,19 +96,21 @@ EchoUnaryRequest carries the unary payload.
  Fields reference `[SharedMetadata](acme.example.v2.md#sharedmetadata)` for trace identifiers.
  See also `[BatchRequest](acme.example.v2.md#batchrequest)` for multi-item batch uploads.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [EchoUnaryRequest](#echounaryrequest) {
+message EchoUnaryRequest {
 // User-visible text to echo back.
 // 
 //  Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
 //  commodo consequat.
   string message = 1;
-  acme.example.v2.[SharedMetadata](acme.example.v2.md#sharedmetadata) metadata = 2;
+  acme.example.v2.SharedMetadata metadata = 2;
   oneof _locale {
     optional string locale = 3;
   }
   repeated string tags = 4;
-  acme.example.v2.[EchoExtension](acme.example.v2.md#echoextension) extension = 5;
+  acme.example.v2.EchoExtension extension = 5;
 }
 ```
 
@@ -147,11 +118,13 @@ message [EchoUnaryRequest](#echounaryrequest) {
 
 EchoUnaryResponse returns the echoed text.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [EchoUnaryResponse](#echounaryresponse) {
+message EchoUnaryResponse {
   string message = 1;
   google.protobuf.Timestamp echoed_at = 2;
-  acme.example.v2.[SharedMetadata](acme.example.v2.md#sharedmetadata) metadata = 3;
+  acme.example.v2.SharedMetadata metadata = 3;
 }
 ```
 
@@ -159,12 +132,14 @@ message [EchoUnaryResponse](#echounaryresponse) {
 
 EchoServerStreamRequest opens a server-streaming RPC.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [EchoServerStreamRequest](#echoserverstreamrequest) {
+message EchoServerStreamRequest {
   string message = 1;
   uint32 chunk_count = 2;
   google.protobuf.Duration inter_chunk_delay = 3;
-  acme.example.v2.[SharedMetadata](acme.example.v2.md#sharedmetadata) metadata = 4;
+  acme.example.v2.SharedMetadata metadata = 4;
 }
 ```
 
@@ -172,10 +147,12 @@ message [EchoServerStreamRequest](#echoserverstreamrequest) {
 
 EchoServerStreamResponse is one chunk in a server stream.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [EchoServerStreamResponse](#echoserverstreamresponse) {
+message EchoServerStreamResponse {
   string message = 1;
-  acme.example.v2.[StreamCursor](acme.example.v2.md#streamcursor) cursor = 2;
+  acme.example.v2.StreamCursor cursor = 2;
   uint32 index = 3;
 }
 ```
@@ -184,8 +161,10 @@ message [EchoServerStreamResponse](#echoserverstreamresponse) {
 
 EchoClientStreamRequest is one chunk in a client stream upload.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [EchoClientStreamRequest](#echoclientstreamrequest) {
+message EchoClientStreamRequest {
   string message = 1;
   uint32 part_index = 2;
   bool last_part = 3;
@@ -196,8 +175,10 @@ message [EchoClientStreamRequest](#echoclientstreamrequest) {
 
 EchoClientStreamResponse aggregates a client stream on the server.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [EchoClientStreamResponse](#echoclientstreamresponse) {
+message EchoClientStreamResponse {
   string joined_message = 1;
   uint32 parts_received = 2;
   google.protobuf.Timestamp completed_at = 3;
@@ -208,8 +189,10 @@ message [EchoClientStreamResponse](#echoclientstreamresponse) {
 
 EchoBidiStreamRequest is one frame in a bidirectional echo session.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [EchoBidiStreamRequest](#echobidistreamrequest) {
+message EchoBidiStreamRequest {
   string message = 1;
   uint64 sequence = 2;
   bool fin = 3;
@@ -220,12 +203,14 @@ message [EchoBidiStreamRequest](#echobidistreamrequest) {
 
 EchoBidiStreamResponse mirrors a bidirectional frame back to the client.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [EchoBidiStreamResponse](#echobidistreamresponse) {
+message EchoBidiStreamResponse {
   string message = 1;
   uint64 sequence = 2;
   bool fin = 3;
-  acme.example.v2.[StreamCursor](acme.example.v2.md#streamcursor) cursor = 4;
+  acme.example.v2.StreamCursor cursor = 4;
 }
 ```
 
@@ -233,11 +218,13 @@ message [EchoBidiStreamResponse](#echobidistreamresponse) {
 
 WatchEchoRequest subscribes to echo events for a topic.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [WatchEchoRequest](#watchechorequest) {
+message WatchEchoRequest {
   string topic = 1;
-  acme.example.v2.[TimeWindow](acme.example.v2.md#timewindow) window = 2;
-  repeated acme.example.v2.[FilterExpression](acme.example.v2.md#filterexpression) filters = 3;
+  acme.example.v2.TimeWindow window = 2;
+  repeated acme.example.v2.FilterExpression filters = 3;
 }
 ```
 
@@ -245,10 +232,12 @@ message [WatchEchoRequest](#watchechorequest) {
 
 WatchEchoResponse is pushed on the WatchEcho server stream.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [WatchEchoResponse](#watchechoresponse) {
+message WatchEchoResponse {
   string event_id = 1;
-  [EchoUnaryResponse](#echounaryresponse) payload = 2;
+  EchoUnaryResponse payload = 2;
   google.protobuf.Timestamp observed_at = 3;
 }
 ```
@@ -257,9 +246,11 @@ message [WatchEchoResponse](#watchechoresponse) {
 
 BatchEchoRequest wraps a v2 batch payload for STANDARD RPC naming.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [BatchEchoRequest](#batchechorequest) {
-  acme.example.v2.[BatchRequest](acme.example.v2.md#batchrequest) batch = 1;
+message BatchEchoRequest {
+  acme.example.v2.BatchRequest batch = 1;
 }
 ```
 
@@ -267,9 +258,11 @@ message [BatchEchoRequest](#batchechorequest) {
 
 BatchEchoResponse wraps a v2 batch result for STANDARD RPC naming.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [BatchEchoResponse](#batchechoresponse) {
-  acme.example.v2.[BatchResponse](acme.example.v2.md#batchresponse) batch = 1;
+message BatchEchoResponse {
+  acme.example.v2.BatchResponse batch = 1;
 }
 ```
 
@@ -277,11 +270,13 @@ message [BatchEchoResponse](#batchechoresponse) {
 
 LegacyEchoNote is an ancillary message for cross-link examples.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [LegacyEchoNote](#legacyechonote) {
+message LegacyEchoNote {
   string note_id = 1;
   string body = 2;
-  acme.example.v2.[SeeAlsoBlock](acme.example.v2.md#seealsoblock) see_also = 3;
+  acme.example.v2.SeeAlsoBlock see_also = 3;
 }
 ```
 
@@ -289,11 +284,13 @@ message [LegacyEchoNote](#legacyechonote) {
 
 EchoConfiguration captures static config referenced in comments only.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [EchoConfiguration](#echoconfiguration) {
+message EchoConfiguration {
   uint32 default_chunk_size = 1;
   google.protobuf.Duration default_timeout = 2;
-  acme.example.v2.[RetryPolicy](acme.example.v2.md#retrypolicy) retry_policy = 3;
+  acme.example.v2.RetryPolicy retry_policy = 3;
 }
 ```
 
@@ -301,9 +298,11 @@ message [EchoConfiguration](#echoconfiguration) {
 
 EchoConfigurationRequest fetches EchoConfiguration.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [EchoConfigurationRequest](#echoconfigurationrequest) {
-  acme.example.v2.[TenantRef](acme.example.v2.md#tenantref) tenant = 1;
+message EchoConfigurationRequest {
+  acme.example.v2.TenantRef tenant = 1;
 }
 ```
 
@@ -311,9 +310,11 @@ message [EchoConfigurationRequest](#echoconfigurationrequest) {
 
 EchoConfigurationResponse returns EchoConfiguration.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [EchoConfigurationResponse](#echoconfigurationresponse) {
-  [EchoConfiguration](#echoconfiguration) config = 1;
+message EchoConfigurationResponse {
+  EchoConfiguration config = 1;
 }
 ```
 
@@ -321,10 +322,12 @@ message [EchoConfigurationResponse](#echoconfigurationresponse) {
 
 DocumentedEchoPair ties request/response for See Also blocks.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [DocumentedEchoPair](#documentedechopair) {
-  [EchoUnaryRequest](#echounaryrequest) request = 1;
-  [EchoUnaryResponse](#echounaryresponse) response = 2;
+message DocumentedEchoPair {
+  EchoUnaryRequest request = 1;
+  EchoUnaryResponse response = 2;
 }
 ```
 
@@ -332,12 +335,14 @@ message [DocumentedEchoPair](#documentedechopair) {
 
 EchoHistoryEntry is one row in a fictional audit trail.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [EchoHistoryEntry](#echohistoryentry) {
+message EchoHistoryEntry {
   google.protobuf.Timestamp at = 1;
   string rpc_name = 2;
-  [EchoUnaryRequest](#echounaryrequest) unary_request = 3;
-  acme.example.v2.[ErrorDetail](acme.example.v2.md#errordetail) error = 4;
+  EchoUnaryRequest unary_request = 3;
+  acme.example.v2.ErrorDetail error = 4;
 }
 ```
 
@@ -345,10 +350,12 @@ message [EchoHistoryEntry](#echohistoryentry) {
 
 ListEchoHistoryRequest lists EchoHistoryEntry rows.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [ListEchoHistoryRequest](#listechohistoryrequest) {
-  acme.example.v2.[ListOptions](acme.example.v2.md#listoptions) options = 1;
-  acme.example.v2.[ResourceIdentity](acme.example.v2.md#resourceidentity) identity = 2;
+message ListEchoHistoryRequest {
+  acme.example.v2.ListOptions options = 1;
+  acme.example.v2.ResourceIdentity identity = 2;
 }
 ```
 
@@ -356,10 +363,12 @@ message [ListEchoHistoryRequest](#listechohistoryrequest) {
 
 ListEchoHistoryResponse returns history rows.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [ListEchoHistoryResponse](#listechohistoryresponse) {
-  repeated [EchoHistoryEntry](#echohistoryentry) entries = 1;
-  acme.example.v2.[PageResult](acme.example.v2.md#pageresult) page = 2;
+message ListEchoHistoryResponse {
+  repeated EchoHistoryEntry entries = 1;
+  acme.example.v2.PageResult page = 2;
 }
 ```
 
@@ -367,11 +376,13 @@ message [ListEchoHistoryResponse](#listechohistoryresponse) {
 
 RelayFrame is one unit in a bidirectional relay stream.
 
+*`acme/example/v1/gateway.proto`*
+
 ```protobuf
-message [RelayFrame](#relayframe) {
+message RelayFrame {
   uint64 sequence = 1;
   bytes payload = 2;
-  acme.example.v2.[SharedMetadata](acme.example.v2.md#sharedmetadata) metadata = 3;
+  acme.example.v2.SharedMetadata metadata = 3;
   bool fin = 4;
 }
 ```
@@ -380,12 +391,14 @@ message [RelayFrame](#relayframe) {
 
 RelayOpen carries handshake metadata for RelayConnect.
 
+*`acme/example/v1/gateway.proto`*
+
 ```protobuf
-message [RelayOpen](#relayopen) {
+message RelayOpen {
   string session_name = 1;
-  acme.example.v2.[ResourceIdentity](acme.example.v2.md#resourceidentity) identity = 2;
-  acme.example.v2.[QuotaLimits](acme.example.v2.md#quotalimits) requested_limits = 3;
-  repeated acme.example.v2.[Label](acme.example.v2.md#label) labels = 4;
+  acme.example.v2.ResourceIdentity identity = 2;
+  acme.example.v2.QuotaLimits requested_limits = 3;
+  repeated acme.example.v2.Label labels = 4;
 }
 ```
 
@@ -393,11 +406,13 @@ message [RelayOpen](#relayopen) {
 
 RelayAck confirms a relay session is ready.
 
+*`acme/example/v1/gateway.proto`*
+
 ```protobuf
-message [RelayAck](#relayack) {
+message RelayAck {
   string session_id = 1;
   google.protobuf.Timestamp opened_at = 2;
-  acme.example.v2.[AggregateHealth](acme.example.v2.md#aggregatehealth) health = 3;
+  acme.example.v2.AggregateHealth health = 3;
 }
 ```
 
@@ -405,8 +420,10 @@ message [RelayAck](#relayack) {
 
 RelayClose ends a relay session gracefully.
 
+*`acme/example/v1/gateway.proto`*
+
 ```protobuf
-message [RelayClose](#relayclose) {
+message RelayClose {
   string session_id = 1;
   string reason = 2;
 }
@@ -416,12 +433,14 @@ message [RelayClose](#relayclose) {
 
 RelayConnectRequest is one client-to-server frame in RelayConnect.
 
+*`acme/example/v1/gateway.proto`*
+
 ```protobuf
-message [RelayConnectRequest](#relayconnectrequest) {
+message RelayConnectRequest {
   oneof payload {
-      [RelayOpen](#relayopen) open = 1;
-      [RelayFrame](#relayframe) frame = 2;
-      [RelayClose](#relayclose) close = 3;
+      RelayOpen open = 1;
+      RelayFrame frame = 2;
+      RelayClose close = 3;
     }
 }
 ```
@@ -430,12 +449,14 @@ message [RelayConnectRequest](#relayconnectrequest) {
 
 RelayConnectResponse is one server-to-client frame in RelayConnect.
 
+*`acme/example/v1/gateway.proto`*
+
 ```protobuf
-message [RelayConnectResponse](#relayconnectresponse) {
+message RelayConnectResponse {
   oneof payload {
-      [RelayAck](#relayack) ack = 1;
-      [RelayFrame](#relayframe) frame = 2;
-      [RelayClose](#relayclose) close = 3;
+      RelayAck ack = 1;
+      RelayFrame frame = 2;
+      RelayClose close = 3;
     }
 }
 ```
@@ -444,10 +465,12 @@ message [RelayConnectResponse](#relayconnectresponse) {
 
 PublishEventsRequest is one client-streaming upload chunk.
 
+*`acme/example/v1/gateway.proto`*
+
 ```protobuf
-message [PublishEventsRequest](#publisheventsrequest) {
+message PublishEventsRequest {
   string event_type = 1;
-  acme.example.v2.[PayloadEnvelope](acme.example.v2.md#payloadenvelope) envelope = 2;
+  acme.example.v2.PayloadEnvelope envelope = 2;
   google.protobuf.Timestamp client_time = 3;
 }
 ```
@@ -456,10 +479,12 @@ message [PublishEventsRequest](#publisheventsrequest) {
 
 PublishEventsResponse acknowledges a published event stream.
 
+*`acme/example/v1/gateway.proto`*
+
 ```protobuf
-message [PublishEventsResponse](#publisheventsresponse) {
+message PublishEventsResponse {
   string event_id = 1;
-  acme.example.v2.[StreamCursor](acme.example.v2.md#streamcursor) cursor = 2;
+  acme.example.v2.StreamCursor cursor = 2;
 }
 ```
 
@@ -467,9 +492,11 @@ message [PublishEventsResponse](#publisheventsresponse) {
 
 ListCatalogProductsRequest wraps the v2 catalog list request.
 
+*`acme/example/v1/gateway.proto`*
+
 ```protobuf
-message [ListCatalogProductsRequest](#listcatalogproductsrequest) {
-  acme.example.v2.[ListProductsRequest](acme.example.v2.md#listproductsrequest) request = 1;
+message ListCatalogProductsRequest {
+  acme.example.v2.ListProductsRequest request = 1;
 }
 ```
 
@@ -477,9 +504,11 @@ message [ListCatalogProductsRequest](#listcatalogproductsrequest) {
 
 ListCatalogProductsResponse wraps the v2 catalog list response.
 
+*`acme/example/v1/gateway.proto`*
+
 ```protobuf
-message [ListCatalogProductsResponse](#listcatalogproductsresponse) {
-  acme.example.v2.[ListProductsResponse](acme.example.v2.md#listproductsresponse) response = 1;
+message ListCatalogProductsResponse {
+  acme.example.v2.ListProductsResponse response = 1;
 }
 ```
 
@@ -487,9 +516,11 @@ message [ListCatalogProductsResponse](#listcatalogproductsresponse) {
 
 RotateKeysRequest triggers a long-running operation example.
 
+*`acme/example/v1/gateway.proto`*
+
 ```protobuf
-message [RotateKeysRequest](#rotatekeysrequest) {
-  acme.example.v2.[TenantRef](acme.example.v2.md#tenantref) tenant = 1;
+message RotateKeysRequest {
+  acme.example.v2.TenantRef tenant = 1;
   bool dry_run = 2;
 }
 ```
@@ -498,9 +529,11 @@ message [RotateKeysRequest](#rotatekeysrequest) {
 
 RotateKeysResponse returns an operation handle.
 
+*`acme/example/v1/gateway.proto`*
+
 ```protobuf
-message [RotateKeysResponse](#rotatekeysresponse) {
-  acme.example.v2.[LongRunningOperation](acme.example.v2.md#longrunningoperation) operation = 1;
+message RotateKeysResponse {
+  acme.example.v2.LongRunningOperation operation = 1;
 }
 ```
 

@@ -4,9 +4,11 @@
 //!
 //! Commands: `ci`, `fmt`, `fmt-check`, `clippy`, `test`, `spec-vendor`,
 //! `parse` (`--parser <family>`), `render` (`--renderer <target>`), `link-check`,
-//! `update-golden`, and `check-toolchain`.
+//! `check-highlight-rust`, `update-highlight-golden`, `update-golden`, and `check-toolchain`.
 
 mod ci;
+mod highlight;
+mod link_check;
 mod render;
 mod spec_vendor;
 mod workspace;
@@ -24,7 +26,8 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Cmd {
-    /// Always-on gate: toolchain, fmt-check, check, clippy, test, audit, rumdl, ryl.
+    /// Always-on gate: toolchain, fmt-check, check, clippy, test, render,
+    /// link-check, check-highlight-rust, spec-vendor, audit, rumdl, ryl.
     Ci,
     /// `cargo fmt --all` plus `rumdl fmt` and `ryl --fix`.
     Fmt,
@@ -53,7 +56,11 @@ enum Cmd {
     },
     /// Not implemented yet.
     LinkCheck,
-    /// Not implemented yet.
+    /// Golden HTML parity for protobuf / CEL highlighter.
+    CheckHighlightRust,
+    /// Refresh highlight HTML golden fixtures.
+    UpdateHighlightGolden,
+    /// Refresh mdBook renderer golden fixtures.
     UpdateGolden,
     /// Validate vendored meta-schema SHA-256 locks.
     SpecVendor {
@@ -88,6 +95,9 @@ fn main() -> Result<()> {
             run("check", ci::check)?;
             run("clippy", ci::clippy)?;
             run("test", ci::test)?;
+            run("render mdbook", render::render_mdbook)?;
+            run("link-check", link_check::link_check)?;
+            run("check-highlight-rust", highlight::check_highlight_rust)?;
             run("spec-vendor validate", || {
                 spec_vendor::validate(spec_vendor::Family::All)
             })?;
@@ -117,7 +127,9 @@ fn main() -> Result<()> {
                 bail!("render --renderer {renderer}: unknown renderer (supported: mdbook)")
             }
         }
-        Cmd::LinkCheck => bail!("link-check: not implemented yet"),
+        Cmd::LinkCheck => link_check::link_check(),
+        Cmd::CheckHighlightRust => highlight::check_highlight_rust(),
+        Cmd::UpdateHighlightGolden => highlight::update_highlight_golden(),
         Cmd::UpdateGolden => render::update_golden(),
         Cmd::SpecVendor { cmd } => match cmd {
             SpecVendorCmd::Validate { family } => {

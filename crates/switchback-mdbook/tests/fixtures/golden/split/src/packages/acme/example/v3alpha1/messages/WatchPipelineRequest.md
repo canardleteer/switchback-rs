@@ -2,11 +2,13 @@
 
 WatchPipelineRequest subscribes to pipeline step events.
 
+*`acme/example/v3alpha1/pipeline.proto`*
+
 ```protobuf
-message [WatchPipelineRequest](WatchPipelineRequest.md) {
+message WatchPipelineRequest {
   string run_id = 1 [(buf.validate.field).string.uuid = true];
-  acme.example.v2.[TimeWindow](../../v2/messages/TimeWindow.md) window = 2;
-  repeated acme.example.v2.[FilterExpression](../../v2/messages/FilterExpression.md) filters = 3;
+  acme.example.v2.TimeWindow window = 2;
+  repeated acme.example.v2.FilterExpression filters = 3;
 }
 ```
 

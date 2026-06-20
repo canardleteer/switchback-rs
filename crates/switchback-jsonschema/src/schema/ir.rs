@@ -1,4 +1,4 @@
-//! JSON Schema IR mirroring spread-it-out sketch.
+//! JSON Schema IR for the shared document envelope and schema bodies.
 
 use std::collections::BTreeMap;
 

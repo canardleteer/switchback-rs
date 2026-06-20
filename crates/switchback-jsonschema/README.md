@@ -43,8 +43,9 @@ Serialize with
 
 ## Shared-layer re-exports
 
-Phase 2+ family parsers (`switchback-openapi`, `switchback-asyncapi`,
-`switchback-openrpc`) can depend on these without duplicating:
+OpenAPI, AsyncAPI, and OpenRPC family parsers (`switchback-openapi`,
+`switchback-asyncapi`, `switchback-openrpc`) can depend on these without
+duplicating:
 
 - `loader::{Loader, Doc, Resolved}`
 - `resolver::{RefResolver, RefIndex, NodeRef}`
@@ -85,5 +86,4 @@ source restoration, and structural smoke on `$ref` indexes.
 ## Architecture
 
 See
-[`planning/original-plan/spread-it-out.md`](https://github.com/canardleteer/switchback-rs/blob/main/planning/original-plan/spread-it-out.md)
-(§ switchback-jsonschema).
+[ADR 0006](https://github.com/canardleteer/switchback-rs/blob/main/docs/adr/0006-json-schema-parser-loader-and-catalog-in-switchback-jsonschema.md).

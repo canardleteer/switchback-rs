@@ -2,11 +2,13 @@
 
 UploadDraftsResponse aggregates uploaded draft parts.
 
+*`acme/example/v2/services.proto`*
+
 ```protobuf
-message [UploadDraftsResponse](UploadDraftsResponse.md) {
+message UploadDraftsResponse {
   string draft_id = 1;
   uint32 parts_received = 2;
-  [Product](Product.md) product = 3;
+  Product product = 3;
 }
 ```
 

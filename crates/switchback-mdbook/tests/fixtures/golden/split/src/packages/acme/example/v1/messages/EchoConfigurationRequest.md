@@ -2,9 +2,11 @@
 
 EchoConfigurationRequest fetches EchoConfiguration.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [EchoConfigurationRequest](EchoConfigurationRequest.md) {
-  acme.example.v2.[TenantRef](../../v2/messages/TenantRef.md) tenant = 1;
+message EchoConfigurationRequest {
+  acme.example.v2.TenantRef tenant = 1;
 }
 ```
 

@@ -22,7 +22,7 @@ use crate::input::ResolvedInput;
 use crate::populate::comments::{dedent_comment, package_overview, CommentIndex};
 use crate::populate::fence::{
     rpc_signature_plain, synthesize_enum_body, synthesize_message_body,
-    synthesize_method_options_body, synthesize_rpc_body, synthesize_service_body,
+    synthesize_method_options_body, synthesize_service_body,
 };
 use crate::populate::source::SourceCache;
 
@@ -37,6 +37,8 @@ enum EntityKind {
 pub struct PopulatedEntity {
     pub entity: Entity<ProtobufCategory>,
     pub refs: Vec<Reference>,
+    /// Protobuf source file path for this entity (e.g. `acme/example/v1/echo.proto`).
+    pub source_file: String,
 }
 
 pub struct PopulatedContract {
@@ -110,6 +112,7 @@ pub fn populate(resolved: &ResolvedInput) -> switchback_traits::Result<Populated
                             }),
                         },
                         refs: message_field_refs(&module_id, msg),
+                        source_file: proto_name.to_string(),
                     });
                 }
                 EntityKind::Enum => {
@@ -138,6 +141,7 @@ pub fn populate(resolved: &ResolvedInput) -> switchback_traits::Result<Populated
                             }),
                         },
                         refs: Vec::new(),
+                        source_file: proto_name.to_string(),
                     });
                 }
                 EntityKind::Service => {
@@ -165,6 +169,7 @@ pub fn populate(resolved: &ResolvedInput) -> switchback_traits::Result<Populated
                             }),
                         },
                         refs: service_method_refs(&module_id, svc),
+                        source_file: proto_name.to_string(),
                     });
                 }
                 EntityKind::Operation => {
@@ -178,11 +183,7 @@ pub fn populate(resolved: &ResolvedInput) -> switchback_traits::Result<Populated
                         .map(dedent_comment)
                         .filter(|s| !s.is_empty());
                     let signature = rpc_signature_plain(method);
-                    let mut fence_body = synthesize_rpc_body(method);
-                    if let Some(opts) = synthesize_method_options_body(method) {
-                        fence_body.push('\n');
-                        fence_body.push_str(&opts);
-                    }
+                    let fence_body = synthesize_method_options_body(method).unwrap_or_default();
                     entities.push(PopulatedEntity {
                         entity: Entity {
                             id: EntityId::new(
@@ -203,6 +204,7 @@ pub fn populate(resolved: &ResolvedInput) -> switchback_traits::Result<Populated
                             }),
                         },
                         refs: operation_refs(&module_id, method),
+                        source_file: proto_name.to_string(),
                     });
                 }
             }
@@ -380,5 +382,37 @@ fn for_each_entity_in_files(
                 }
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::descriptor::FileDescriptorProto;
+
+    fn file(name: &str, package: &str) -> FileDescriptorProto {
+        FileDescriptorProto {
+            name: Some(name.into()),
+            package: Some(package.into()),
+            ..Default::default()
+        }
+    }
+
+    #[test]
+    fn packages_map_preserves_file_to_generate_order_within_package() {
+        let a = file("pkg/a.proto", "acme.v1");
+        let b = file("pkg/b.proto", "acme.v1");
+        let proto_files = vec![a.clone(), b.clone()];
+
+        let forward_inputs = ["pkg/a.proto".into(), "pkg/b.proto".into()];
+        let forward = packages_map(&proto_files, &forward_inputs);
+        let reverse_inputs = ["pkg/b.proto".into(), "pkg/a.proto".into()];
+        let reverse = packages_map(&proto_files, &reverse_inputs);
+
+        let forward_names: Vec<_> = forward["acme.v1"].iter().map(|(n, _)| *n).collect();
+        let reverse_names: Vec<_> = reverse["acme.v1"].iter().map(|(n, _)| *n).collect();
+
+        assert_eq!(forward_names, ["pkg/a.proto", "pkg/b.proto"]);
+        assert_eq!(reverse_names, ["pkg/b.proto", "pkg/a.proto"]);
     }
 }

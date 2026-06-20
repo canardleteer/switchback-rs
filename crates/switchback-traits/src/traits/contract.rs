@@ -81,6 +81,9 @@ pub fn companion_files_to_stored(files: &[CompanionFile], media_type: &str) -> V
             output_name: file.output_name.clone(),
             bytes: file.bytes.clone(),
             media_type: media_type.to_string(),
+            title: file.title.clone(),
+            source_dir: file.source_dir.clone(),
+            stem: file.stem.clone(),
         })
         .collect()
 }

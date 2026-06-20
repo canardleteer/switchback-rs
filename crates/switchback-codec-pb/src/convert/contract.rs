@@ -86,6 +86,9 @@ fn companion_to_proto(companion: &Companion) -> pb::Companion {
         output_name: companion.output_name.clone(),
         bytes: companion.bytes.clone(),
         media_type: companion.media_type.clone(),
+        title: companion.title.clone(),
+        source_dir: companion.source_dir.clone(),
+        stem: companion.stem.clone(),
         ..Default::default()
     }
 }
@@ -95,5 +98,8 @@ fn companion_from_proto(companion: pb::Companion) -> Companion {
         output_name: companion.output_name,
         bytes: companion.bytes,
         media_type: companion.media_type,
+        title: companion.title,
+        source_dir: companion.source_dir,
+        stem: companion.stem,
     }
 }

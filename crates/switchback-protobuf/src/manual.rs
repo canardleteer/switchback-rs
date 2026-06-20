@@ -6,7 +6,8 @@ use sha2::{Digest, Sha256};
 use switchback_codec_pb::WIRE_VERSION;
 use switchback_traits::{
     companion_files_to_stored, ContractFamily, Document, EntityCategory, LinkExtractor,
-    ManualContract, Module, ModuleId, ReferenceManual, ResolvedManual, SourceRef, StoredEntity,
+    ManualContract, Module, ModuleId, ReferenceManual, ResolvedManual, Source, SourceRef,
+    StoredEntity,
 };
 
 use crate::family::ProtobufFamily;
@@ -94,10 +95,21 @@ fn stored_entity_from_populated(
         category: pe.entity.category.as_str().to_string(),
         title: pe.entity.title.clone(),
         doc: pe.entity.doc.clone(),
-        source: None,
+        source: entity_source(&pe.source_file),
         refs: pe.refs.clone(),
         intra_links,
         body: pe.entity.body.clone(),
+    }
+}
+
+fn entity_source(file: &str) -> Option<Source> {
+    if file.is_empty() {
+        None
+    } else {
+        Some(Source {
+            file: file.to_string(),
+            span: None,
+        })
     }
 }
 

@@ -22,10 +22,11 @@
 //! async-primary with sync-secondary APIs for external compatibility. All seam
 //! types must traverse async task boundaries (`Send` / `Sync` as appropriate).
 //!
-//! Helper implementations (slug, link check, paths, prose escaping) are deferred
-//! to follow-up work; this crate ships trait definitions, model types, and
-//! [`entity_rel_path`] / [`ResolvedManual::from_reference_manual`].
+//! Helper implementations (slug, link check, paths, companion discovery, prose
+//! escaping) are partially centralized; companion nav metadata and ancestor
+//! discovery live in [`companion`](crate::companion). Remaining helpers deferred.
 
+mod companion;
 mod error;
 mod ids;
 mod intra_links;
@@ -36,12 +37,17 @@ mod options;
 mod paths;
 mod traits;
 
+pub use companion::{
+    companion_output_name_from_path, companion_output_name_from_segments,
+    discover_ancestors_companions, module_path_from_output, normalize_rel_dir,
+    source_dir_from_output, source_dir_string, title_from_markdown,
+};
 pub use error::{Result, SwitchbackError};
 pub use ids::{EntityId, GroupId, ModuleId, SpecVersion};
 pub use intra_links::{anchor, apply_intra_links, links_for_field};
 pub use layout_paths::{
     heading_slug, layout_entity_rel_path, package_index_rel, package_page_rel,
-    relative_path_from_dir, LayoutEntityKey, ProtobufEntityKind,
+    relative_path_from_dir, unique_heading_ids, LayoutEntityKey, ProtobufEntityKind,
 };
 pub use link_context::LinkContext;
 pub use model::{

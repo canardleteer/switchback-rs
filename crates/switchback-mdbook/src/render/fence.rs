@@ -1,9 +1,19 @@
 //! Protobuf fence wrapping and CEL splitting.
 
-use switchback_traits::{apply_intra_links, EscapeTags, IntraLink, LinkContext, LinkFormatter};
+use switchback_traits::{
+    apply_intra_links, EscapeTags, IntraLink, LinkContext, LinkFormatter, StoredEntity,
+};
 
 use crate::highlight::split_message_cel_blocks;
 use crate::render::markdown_doc::format_markdown_doc;
+
+pub fn proto_file_name(entity: &StoredEntity) -> String {
+    entity
+        .source
+        .as_ref()
+        .map(|s| s.file.clone())
+        .unwrap_or_default()
+}
 
 pub fn render_proto_fence(
     file_name: &str,
@@ -22,8 +32,7 @@ pub fn render_proto_fence(
     if !file_name.is_empty() {
         out.push_str(&format!("*`{file_name}`*\n\n"));
     }
-    let linked_body = link_proto_body(body, ctx);
-    let (body, cel_blocks) = split_message_cel_blocks(&linked_body);
+    let (body, cel_blocks) = split_message_cel_blocks(body);
     push_proto_fence_body(&mut out, &body);
     for block in cel_blocks {
         out.push_str("**Protovalidate (CEL)**\n\n");
@@ -109,53 +118,4 @@ fn link_ref(
         name = reference.target.name
     );
     ctx.link_type(from, &fqn)
-}
-
-pub fn link_proto_body(body: &str, ctx: &LinkContext) -> String {
-    let from = ctx
-        .render_from
-        .as_deref()
-        .unwrap_or_else(|| std::path::Path::new(&ctx.markdown_root));
-    let mut names: Vec<(String, String)> = Vec::new();
-    for key in ctx.layout_entity_keys() {
-        if matches!(
-            key.kind,
-            switchback_traits::ProtobufEntityKind::Message
-                | switchback_traits::ProtobufEntityKind::Enum
-        ) {
-            let fqn = format!(".{}.{name}", key.package, name = key.name);
-            let link = ctx.link_type(from, &fqn);
-            if link.starts_with('[') {
-                names.push((key.name.clone(), link));
-            }
-        }
-    }
-    names.sort_by_key(|(n, _)| std::cmp::Reverse(n.len()));
-    let mut out = body.to_string();
-    for (name, link) in names {
-        out = replace_type_token(&out, &name, &link);
-    }
-    out
-}
-
-fn replace_type_token(haystack: &str, name: &str, link: &str) -> String {
-    let mut out = String::new();
-    let mut rest = haystack;
-    while let Some(idx) = rest.find(name) {
-        let before = &rest[..idx];
-        let after_char = rest.get(idx + name.len()..);
-        let valid_start = idx == 0 || !rest.as_bytes()[idx - 1].is_ascii_alphanumeric();
-        let valid_end = after_char
-            .and_then(|s| s.chars().next())
-            .is_none_or(|c| !c.is_ascii_alphanumeric());
-        out.push_str(before);
-        if valid_start && valid_end {
-            out.push_str(link);
-        } else {
-            out.push_str(name);
-        }
-        rest = &rest[idx + name.len()..];
-    }
-    out.push_str(rest);
-    out
 }

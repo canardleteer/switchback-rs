@@ -2,12 +2,14 @@
 
 RelayOpen carries handshake metadata for RelayConnect.
 
+*`acme/example/v1/gateway.proto`*
+
 ```protobuf
-message [RelayOpen](RelayOpen.md) {
+message RelayOpen {
   string session_name = 1;
-  acme.example.v2.[ResourceIdentity](../../v2/messages/ResourceIdentity.md) identity = 2;
-  acme.example.v2.[QuotaLimits](../../v2/messages/QuotaLimits.md) requested_limits = 3;
-  repeated acme.example.v2.[Label](../../v2/messages/Label.md) labels = 4;
+  acme.example.v2.ResourceIdentity identity = 2;
+  acme.example.v2.QuotaLimits requested_limits = 3;
+  repeated acme.example.v2.Label labels = 4;
 }
 ```
 

@@ -2,9 +2,11 @@
 
 UpsertFlagOverrideResponse echoes the stored override.
 
+*`acme/example/v3alpha1/services.proto`*
+
 ```protobuf
-message [UpsertFlagOverrideResponse](UpsertFlagOverrideResponse.md) {
-  [FlagOverride](FlagOverride.md) override = 1;
+message UpsertFlagOverrideResponse {
+  FlagOverride override = 1;
 }
 ```
 

@@ -2,10 +2,12 @@
 
 ExportAuditBatchResponse returns exported audit data.
 
+*`acme/example/v2/services.proto`*
+
 ```protobuf
-message [ExportAuditBatchResponse](ExportAuditBatchResponse.md) {
-  [AuditBatch](AuditBatch.md) batch = 1;
-  [PageResult](PageResult.md) page = 2;
+message ExportAuditBatchResponse {
+  AuditBatch batch = 1;
+  PageResult page = 2;
 }
 ```
 

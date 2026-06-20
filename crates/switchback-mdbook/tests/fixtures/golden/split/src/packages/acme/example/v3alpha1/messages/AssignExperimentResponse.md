@@ -2,9 +2,11 @@
 
 AssignExperimentResponse returns the assignment row.
 
+*`acme/example/v3alpha1/services.proto`*
+
 ```protobuf
-message [AssignExperimentResponse](AssignExperimentResponse.md) {
-  [ExperimentAssignment](ExperimentAssignment.md) assignment = 1;
+message AssignExperimentResponse {
+  ExperimentAssignment assignment = 1;
 }
 ```
 

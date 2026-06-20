@@ -17,9 +17,9 @@ Relates to
 
 ## Context
 
-Before Phase 2 switchback-openapi, grouping rules and the boundary between
+Before `switchback-openapi` lands, grouping rules and the boundary between
 switchback-jsonschema shared layer and family-specific behavior IR were pinned
-informally in planning/PROGRESS.md. Spread-it-out defines different grouping per
+informally before this ADR. The toolchain roadmap defines different grouping per
 family and a shared envelope for OpenAPI/AsyncAPI/OpenRPC. ADR 0007 records
 parser conventions; this ADR records populate grouping and IR placement.
 
@@ -33,7 +33,7 @@ corpus selection are pinned as follows.
 | Family | Group key | Title / dir source | Notes |
 |--------|-----------|-------------------|-------|
 | **OpenAPI** | One group per `tags[]` entry; **untagged** bucket for operations without tags | `x-tagGroups` defines section order and nested tag membership when present | Operations inherit tags from operation or path item. Component schemas land in the **components** group when not tied to a tag context; schemas referenced only from untagged operations use **untagged**. |
-| **AsyncAPI** | Primary group: application `id` or slug of `info.title`; tag-based subgroups where spread-it-out expects | Preserve 2.x vs 3.x structure — no normalization | **MVP categories:** `channel`, `operation`, `message`, `schema`. **`parameter` and `security-scheme`:** standalone entities only when populated from `components` maps; otherwise inline in operation/channel fence bodies. |
+| **AsyncAPI** | Primary group: application `id` or slug of `info.title`; tag-based subgroups when tags are present | Preserve 2.x vs 3.x structure — no normalization | **MVP categories:** `channel`, `operation`, `message`, `schema`. **`parameter` and `security-scheme`:** standalone entities only when populated from `components` maps; otherwise inline in operation/channel fence bodies. |
 | **OpenRPC** | One group per `x-tagGroup` name; default group when absent | Module id = service (`info.title` or document stem) | Methods → `operation`; content descriptors and `components.schemas` → `schema` / `parameter`. |
 | **JSON Schema catalog** | One group per entry file (ADR 0006) | File stem or `$id` segment | No change. |
 

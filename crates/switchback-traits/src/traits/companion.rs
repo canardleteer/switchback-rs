@@ -2,6 +2,7 @@
 
 use std::path::Path;
 
+use crate::companion::title_from_markdown;
 use crate::{CompanionFile, Result};
 
 /// Where a family searches for companion documents relative to contract inputs.
@@ -29,6 +30,11 @@ pub trait CompanionStrategy: Send + Sync {
     /// MIME types accepted for companion documents in this family.
     fn companion_media_types(&self) -> &'static [&'static str];
 
+    /// Human nav title for a companion (default: first markdown `#` heading).
+    fn companion_title(&self, stem: &str, bytes: &[u8]) -> String {
+        title_from_markdown(stem, bytes)
+    }
+
     /// Discovers companions on the local filesystem relative to contract inputs.
     ///
     /// Default returns empty; families with companion docs override.
@@ -50,6 +56,11 @@ pub trait AsyncCompanionStrategy: Send + Sync {
 
     /// MIME types accepted for companion documents in this family.
     fn companion_media_types(&self) -> &'static [&'static str];
+
+    /// Human nav title for a companion (default: first markdown `#` heading).
+    fn companion_title(&self, stem: &str, bytes: &[u8]) -> String {
+        title_from_markdown(stem, bytes)
+    }
 
     /// Discovers companions asynchronously (remote fetch, registry lookup, etc.).
     async fn discover(&self, contract_root: &Path) -> Result<Vec<CompanionFile>>;

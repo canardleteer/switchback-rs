@@ -2,9 +2,11 @@
 
 BatchEchoResponse wraps a v2 batch result for STANDARD RPC naming.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [BatchEchoResponse](BatchEchoResponse.md) {
-  acme.example.v2.[BatchResponse](../../v2/messages/BatchResponse.md) batch = 1;
+message BatchEchoResponse {
+  acme.example.v2.BatchResponse batch = 1;
 }
 ```
 

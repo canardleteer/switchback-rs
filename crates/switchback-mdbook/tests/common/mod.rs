@@ -1,13 +1,15 @@
 //! Shared helpers for switchback-mdbook integration tests.
 
+#![allow(dead_code)]
+
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 
-use switchback_mdbook::{write_output_files, MdBookRenderer};
+use switchback_mdbook::{parse_parameter, write_output_files, MdBookRenderer};
 use switchback_protobuf::examples::{fixtures_proto_dir, EXAMPLE_PROTO_INPUTS};
 use switchback_protobuf::load::{ensure_test_proto_deps, load, LoadArgs};
 use switchback_protobuf::Compiler;
-use switchback_traits::{Options, ReferenceManual, SyncRenderer};
+use switchback_traits::{Layout, Options, ReferenceManual, SyncRenderer};
 
 pub fn manifest_dir() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -54,11 +56,49 @@ pub fn load_fixture(name: &str) -> ReferenceManual {
     load(&args).expect("load fixture")
 }
 
+pub fn options_for(layout: Layout, extra: &str) -> Options {
+    let mut param = format!("layout={}", layout_name(layout));
+    if !extra.is_empty() {
+        param.push(',');
+        param.push_str(extra);
+    }
+    parse_parameter(&Some(param)).expect("parse options")
+}
+
+fn layout_name(layout: Layout) -> &'static str {
+    match layout {
+        Layout::Package => "package",
+        Layout::Entity => "entity",
+        Layout::Split => "split",
+    }
+}
+
 pub fn render_manual(manual: &ReferenceManual, opts: &Options) -> BTreeMap<String, String> {
+    let dir = render_to_tempdir(manual, opts);
+    collect_tree(dir.path())
+}
+
+pub fn render_to_tempdir(manual: &ReferenceManual, opts: &Options) -> tempfile::TempDir {
     let files = MdBookRenderer.render(manual, opts).expect("render");
     let dir = tempfile::tempdir().expect("tempdir");
     write_output_files(dir.path(), &files).expect("write");
-    collect_tree(dir.path())
+    dir
+}
+
+pub fn render_examples(layout: Layout, extra: &str) -> tempfile::TempDir {
+    let manual = load_examples();
+    let opts = options_for(layout, extra);
+    render_to_tempdir(&manual, &opts)
+}
+
+pub fn render_fixture(name: &str, extra: &str) -> tempfile::TempDir {
+    let manual = load_fixture(name);
+    let opts = parse_parameter(&Some(extra.into())).expect("parse options");
+    render_to_tempdir(&manual, &opts)
+}
+
+pub fn render_doc_rich(extra: &str) -> tempfile::TempDir {
+    render_fixture("doc_rich.proto", extra)
 }
 
 pub fn collect_tree(root: &Path) -> BTreeMap<String, String> {

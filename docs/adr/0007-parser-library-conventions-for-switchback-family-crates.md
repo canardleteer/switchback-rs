@@ -7,20 +7,14 @@ Date: 2026-06-20
 Proposed
 
 Relates to
-[4. Protobuf parser compile-to-descriptors in switchback-protobuf](0004-protobuf-parser-compile-to-descriptors-in-switchback-protobuf.md)
-
-Relates to
-[6. JSON Schema parser loader and catalog in switchback-jsonschema](0006-json-schema-parser-loader-and-catalog-in-switchback-jsonschema.md)
-
-Relates to
-[8. Per-family grouping rules and jsonschema shared-layer boundary](0008-per-family-grouping-rules-and-jsonschema-shared-layer-boundary.md)
+[9. Companion nav metadata on wire in switchback-traits](0009-companion-nav-metadata-on-wire-in-switchback-traits.md)
 
 ## Context
 
-Phase 1 parser libraries (`switchback-protobuf`, `switchback-jsonschema`)
+Early parser libraries (`switchback-protobuf`, `switchback-jsonschema`)
 established a repeatable shape before OpenAPI/AsyncAPI/OpenRPC behavior parsers
-land. Conventions were pinned informally in planning/PROGRESS.md but not
-recorded as an ADR. Future family parsers and agents need a single authoritative
+land. Conventions were established in those crates but not recorded as an ADR
+until now. Future family parsers and agents need a single authoritative
 reference.
 
 ## Decision
@@ -41,7 +35,9 @@ superseded:
 5. **Provenance** — `StoredEntity.source` and parser-side `Span` are deferred in
    the library phase; group `source` and fence bodies carry provenance for now.
 6. **LinkExtractor** — structural cross-refs populate `StoredEntity.refs`;
-   `intra_links` stay empty until prose extraction is ported.
+   protobuf FQN prose extraction populates `intra_links` via
+   `ProtobufFqnLinkExtractor`. Field-level links inside protobuf fences are
+   out of scope (renderer places links in RPC signature and doc prose).
 7. **JSON Schema families** — OpenAPI, AsyncAPI, and OpenRPC reuse
    `switchback-jsonschema` loader, resolver, envelope shell, and schema body
    producer; family-specific behavior IR stays in each family crate (see ADR

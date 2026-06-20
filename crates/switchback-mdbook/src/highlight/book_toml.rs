@@ -11,7 +11,7 @@ pub const PREPROCESSOR_COMMAND: &str = "mdbook-protobuf-highlight";
 /// Relative path under the book root for highlight layout CSS (no HLJS panel on `<pre>`).
 pub const THEME_CSS_REL: &str = "theme/protobuf-highlight.css";
 
-const HIGHLIGHT_COMMENT_BEGIN: &str = "# --- protobuf-mdbook: syntax highlighting";
+const HIGHLIGHT_COMMENT_BEGIN: &str = "# --- switchback-mdbook: syntax highlighting";
 
 /// CSS shipped with init / `mdbook-protobuf-highlight install` (padding only; colors from mdBook `highlight.css`).
 pub fn theme_css_content() -> &'static str {
@@ -121,19 +121,19 @@ fn append_highlight_comment(book_toml: &mut String, enabled: bool) {
     }
     let comment = if enabled {
         r#"
-# --- protobuf-mdbook: syntax highlighting (enabled at init) ---
+# --- switchback-mdbook: syntax highlighting (enabled at init) ---
 # Build-time highlighting via mdbook-protobuf-highlight preprocessor.
 # Generated pages use ```protobuf fences; Protovalidate message-level CEL also
 # emits ```cel fences (or is split from protobuf fences at mdbook build).
 # Toggle in [preprocessor.protobuf-highlight]: protobuf = false / cel = false
 # Disable entirely: no_proto_highlight and no_cel_highlight at init.
-# --- end protobuf-mdbook syntax highlighting ---
+# --- end switchback-mdbook syntax highlighting ---
 "#
     } else {
         r#"
-# --- protobuf-mdbook: syntax highlighting (disabled at init) ---
+# --- switchback-mdbook: syntax highlighting (disabled at init) ---
 # Run mdbook-protobuf-highlight install or re-init without no_*_highlight flags.
-# --- end protobuf-mdbook syntax highlighting ---
+# --- end switchback-mdbook syntax highlighting ---
 "#
     };
     if !book_toml.ends_with('\n') {

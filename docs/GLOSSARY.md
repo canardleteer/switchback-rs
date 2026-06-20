@@ -108,7 +108,12 @@ field) of an [entity](#entity). Part of an [intra-link](#intra-link); lets a
 
 A markdown file discovered beside contract inputs and copied verbatim into the
 reference manual. Companion discovery and placement rules are owned by each
-[contract family](#contract-family) via its companion strategy.
+[contract family](#contract-family) via its companion strategy. On the wire,
+each companion stores `title`, `source_dir`, and `stem` nav metadata (see
+[ADR 0009](adr/0009-companion-nav-metadata-on-wire-in-switchback-traits.md))
+so [renderers](#renderer) can build navigation without re-parsing companion
+bytes or re-walking source trees. How each target format uses those fields
+(for example mdBook `SUMMARY.md` nesting) is renderer-specific.
 
 ### component
 

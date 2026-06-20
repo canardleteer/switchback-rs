@@ -2,10 +2,12 @@
 
 BatchResponse collects results for batch RPC documentation.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [BatchResponse](BatchResponse.md) {
-  repeated [BatchItemResult](BatchItemResult.md) results = 1;
-  [PageResult](PageResult.md) page = 2;
+message BatchResponse {
+  repeated BatchItemResult results = 1;
+  PageResult page = 2;
 }
 ```
 

@@ -2,12 +2,14 @@
 
 BatchItemResult reports per-item outcomes.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [BatchItemResult](BatchItemResult.md) {
-  [BatchKey](BatchKey.md) key = 1;
+message BatchItemResult {
+  BatchKey key = 1;
   bool ok = 2;
-  [ErrorDetail](ErrorDetail.md) error = 3;
-  [PayloadEnvelope](PayloadEnvelope.md) response_envelope = 4;
+  ErrorDetail error = 3;
+  PayloadEnvelope response_envelope = 4;
 }
 ```
 

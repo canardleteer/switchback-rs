@@ -2,10 +2,12 @@
 
 AggregateHealth rolls up component statuses.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [AggregateHealth](AggregateHealth.md) {
-  [HealthStatus](../enums/HealthStatus.md) overall = 1;
-  repeated [ComponentHealth](ComponentHealth.md) components = 2;
+message AggregateHealth {
+  HealthStatus overall = 1;
+  repeated ComponentHealth components = 2;
   google.protobuf.Timestamp evaluated_at = 3;
 }
 ```

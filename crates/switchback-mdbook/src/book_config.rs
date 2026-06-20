@@ -55,9 +55,15 @@ pub fn apply_book_config(opts: &mut Options) -> Result<()> {
     let config = load_mdbook_config(&book_root)?;
     let (markdown_root, summary_path) = inferred_paths(&config.book.src);
 
-    opts.markdown_root = markdown_root;
-    opts.summary_path = summary_path;
-    opts.book_root = ".".into();
+    if !opts.explicit_markdown_root {
+        opts.markdown_root = markdown_root;
+    }
+    if !opts.explicit_summary_path {
+        opts.summary_path = summary_path;
+    }
+    if !opts.explicit_book_root {
+        opts.book_root = ".".into();
+    }
 
     if let Some(mdbook_out) = opts.mdbook_out.as_deref() {
         validate_mdbook_out(mdbook_out, &book_root)?;
@@ -72,7 +78,7 @@ fn validate_mdbook_out(mdbook_out: &str, book_root: &Path) -> Result<()> {
         return Ok(());
     }
     eprintln!(
-        "protobuf-mdbook: warning: `mdbook_out={}` does not match book root `{}`; \
+        "switchback-mdbook: warning: `mdbook_out={}` does not match book root `{}`; \
          point `--mdbook_out` at the book root or omit `book=`",
         out.display(),
         book_root.display()
@@ -98,6 +104,7 @@ pub fn markdown_root_dir(book_root: &Path) -> Result<PathBuf> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::parse_parameter;
     use switchback_traits::Options;
 
     #[test]
@@ -135,6 +142,22 @@ mod tests {
         };
         apply_book_config(&mut opts).unwrap();
         assert_eq!(opts.markdown_root, "content/packages");
+        assert_eq!(opts.summary_path, "content/SUMMARY.md");
+    }
+
+    #[test]
+    fn apply_preserves_explicit_markdown_root() {
+        let dir = tempfile::tempdir().unwrap();
+        std::fs::write(
+            dir.path().join("book.toml"),
+            "[book]\ntitle = \"T\"\nsrc = \"content\"\n",
+        )
+        .unwrap();
+        let book = dir.path().to_string_lossy().to_string();
+        let mut opts =
+            parse_parameter(&Some(format!("book={book},markdown_root=content/api"))).unwrap();
+        apply_book_config(&mut opts).unwrap();
+        assert_eq!(opts.markdown_root, "content/api");
         assert_eq!(opts.summary_path, "content/SUMMARY.md");
     }
 }

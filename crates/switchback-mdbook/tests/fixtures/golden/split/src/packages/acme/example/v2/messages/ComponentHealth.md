@@ -2,10 +2,12 @@
 
 ComponentHealth describes one sub-system in aggregate health.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [ComponentHealth](ComponentHealth.md) {
+message ComponentHealth {
   string component = 1;
-  [HealthStatus](../enums/HealthStatus.md) status = 2;
+  HealthStatus status = 2;
   string detail = 3;
 }
 ```

@@ -2,8 +2,10 @@
 
 ExperimentArm is one variant in an A/B style experiment.
 
+*`acme/example/v3alpha1/types.proto`*
+
 ```protobuf
-message [ExperimentArm](ExperimentArm.md) {
+message ExperimentArm {
   string arm_id = 1 [
       (buf.validate.field).required = true,
       (buf.validate.field).string.pattern = "^arm_[a-z0-9]+$"

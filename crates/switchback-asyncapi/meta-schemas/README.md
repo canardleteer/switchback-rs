@@ -6,10 +6,10 @@ JSON Schema validation corpus from
 `extensions/`.
 
 This is the complete **JSON Schema substrate** for AsyncAPI documents. JSON
-Schema alone does not fully validate AsyncAPI — see
-[`planning/PROGRESS.md`](https://github.com/canardleteer/switchback-rs/blob/main/planning/PROGRESS.md)
-and upstream
-[custom validation needs](https://github.com/asyncapi/spec-json-schemas#custom-validation-needs).
+Schema alone does not fully validate AsyncAPI — see upstream
+[custom validation needs](https://github.com/asyncapi/spec-json-schemas#custom-validation-needs)
+and
+[ADR 0005](https://github.com/canardleteer/switchback-rs/blob/main/docs/adr/0005-vendored-json-schema-meta-schemas-per-parser-crate.md).
 
 Do not edit files under this tree by hand. Refresh from upstream:
 

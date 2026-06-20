@@ -2,11 +2,13 @@
 
 ListFeatureFlagsRequest paginates feature flags for a tenant.
 
+*`acme/example/v3alpha1/services.proto`*
+
 ```protobuf
-message [ListFeatureFlagsRequest](ListFeatureFlagsRequest.md) {
-  acme.example.v2.[ListOptions](../../v2/messages/ListOptions.md) options = 1;
-  acme.example.v2.[TenantRef](../../v2/messages/TenantRef.md) tenant = 2;
-  [ReleaseChannel](../enums/ReleaseChannel.md) channel_filter = 3;
+message ListFeatureFlagsRequest {
+  acme.example.v2.ListOptions options = 1;
+  acme.example.v2.TenantRef tenant = 2;
+  ReleaseChannel channel_filter = 3;
 }
 ```
 

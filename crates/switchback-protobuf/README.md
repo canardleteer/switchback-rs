@@ -57,11 +57,13 @@ BSR deps for the examples module (Protovalidate) are exported via
 [`ensure_test_proto_deps`](src/load.rs) / [`proto_deps`](src/proto_deps.rs),
 mirroring protobuf-mdbook CI.
 
-## Partial implementation
+## Link extraction
 
-[`ProtobufLinkExtractor`](src/link.rs) implements the trait but returns empty
-`intra_links`; FQN prose auto-linking from comments is deferred. Structural
-cross-refs on operations (`StoredEntity.refs`) are populated.
+[`ProtobufFqnLinkExtractor`](src/link.rs) (`ProtobufLinkExtractor`) extracts
+bare fully-qualified type names from leading-comment prose into `intra_links`.
+Structural cross-refs on operations (`StoredEntity.refs`) are populated.
+Field-level type links inside protobuf fences are not generated (matches
+protobuf-mdbook; links appear in RPC signature prose and doc prose only).
 
 See
 [ADR 0004](https://github.com/canardleteer/switchback-rs/blob/main/docs/adr/0004-protobuf-parser-compile-to-descriptors-in-switchback-protobuf.md).

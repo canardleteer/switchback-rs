@@ -2,8 +2,10 @@
 
 NumericRange supports validation comment examples.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [NumericRange](NumericRange.md) {
+message NumericRange {
   
   int64 min_inclusive = 1;
   int64 max_inclusive = 2;

@@ -2,9 +2,11 @@
 
 EchoConfigurationResponse returns EchoConfiguration.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [EchoConfigurationResponse](EchoConfigurationResponse.md) {
-  [EchoConfiguration](EchoConfiguration.md) config = 1;
+message EchoConfigurationResponse {
+  EchoConfiguration config = 1;
 }
 ```
 

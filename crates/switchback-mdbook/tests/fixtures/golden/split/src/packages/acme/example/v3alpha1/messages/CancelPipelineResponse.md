@@ -2,9 +2,11 @@
 
 CancelPipelineResponse acknowledges cancellation.
 
+*`acme/example/v3alpha1/pipeline.proto`*
+
 ```protobuf
-message [CancelPipelineResponse](CancelPipelineResponse.md) {
-  [PipelineRun](PipelineRun.md) run = 1;
+message CancelPipelineResponse {
+  PipelineRun run = 1;
 }
 ```
 

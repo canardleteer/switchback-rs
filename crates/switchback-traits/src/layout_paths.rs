@@ -1,5 +1,6 @@
 //! Layout-aware output paths (protobuf-mdbook parity).
 
+use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 
 use crate::options::Layout;
@@ -70,6 +71,32 @@ pub fn heading_slug(name: &str) -> String {
     id_from_content(name)
 }
 
+/// Assigns mdBook-style unique heading ids in document order (appends `-1`, `-2`, … on collision).
+pub fn unique_heading_ids(titles: impl IntoIterator<Item = impl AsRef<str>>) -> Vec<String> {
+    let mut used = HashSet::new();
+    titles
+        .into_iter()
+        .map(|title| {
+            let base = id_from_content(title.as_ref());
+            unique_id(&base, &mut used)
+        })
+        .collect()
+}
+
+fn unique_id(id: &str, used: &mut HashSet<String>) -> String {
+    if used.insert(id.to_string()) {
+        return id.to_string();
+    }
+    let mut counter = 1u32;
+    loop {
+        let candidate = format!("{id}-{counter}");
+        if used.insert(candidate.clone()) {
+            return candidate;
+        }
+        counter += 1;
+    }
+}
+
 /// Relative POSIX path from `from_dir` to `target` (mdBook link form).
 pub fn relative_path_from_dir(from_dir: &Path, target: &Path) -> String {
     let from_parts: Vec<_> = from_dir.components().collect();
@@ -121,6 +148,24 @@ mod tests {
             heading_slug("GetOrganizationsResponse"),
             "getorganizationsresponse"
         );
+    }
+
+    #[test]
+    fn unique_heading_ids_deduplicates_collisions() {
+        let ids = unique_heading_ids(["EchoRequest", "EchoResponse", "EchoRequest"]);
+        assert_eq!(ids, ["echorequest", "echoresponse", "echorequest-1"]);
+    }
+
+    #[test]
+    fn id_from_content_matches_mdbook_behavior() {
+        let cases = [
+            ("GetOrganizationsResponse", "getorganizationsresponse"),
+            ("中文標題 CJK title", "中文標題-cjk-title"),
+            ("_-_12345", "_-_12345"),
+        ];
+        for (input, expected) in cases {
+            assert_eq!(id_from_content(input), expected, "input: {input:?}");
+        }
     }
 
     #[test]

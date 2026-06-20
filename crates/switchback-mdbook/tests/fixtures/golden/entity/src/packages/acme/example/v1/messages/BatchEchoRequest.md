@@ -2,9 +2,11 @@
 
 BatchEchoRequest wraps a v2 batch payload for STANDARD RPC naming.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [BatchEchoRequest](BatchEchoRequest.md) {
-  acme.example.v2.[BatchRequest](../../v2/messages/BatchRequest.md) batch = 1;
+message BatchEchoRequest {
+  acme.example.v2.BatchRequest batch = 1;
 }
 ```
 

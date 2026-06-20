@@ -2,10 +2,12 @@
 
 ApplyInventoryAdjustmentsResponse summarizes applied rows.
 
+*`acme/example/v2/catalog.proto`*
+
 ```protobuf
-message [ApplyInventoryAdjustmentsResponse](ApplyInventoryAdjustmentsResponse.md) {
+message ApplyInventoryAdjustmentsResponse {
   uint32 applied = 1;
-  repeated [ErrorDetail](ErrorDetail.md) failures = 2;
+  repeated ErrorDetail failures = 2;
 }
 ```
 

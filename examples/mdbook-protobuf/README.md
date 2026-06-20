@@ -29,6 +29,11 @@ cargo run -p mdbook-protobuf-example -- -o /tmp/api-book
 Writes a complete book tree (for example `book.toml`, `src/SUMMARY.md`,
 `theme/`, `README.md`, and package pages).
 
+The sidebar hierarchy nests companion README files by their source directory
+(for example **Acme APIs → Example services → v1 README → Moving to v2 →
+acme.example.v1**). Companion files themselves are flat under
+`src/packages/` (for example `acme.example.v1.README.md`).
+
 Preview:
 
 ```bash

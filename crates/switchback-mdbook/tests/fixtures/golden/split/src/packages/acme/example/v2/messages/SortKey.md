@@ -2,10 +2,12 @@
 
 SortKey pairs a field name with an order.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [SortKey](SortKey.md) {
+message SortKey {
   string field = 1;
-  [SortOrder](../enums/SortOrder.md) order = 2;
+  SortOrder order = 2;
 }
 ```
 

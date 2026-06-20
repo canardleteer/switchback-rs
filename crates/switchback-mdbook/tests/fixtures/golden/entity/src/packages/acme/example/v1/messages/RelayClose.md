@@ -2,8 +2,10 @@
 
 RelayClose ends a relay session gracefully.
 
+*`acme/example/v1/gateway.proto`*
+
 ```protobuf
-message [RelayClose](RelayClose.md) {
+message RelayClose {
   string session_id = 1;
   string reason = 2;
 }

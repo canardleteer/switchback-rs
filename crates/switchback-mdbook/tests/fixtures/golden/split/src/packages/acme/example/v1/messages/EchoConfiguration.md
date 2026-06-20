@@ -2,11 +2,13 @@
 
 EchoConfiguration captures static config referenced in comments only.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [EchoConfiguration](EchoConfiguration.md) {
+message EchoConfiguration {
   uint32 default_chunk_size = 1;
   google.protobuf.Duration default_timeout = 2;
-  acme.example.v2.[RetryPolicy](../../v2/messages/RetryPolicy.md) retry_policy = 3;
+  acme.example.v2.RetryPolicy retry_policy = 3;
 }
 ```
 

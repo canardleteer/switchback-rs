@@ -2,10 +2,12 @@
 
 PublishHintsRequest is one client-streaming platform hint chunk.
 
+*`acme/example/v3alpha1/services.proto`*
+
 ```protobuf
-message [PublishHintsRequest](PublishHintsRequest.md) {
+message PublishHintsRequest {
   string batch_id = 1;
-  [PlatformHint](PlatformHint.md) hint = 2;
+  PlatformHint hint = 2;
   uint32 part_index = 3;
   bool last_part = 4;
 }

@@ -2,9 +2,11 @@
 
 ListCatalogProductsResponse wraps the v2 catalog list response.
 
+*`acme/example/v1/gateway.proto`*
+
 ```protobuf
-message [ListCatalogProductsResponse](ListCatalogProductsResponse.md) {
-  acme.example.v2.[ListProductsResponse](../../v2/messages/ListProductsResponse.md) response = 1;
+message ListCatalogProductsResponse {
+  acme.example.v2.ListProductsResponse response = 1;
 }
 ```
 

@@ -2,11 +2,13 @@
 
 PlatformHint links alpha metadata back into v2 envelopes.
 
+*`acme/example/v3alpha1/types.proto`*
+
 ```protobuf
-message [PlatformHint](PlatformHint.md) {
+message PlatformHint {
   string hint_id = 1;
-  acme.example.v2.[PayloadEnvelope](../../v2/messages/PayloadEnvelope.md) envelope = 2;
-  repeated acme.example.v2.[Label](../../v2/messages/Label.md) labels = 3;
+  acme.example.v2.PayloadEnvelope envelope = 2;
+  repeated acme.example.v2.Label labels = 3;
 }
 ```
 

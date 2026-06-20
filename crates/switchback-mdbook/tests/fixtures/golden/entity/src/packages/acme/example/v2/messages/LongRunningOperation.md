@@ -2,14 +2,16 @@
 
 LongRunningOperation is returned by admin-style RPCs in v1.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [LongRunningOperation](LongRunningOperation.md) {
+message LongRunningOperation {
   string name = 1;
-  [OperationStatus](../enums/OperationStatus.md) status = 2;
+  OperationStatus status = 2;
   google.protobuf.Timestamp start_time = 3;
   google.protobuf.Timestamp end_time = 4;
-  [RetryPolicy](RetryPolicy.md) retry_policy = 5;
-  [ErrorDetail](ErrorDetail.md) error = 6;
+  RetryPolicy retry_policy = 5;
+  ErrorDetail error = 6;
   double percent_complete = 7;
 }
 ```

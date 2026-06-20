@@ -11,7 +11,7 @@ Relates to
 
 ## Context
 
-spread-it-out Phase 5 decomposes protobuf-mdbook into parser, codec, and
+The switchback-rs toolchain decomposes protobuf-mdbook into parser, codec, and
 renderer crates. switchback-traits and switchback-codec-pb are in place (ADR
 0003). We need a protobuf ContractFamily parser that emits ReferenceManual
 without lifting the mdBook renderer yet.
@@ -32,8 +32,8 @@ Implement switchback-protobuf as a library-only parser that:
    plus companions via ancestor discovery.
 5. Exposes `load()` returning ReferenceManual and ProtobufContract for
    downstream CLI/renderer work.
-6. Defers full LinkExtractor (ProtobufLinkExtractor returns empty intra_links);
-   structural refs on operations populate StoredEntity.refs.
+6. Implements `ProtobufFqnLinkExtractor` for FQN prose auto-linking from leading
+   comments; structural refs on operations populate `StoredEntity.refs`.
 7. Vendors protobuf-mdbook examples/proto fixtures and mirrored protoc/buf +
    ProtobufCodec round-trip tests in-crate.
 
@@ -43,9 +43,9 @@ Positive: protobuf parser is testable in isolation; protoc/buf parity and wire
 round-trip are gated in CI; directory-faithful source URIs enable Buf module
 restoration after codec round-trip.
 
-Negative: intra-link extraction and FQN prose linking remain incomplete; CLI and
-switchback-mdbook renderer are still deferred; lifted internal modules lack full
-rustdoc until a follow-up pass.
+Negative: field-level intra-links inside protobuf fences remain intentionally
+omitted; CLI protoc plugin parity is still deferred; lifted internal modules
+lack full rustdoc until a follow-up pass.
 
-Follow-up: complete ProtobufLinkExtractor; wire CLI and xtask parse --parser
-protobuf; lift mdBook renderer to switchback-mdbook.
+Follow-up: wire CLI and xtask parse --parser protobuf; additional link
+formatter impls.

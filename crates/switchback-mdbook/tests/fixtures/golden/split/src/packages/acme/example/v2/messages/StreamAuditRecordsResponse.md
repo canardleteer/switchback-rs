@@ -2,10 +2,12 @@
 
 StreamAuditRecordsResponse is one audit row on the stream.
 
+*`acme/example/v2/services.proto`*
+
 ```protobuf
-message [StreamAuditRecordsResponse](StreamAuditRecordsResponse.md) {
-  [AuditRecord](AuditRecord.md) record = 1;
-  [StreamCursor](StreamCursor.md) cursor = 2;
+message StreamAuditRecordsResponse {
+  AuditRecord record = 1;
+  StreamCursor cursor = 2;
 }
 ```
 

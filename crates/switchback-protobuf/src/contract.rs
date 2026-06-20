@@ -105,7 +105,14 @@ fn stored_entity_from_populated(pe: &PopulatedEntity) -> StoredEntity {
         category: pe.entity.category.as_str().to_string(),
         title: pe.entity.title.clone(),
         doc: pe.entity.doc.clone(),
-        source: None,
+        source: if pe.source_file.is_empty() {
+            None
+        } else {
+            Some(switchback_traits::Source {
+                file: pe.source_file.clone(),
+                span: None,
+            })
+        },
         refs: pe.refs.clone(),
         intra_links: Vec::new(),
         body: pe.entity.body.clone(),

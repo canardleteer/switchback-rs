@@ -122,6 +122,9 @@ message Companion {
   string output_name = 1;
   bytes bytes = 2;
   string media_type = 3;
+  string title = 4;
+  string source_dir = 5;
+  string stem = 6;
 }
 
 message OperationBody {

@@ -2,12 +2,14 @@
 
 RelayConnectRequest is one client-to-server frame in RelayConnect.
 
+*`acme/example/v1/gateway.proto`*
+
 ```protobuf
-message [RelayConnectRequest](RelayConnectRequest.md) {
+message RelayConnectRequest {
   oneof payload {
-      [RelayOpen](RelayOpen.md) open = 1;
-      [RelayFrame](RelayFrame.md) frame = 2;
-      [RelayClose](RelayClose.md) close = 3;
+      RelayOpen open = 1;
+      RelayFrame frame = 2;
+      RelayClose close = 3;
     }
 }
 ```

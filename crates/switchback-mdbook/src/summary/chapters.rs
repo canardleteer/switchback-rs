@@ -1,12 +1,20 @@
 //! SUMMARY chapter link builders.
 
 use std::collections::BTreeMap;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use mdbook_summary::{Link, Summary, SummaryItem};
 use switchback_traits::{EntityBody, Group, Layout, LinkContext, ProtobufEntityKind, StoredEntity};
 
 use crate::summary::render_md;
+
+/// Target markdown path for a package page under the current layout.
+pub fn package_target(links: &LinkContext, layout: Layout, package: &str) -> PathBuf {
+    match layout {
+        Layout::Package => links.package_page_rel(package),
+        Layout::Entity | Layout::Split => links.package_index_rel(package),
+    }
+}
 
 pub fn entity_summary_items(
     package: &str,

@@ -2,15 +2,17 @@
 
 WatchInventoryRequest subscribes to inventory change events.
 
+*`acme/example/v2/services.proto`*
+
 ```protobuf
-message [WatchInventoryRequest](WatchInventoryRequest.md) {
+message WatchInventoryRequest {
   string warehouse_id = 1 [
       (buf.validate.field).required = true,
       (buf.validate.field).string.min_len = 1,
       (buf.validate.field).string.max_len = 128
     ];
-  [TimeWindow](TimeWindow.md) window = 2;
-  repeated [FilterExpression](FilterExpression.md) filters = 3;
+  TimeWindow window = 2;
+  repeated FilterExpression filters = 3;
 }
 ```
 

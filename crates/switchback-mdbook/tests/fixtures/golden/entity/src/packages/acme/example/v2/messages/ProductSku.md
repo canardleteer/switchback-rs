@@ -2,8 +2,10 @@
 
 ProductSku identifies a sellable item in documentation tables.
 
+*`acme/example/v2/catalog.proto`*
+
 ```protobuf
-message [ProductSku](ProductSku.md) {
+message ProductSku {
   string sku = 1 [
       (buf.validate.field).required = true,
       (buf.validate.field).string.min_len = 1,
@@ -11,9 +13,9 @@ message [ProductSku](ProductSku.md) {
     ];
   string title = 2;
   string description = 3;
-  [Money](Money.md) price = 4;
-  [ProductStatus](../enums/ProductStatus.md) status = 5;
-  repeated [Label](Label.md) labels = 6;
+  Money price = 4;
+  ProductStatus status = 5;
+  repeated Label labels = 6;
 }
 ```
 

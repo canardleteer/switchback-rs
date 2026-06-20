@@ -2,10 +2,12 @@
 
 PublishEventsRequest is one client-streaming upload chunk.
 
+*`acme/example/v1/gateway.proto`*
+
 ```protobuf
-message [PublishEventsRequest](PublishEventsRequest.md) {
+message PublishEventsRequest {
   string event_type = 1;
-  acme.example.v2.[PayloadEnvelope](../../v2/messages/PayloadEnvelope.md) envelope = 2;
+  acme.example.v2.PayloadEnvelope envelope = 2;
   google.protobuf.Timestamp client_time = 3;
 }
 ```

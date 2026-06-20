@@ -2,10 +2,12 @@
 
 EchoServerStreamResponse is one chunk in a server stream.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [EchoServerStreamResponse](EchoServerStreamResponse.md) {
+message EchoServerStreamResponse {
   string message = 1;
-  acme.example.v2.[StreamCursor](../../v2/messages/StreamCursor.md) cursor = 2;
+  acme.example.v2.StreamCursor cursor = 2;
   uint32 index = 3;
 }
 ```

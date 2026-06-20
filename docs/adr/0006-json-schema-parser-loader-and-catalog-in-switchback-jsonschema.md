@@ -14,7 +14,7 @@ Relates to
 
 ## Context
 
-Phase 1 of spread-it-out requires a shared JSON-Schema-document parser layer
+OpenAPI, AsyncAPI, and OpenRPC need a shared JSON-Schema-document parser layer
 (`switchback-jsonschema`) parallel to `switchback-protobuf`'s
 compile-to-descriptors pipeline. Vendored meta-schemas for family parser crates
 landed in ADR 0005. OpenAPI, AsyncAPI, and OpenRPC parsers will reuse loader,
@@ -33,15 +33,15 @@ Implement `switchback-jsonschema` as a library-first parser crate with:
 - **YAML parsing** — `serde-saphyr` at load time; documents stored as
   `serde_json::Value` internally.
 - **Envelope IR** — shared `info`/`servers`/`components`/`tags`/`externalDocs`
-  types for Phase 2+ family parsers; lightly populated in standalone catalog
-  mode.
+  types for OpenAPI, AsyncAPI, and OpenRPC family parsers; lightly populated in
+  standalone catalog mode.
 - **Schema IR** — internal `Schema`/`SchemaObject` flattened to seam
   `SchemaBody` at populate time.
 - **Catalog mode** — `JsonSchemaFamily` with one `Group` per entry file (group
   id = file stem); entities from root schema object plus `$defs`/`definitions`
   entries; structural `$ref` → `StoredEntity.refs`.
-- **LinkExtractor stub** — empty `intra_links` initially (mirrors protobuf Phase
-  1).
+- **LinkExtractor stub** — empty `intra_links` initially (mirrors the protobuf
+  library-first deferral).
 - **Optional features** — `validate` (`jsonschema` crate) for meta-schema
   validation hook; not wired to CLI in this pass. Default features empty; CI
   runs without network.
@@ -51,11 +51,12 @@ Implement `switchback-jsonschema` as a library-first parser crate with:
 
 ## Consequences
 
-- Phase 2 `switchback-openapi` can depend on shared loader/envelope/schema
-  modules instead of duplicating `$ref` resolution.
+- `switchback-openapi` can depend on shared loader/envelope/schema modules
+  instead of duplicating `$ref` resolution.
 - Envelope types may later split to `switchback-api` if the shared surface grows
-  unwieldy (escape hatch from spread-it-out).
+  unwieldy.
 - URL `$ref` and `--validate` remain feature-gated stretch goals until CLI/xtask
   wiring lands.
-- Agents should record optional-feature status in `planning/PROGRESS.md` when
-  extending this crate.
+- Agents should record optional-feature status in ADRs when extending this crate
+  (see
+  [AGENTS.md](https://github.com/canardleteer/switchback-rs/blob/main/AGENTS.md)).

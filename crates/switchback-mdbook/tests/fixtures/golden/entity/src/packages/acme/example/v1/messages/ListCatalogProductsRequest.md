@@ -2,9 +2,11 @@
 
 ListCatalogProductsRequest wraps the v2 catalog list request.
 
+*`acme/example/v1/gateway.proto`*
+
 ```protobuf
-message [ListCatalogProductsRequest](ListCatalogProductsRequest.md) {
-  acme.example.v2.[ListProductsRequest](../../v2/messages/ListProductsRequest.md) request = 1;
+message ListCatalogProductsRequest {
+  acme.example.v2.ListProductsRequest request = 1;
 }
 ```
 

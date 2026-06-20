@@ -26,14 +26,17 @@ impl MdBookRenderer {
         let links = LinkContext::from_manual(manual, &opts);
         let formatter = MdBookRelativeFormatter;
 
+        let companion_nav: Vec<CompanionNav> = manual
+            .modules
+            .iter()
+            .flat_map(|m| &m.contracts)
+            .flat_map(|c| &c.companions)
+            .map(CompanionNav::from_companion)
+            .collect();
+
         let mut files = Vec::new();
         for module in &manual.modules {
             for contract in &module.contracts {
-                let companions: Vec<CompanionNav> = contract
-                    .companions
-                    .iter()
-                    .map(CompanionNav::from_companion)
-                    .collect();
                 files.extend(render_companions(&contract.companions, &opts));
 
                 for group in &contract.groups {
@@ -64,11 +67,11 @@ impl MdBookRenderer {
                         }
                     }
                 }
-
-                if let Some(summary) = render_summary(manual, &opts, &links, &companions) {
-                    files.push(summary);
-                }
             }
+        }
+
+        if let Some(summary) = render_summary(manual, &opts, &links, &companion_nav) {
+            files.push(summary);
         }
 
         if opts.init {

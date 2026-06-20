@@ -5,7 +5,8 @@ use switchback_traits::{
 };
 
 use crate::render::fence::{
-    operation_signature_markdown, push_markdown_doc, push_proto_fence_body, render_proto_fence,
+    operation_signature_markdown, proto_file_name, push_markdown_doc, push_proto_fence_body,
+    render_proto_fence,
 };
 use crate::render::{md_heading, push_paragraph_break};
 
@@ -34,10 +35,13 @@ pub fn render_package_page(
         push_paragraph_break(&mut out);
     }
 
-    let services: Vec<_> = entities
+    let mut services: Vec<_> = entities
         .iter()
         .filter(|e| matches!(e.body, EntityBody::Service(_)))
         .collect();
+    if opts.alphabetize_services {
+        services.sort_by(|a, b| a.title.cmp(&b.title));
+    }
     if !services.is_empty() {
         out.push_str(&md_heading(SECTION_LEVEL, "Services"));
         for svc in services {
@@ -45,10 +49,13 @@ pub fn render_package_page(
         }
     }
 
-    let schemas: Vec<_> = entities
+    let mut schemas: Vec<_> = entities
         .iter()
         .filter(|e| matches!(e.body, EntityBody::Schema(_)))
         .collect();
+    if opts.alphabetize_messages {
+        schemas.sort_by(|a, b| a.title.cmp(&b.title));
+    }
     if !schemas.is_empty() {
         out.push_str(&md_heading(SECTION_LEVEL, "Messages and enums"));
         for schema in schemas {
@@ -104,8 +111,7 @@ fn render_operation_section(
     ));
     out.push_str("\n\n");
     if !body.fence_body.trim().is_empty() {
-        let linked = crate::render::fence::link_proto_body(&body.fence_body, ctx);
-        push_proto_fence_body(out, &linked);
+        push_proto_fence_body(out, &body.fence_body);
     }
     if let Some(doc) = op.doc.as_deref() {
         let doc = apply_intra_links("doc", doc, &op.intra_links, formatter, ctx);
@@ -134,14 +140,6 @@ fn render_schema_section(
         formatter,
         ctx,
     ));
-}
-
-fn proto_file_name(entity: &StoredEntity) -> String {
-    entity
-        .source
-        .as_ref()
-        .map(|s| s.file.clone())
-        .unwrap_or_default()
 }
 
 fn format_markdown_overview(overview: &str, opts: &Options) -> String {

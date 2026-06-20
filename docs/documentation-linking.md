@@ -7,8 +7,7 @@ how they move through parse → wire → render, and what they look like in each
 
 **Status:** protobuf examples reflect current behavior. OpenAPI, AsyncAPI, and
 OpenRPC examples are **synthetic** — intended naming and shape targets until
-those parsers land. See
-[planning/PROGRESS.md](../planning/PROGRESS.md).
+those parsers land.
 
 ---
 

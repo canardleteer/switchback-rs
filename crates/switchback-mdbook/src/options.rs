@@ -36,6 +36,8 @@ enum ParsedToken {
     IgnoreGit(bool),
     LinkFormat(String),
     SearchPath(Vec<PathBuf>),
+    AlphabetizeServices,
+    AlphabetizeMessages,
 }
 
 fn parse_token(token: &str) -> Result<ParsedToken> {
@@ -107,6 +109,8 @@ fn parse_token(token: &str) -> Result<ParsedToken> {
         "no_cel_highlight" => Ok(ParsedToken::NoCelHighlight),
         "no_proto_markdown" => Ok(ParsedToken::NoProtoMarkdown),
         "markdown_only" => Ok(ParsedToken::MarkdownOnly),
+        "alphabetize_services" => Ok(ParsedToken::AlphabetizeServices),
+        "alphabetize_messages" => Ok(ParsedToken::AlphabetizeMessages),
         other => bail!("unknown plugin option: {other:?}"),
     }
 }
@@ -121,15 +125,26 @@ fn apply_parsed(opts: &mut Options, token: ParsedToken) {
         ParsedToken::MarkdownOnly => {}
         ParsedToken::EscapeTags(mode) => opts.escape_tags = mode,
         ParsedToken::Layout(layout) => opts.layout = layout,
-        ParsedToken::BookRoot(v) => opts.book_root = v,
-        ParsedToken::MarkdownRoot(v) => opts.markdown_root = v,
-        ParsedToken::SummaryPath(v) => opts.summary_path = v,
+        ParsedToken::BookRoot(v) => {
+            opts.book_root = v;
+            opts.explicit_book_root = true;
+        }
+        ParsedToken::MarkdownRoot(v) => {
+            opts.markdown_root = v;
+            opts.explicit_markdown_root = true;
+        }
+        ParsedToken::SummaryPath(v) => {
+            opts.summary_path = v;
+            opts.explicit_summary_path = true;
+        }
         ParsedToken::Book(v) => opts.book = Some(v),
         ParsedToken::MdbookOut(v) => opts.mdbook_out = Some(v),
         ParsedToken::Title(v) => opts.title = Some(v),
         ParsedToken::IgnoreGit(v) => opts.ignore_git = v,
         ParsedToken::LinkFormat(v) => opts.link_format = Some(v),
         ParsedToken::SearchPath(paths) => opts.search_paths = paths,
+        ParsedToken::AlphabetizeServices => opts.alphabetize_services = true,
+        ParsedToken::AlphabetizeMessages => opts.alphabetize_messages = true,
     }
 }
 
@@ -179,4 +194,30 @@ pub fn parse_parameter(parameter: &Option<String>) -> Result<Options> {
 
     validate_options(&opts, saw_markdown_only)?;
     Ok(opts)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn alphabetize_defaults_off() {
+        let opts = parse_parameter(&None).unwrap();
+        assert!(!opts.alphabetize_services);
+        assert!(!opts.alphabetize_messages);
+    }
+
+    #[test]
+    fn alphabetize_services_flag() {
+        let opts = parse_parameter(&Some("alphabetize_services".into())).unwrap();
+        assert!(opts.alphabetize_services);
+        assert!(!opts.alphabetize_messages);
+    }
+
+    #[test]
+    fn alphabetize_messages_flag() {
+        let opts = parse_parameter(&Some("alphabetize_messages".into())).unwrap();
+        assert!(!opts.alphabetize_services);
+        assert!(opts.alphabetize_messages);
+    }
 }

@@ -16,7 +16,7 @@ impl CompanionStrategy for ProtobufCompanion {
     }
 
     fn output_name(&self, source_dir: &[&str], stem: &str) -> String {
-        crate::companion::companion_output_name_from_segments(source_dir, stem)
+        switchback_traits::companion_output_name_from_segments(source_dir, stem)
     }
 
     fn companion_media_types(&self) -> &'static [&'static str] {

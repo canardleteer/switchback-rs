@@ -2,17 +2,19 @@
 
 ExperimentSpec defines arms and eligibility for assignment RPCs.
 
+*`acme/example/v3alpha1/types.proto`*
+
 ```protobuf
-message [ExperimentSpec](ExperimentSpec.md) {
+message ExperimentSpec {
   
   string experiment_id = 1 [
       (buf.validate.field).required = true,
       (buf.validate.field).string.uuid = true
     ];
   string hypothesis = 2;
-  repeated [ExperimentArm](ExperimentArm.md) arms = 3 [(buf.validate.field).repeated.min_items = 2];
-  acme.example.v2.[TimeWindow](../../v2/messages/TimeWindow.md) enrollment_window = 4;
-  acme.example.v2.[LabelSet](../../v2/messages/LabelSet.md) audience = 5;
+  repeated ExperimentArm arms = 3 [(buf.validate.field).repeated.min_items = 2];
+  acme.example.v2.TimeWindow enrollment_window = 4;
+  acme.example.v2.LabelSet audience = 5;
 }
 ```
 

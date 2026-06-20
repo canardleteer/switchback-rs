@@ -116,13 +116,13 @@ fn configure_init_highlighting(opts: &Options, book_root: &str, out: &mut HashMa
     match out.get_mut(&book_key) {
         Some(book) => {
             if let Err(e) = configure_book_toml(book, config) {
-                eprintln!("protobuf-mdbook: warning: book.toml highlight config: {e:#}");
+                eprintln!("switchback-mdbook: warning: book.toml highlight config: {e:#}");
             }
         }
         None => {
             let mut book = String::new();
             if let Err(e) = configure_book_toml(&mut book, config) {
-                eprintln!("protobuf-mdbook: warning: book.toml highlight config: {e:#}");
+                eprintln!("switchback-mdbook: warning: book.toml highlight config: {e:#}");
             } else {
                 out.insert(book_key, book);
             }
@@ -139,7 +139,7 @@ pub fn init_readme_content(opts: &Options) -> String {
             String::new(),
             "Init configures the **mdbook-protobuf-highlight** preprocessor in `book.toml`. \
              At `mdbook build`, ` ```protobuf ` and ` ```cel ` fences become pre-highlighted \
-             HTML compatible with mdBook themes. See the **protobuf-mdbook** repository README \
+             HTML compatible with mdBook themes. See the **switchback-mdbook** crate README \
              (**Syntax highlighting**) for toggles and standalone install."
                 .to_string(),
         ];
@@ -171,7 +171,7 @@ Disabled at init (`no_proto_highlight` and/or `no_cel_highlight`). Run
     format!(
         r#"# Generated mdBook project
 
-This file was created by **protobuf-mdbook** when you passed `init`. You can edit or delete it.
+This file was created by **switchback-mdbook** when you passed `init`. You can edit or delete it.
 
 ## Next steps
 
@@ -187,8 +187,7 @@ This file was created by **protobuf-mdbook** when you passed `init`. You can edi
    All three binaries report the pinned mdBook version:
 
    ```bash
-   protobuf-mdbook --version
-   # or: protoc-gen-mdbook --version
+   switchback-mdbook --version
    # or: mdbook-protobuf-highlight --version
    ```
 

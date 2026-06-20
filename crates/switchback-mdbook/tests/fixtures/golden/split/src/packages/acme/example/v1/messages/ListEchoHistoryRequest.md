@@ -2,10 +2,12 @@
 
 ListEchoHistoryRequest lists EchoHistoryEntry rows.
 
+*`acme/example/v1/echo.proto`*
+
 ```protobuf
-message [ListEchoHistoryRequest](ListEchoHistoryRequest.md) {
-  acme.example.v2.[ListOptions](../../v2/messages/ListOptions.md) options = 1;
-  acme.example.v2.[ResourceIdentity](../../v2/messages/ResourceIdentity.md) identity = 2;
+message ListEchoHistoryRequest {
+  acme.example.v2.ListOptions options = 1;
+  acme.example.v2.ResourceIdentity identity = 2;
 }
 ```
 

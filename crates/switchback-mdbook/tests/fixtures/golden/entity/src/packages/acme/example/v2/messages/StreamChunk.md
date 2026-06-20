@@ -2,10 +2,12 @@
 
 StreamChunk is a unit payload in streaming RPC fixtures.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [StreamChunk](StreamChunk.md) {
-  [StreamCursor](StreamCursor.md) cursor = 1;
-  [PayloadEnvelope](PayloadEnvelope.md) payload = 2;
+message StreamChunk {
+  StreamCursor cursor = 1;
+  PayloadEnvelope payload = 2;
   bool terminal = 3;
 }
 ```

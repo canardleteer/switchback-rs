@@ -2,9 +2,11 @@
 
 UpsertFlagOverrideRequest writes a tenant-specific override.
 
+*`acme/example/v3alpha1/services.proto`*
+
 ```protobuf
-message [UpsertFlagOverrideRequest](UpsertFlagOverrideRequest.md) {
-  [FlagOverride](FlagOverride.md) override = 1;
+message UpsertFlagOverrideRequest {
+  FlagOverride override = 1;
 }
 ```
 

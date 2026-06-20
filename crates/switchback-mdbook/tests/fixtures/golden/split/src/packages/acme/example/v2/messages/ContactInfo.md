@@ -2,8 +2,10 @@
 
 ContactInfo supports oneof-based documentation rendering.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [ContactInfo](ContactInfo.md) {
+message ContactInfo {
   oneof channel {
       string email = 1;
       string phone_e164 = 2;

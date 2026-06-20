@@ -2,9 +2,11 @@
 
 LabelSet aggregates labels for resource descriptions.
 
+*`acme/example/v2/types.proto`*
+
 ```protobuf
-message [LabelSet](LabelSet.md) {
-  repeated [Label](Label.md) labels = 1;
+message LabelSet {
+  repeated Label labels = 1;
 }
 ```
 

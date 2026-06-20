@@ -2,17 +2,19 @@
 
 PipelineRun identifies a long-lived orchestration instance.
 
+*`acme/example/v3alpha1/pipeline.proto`*
+
 ```protobuf
-message [PipelineRun](PipelineRun.md) {
+message PipelineRun {
   
   string run_id = 1 [
       (buf.validate.field).required = true,
       (buf.validate.field).string.uuid = true
     ];
   string pipeline_name = 2 [(buf.validate.field).string.min_len = 1];
-  [PipelineStatus](../enums/PipelineStatus.md) status = 3;
-  repeated [PipelineStepResult](PipelineStepResult.md) results = 4;
-  acme.example.v2.[ResourceIdentity](../../v2/messages/ResourceIdentity.md) owner = 5;
+  PipelineStatus status = 3;
+  repeated PipelineStepResult results = 4;
+  acme.example.v2.ResourceIdentity owner = 5;
   google.protobuf.Timestamp started_at = 6;
   google.protobuf.Timestamp completed_at = 7;
 }
