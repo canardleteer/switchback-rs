@@ -69,7 +69,7 @@ pub use model::{
     RequestBodyBody, ResolvedManual, ResponseBody, ResponseRef, SchemaBody, SecuritySchemeBody,
     ServiceBody, Source, SourceRef, Span, StoredEntity,
 };
-pub use options::{EscapeTags, Layout, OpenApiOperationSource, Options};
+pub use options::{EscapeTags, Layout, OpenApiOperationSource, OpenApiSummaryLabel, Options};
 pub use paths::{entity_category_dir, entity_rel_path};
 pub use response_severity::ResponseSeverity;
 pub use traits::{

@@ -7,19 +7,7 @@ Date: 2026-06-20
 Proposed
 
 Relates to
-[2. Async-first traits with synchronous secondary APIs in switchback-traits](0002-async-first-traits-with-synchronous-secondary-apis-in-switchback-traits.md)
-
-Relates to
-[3. Protobuf switchback wire format with buffa in switchback-codec-pb](0003-protobuf-switchback-wire-format-with-buffa-in-switchback-codec-pb.md)
-
-Relates to
-[7. Parser library conventions for switchback family crates](0007-parser-library-conventions-for-switchback-family-crates.md)
-
-Relates to
-[8. Per-family grouping rules and jsonschema shared-layer boundary](0008-per-family-grouping-rules-and-jsonschema-shared-layer-boundary.md)
-
-Relates to
-[12. HTTP streaming inference and gRPC metadata from protobuf options](0012-http-streaming-inference-and-grpc-metadata-from-protobuf-options.md)
+[14. Multi-contract reference manual assembly](0014-multi-contract-reference-manual-assembly.md)
 
 ## Context
 

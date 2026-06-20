@@ -1,0 +1,388 @@
+---
+openapi: 3.0.3
+info:
+  title: Acme Example API v2
+  version: 2.0.0
+  description: Catalog, inventory, and platform services for the Acme fixture.
+servers:
+  - url: https://api.acme.example/v2
+    description: Live v2 base URL (concurrent with v1 and v3alpha1)
+paths:
+  /products:
+    get:
+      operationId: listProducts
+      summary: List catalog products
+      description: |
+        Returns a **paginated** page of catalog products visible to the caller.
+
+        Use `page_size` and `page_token` to walk large catalogs. The default
+        page size is 20; the maximum is 100.
+
+        | Field | Notes |
+        | --- | --- |
+        | `products[]` | Full `Product` records including SKUs |
+        | `page.next_page_token` | Opaque; pass back for the next page |
+      parameters:
+        - name: page_size
+          in: query
+          description: Max products to return (1–100, default 20).
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: page_token
+          in: query
+          description: Opaque token from a prior `ListProductsResponse.page`.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paginated product page
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListProductsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    post:
+      operationId: createProduct
+      summary: Create a catalog product
+      description: |
+        Creates a new catalog product. The server assigns `product_id` when the
+        client omits it.
+
+        **Validation:** `display_name` is required. SKU entries may be omitted
+        for draft products; activate them with a follow-up `PUT`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '201':
+          description: Created product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /products/{product_id}:
+    get:
+      operationId: getProduct
+      summary: Get one product
+      description: |
+        Fetches a single product by id, including nested SKUs and shared
+        metadata.
+
+        Returns `404` when the product was deleted or the id is unknown.
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      responses:
+        '200':
+          description: Product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      operationId: updateProduct
+      summary: Replace a product
+      description: |
+        Replaces the entire product record. Partial updates are **not**
+        supported; send the full `Product` shape.
+
+        Optimistic concurrency is out of scope for this fixture; last writer
+        wins.
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: Updated product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteProduct
+      summary: Delete a product
+      description: |
+        Permanently removes a catalog product and its SKUs.
+
+        **Irreversible.** Inventory adjustments are *not* rolled back
+        automatically; reconcile warehouse counts separately.
+
+        | Concern | Behavior |
+        | --- | --- |
+        | Idempotency | Repeating DELETE after success returns `404` |
+        | Audit | Emits a `product.deleted` event (see audit export) |
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      responses:
+        '204':
+          description: Deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /inventory/watch:
+    get:
+      operationId: watchInventory
+      summary: Stream inventory adjustments (SSE)
+      description: |
+        Opens a **server-sent events** stream of inventory adjustments for one
+        warehouse.
+
+        Each event carries an `InventoryAdjustment` JSON payload in the `data`
+        field. Clients should reconnect with exponential backoff on disconnect.
+      parameters:
+        - name: warehouse_id
+          in: query
+          required: true
+          description: Warehouse identifier to watch (must exist).
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Inventory adjustment events
+          content:
+            text/event-stream:
+              schema:
+                type: string
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /products/drafts:
+    put:
+      operationId: uploadDrafts
+      summary: Upload product draft bytes (octet-stream)
+      description: |
+        Uploads raw draft bytes for a product work-in-progress. The body is
+        `application/octet-stream`; metadata lives in query parameters only.
+
+        Useful for exercising **binary request bodies** in rendered docs.
+      parameters:
+        - name: draft_id
+          in: query
+          required: true
+          description: Client-generated draft id; idempotent per draft.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: Draft upload accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadDraftsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /platform/audit/export:
+    get:
+      operationId: exportAuditBatch
+      summary: Export audit batch snapshot
+      description: |
+        Returns a **paginated snapshot** of audit records for compliance
+        exports.
+
+        Callers must hold the `platform.audit.export` permission. Results are
+        eventually consistent with the live audit log (typically under 30
+        seconds).
+
+        ## Pagination
+
+        Use `page_size` to limit rows per response. When `page.next_page_token`
+        is non-empty, repeat the request with that token until exhausted.
+
+        ## Related types
+
+        - Response body: `ExportAuditBatchResponse`
+        - Nested batch: `AuditBatch`
+      parameters:
+        - name: tenant_id
+          in: query
+          required: true
+          description: Tenant scope; must match the caller's organization.
+          schema:
+            type: string
+        - name: page_size
+          in: query
+          description: Maximum records per page (default 50).
+          schema:
+            type: integer
+            default: 50
+      responses:
+        '200':
+          description: Audit export page
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportAuditBatchResponse'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalError'
+components:
+  parameters:
+    ProductId:
+      name: product_id
+      in: path
+      required: true
+      description: UUID of the catalog product (see the `Product` schema).
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    SharedMetadata:
+      type: object
+      properties:
+        trace_id:
+          type: string
+        parent_span_id:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+    PageResult:
+      type: object
+      properties:
+        next_page_token:
+          type: string
+          nullable: true
+        total_size:
+          type: integer
+          format: int64
+    ListOptions:
+      type: object
+      properties:
+        page_size:
+          type: integer
+        page_token:
+          type: string
+          nullable: true
+    ProductSku:
+      type: object
+      nullable: true
+      properties:
+        sku:
+          type: string
+        title:
+          type: string
+        status:
+          type: string
+          enum: [draft, active, archived]
+    Product:
+      type: object
+      required: [product_id, display_name]
+      properties:
+        product_id:
+          type: string
+          format: uuid
+        display_name:
+          type: string
+        skus:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductSku'
+        metadata:
+          $ref: '#/components/schemas/SharedMetadata'
+    ListProductsResponse:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        page:
+          $ref: '#/components/schemas/PageResult'
+    InventoryAdjustment:
+      type: object
+      properties:
+        sku:
+          type: string
+        delta:
+          type: integer
+          format: int64
+        reason:
+          type: string
+    UploadDraftsResponse:
+      type: object
+      properties:
+        draft_id:
+          type: string
+        parts_received:
+          type: integer
+        product:
+          $ref: '#/components/schemas/Product'
+    AuditRecord:
+      type: object
+      properties:
+        actor:
+          type: string
+        action:
+          type: string
+        occurred_at:
+          type: string
+          format: date-time
+    AuditBatch:
+      type: object
+      properties:
+        batch_id:
+          type: string
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditRecord'
+    ExportAuditBatchResponse:
+      type: object
+      properties:
+        batch:
+          $ref: '#/components/schemas/AuditBatch'
+        page:
+          $ref: '#/components/schemas/PageResult'
+    Problem:
+      $ref: '../shared/schemas.yaml#/Problem'
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    NotFound:
+      description: Not found
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    InternalError:
+      description: Internal error
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'

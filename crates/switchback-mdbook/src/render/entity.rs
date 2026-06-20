@@ -6,7 +6,8 @@ use switchback_traits::{
 };
 
 use crate::render::fence::{
-    operation_signature_markdown, proto_file_name, push_proto_fence_body, render_proto_fence,
+    entity_module_group, link_structural_refs_in_prose, operation_signature_markdown,
+    proto_file_name, push_proto_fence_body, render_proto_fence,
 };
 use crate::render::markdown_doc::format_markdown_doc;
 use crate::render::openapi::{
@@ -104,6 +105,7 @@ fn render_openapi_entity_pages(
             &opts.markdown_root,
             index_rel.as_path(),
             links,
+            opts.openapi_summary_label,
         );
         pages.push((index_path, index));
     }
@@ -205,6 +207,12 @@ fn render_operation_block(
     }
     if let Some(doc) = op.doc.as_deref() {
         let doc = apply_intra_links("doc", doc, &op.intra_links, formatter, ctx);
+        let from = ctx
+            .render_from
+            .as_deref()
+            .unwrap_or_else(|| std::path::Path::new(&ctx.markdown_root));
+        let (module, group) = entity_module_group(op);
+        let doc = link_structural_refs_in_prose(&doc, &op.refs, module, group, ctx, from);
         out.push_str(&format_markdown_doc(&doc, opts.escape_tags));
         push_paragraph_break(&mut out);
     }

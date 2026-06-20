@@ -15,6 +15,10 @@ use crate::populate::refs::structural_refs;
 use crate::populate::PopulateCtx;
 use crate::populate::PopulatedEntity;
 
+fn entity_group<'a>(ctx: &'a PopulateCtx<'a>) -> &'a str {
+    ctx.entry_group.unwrap_or(COMPONENTS_GROUP)
+}
+
 pub fn populate_components(root: &Value, ctx: &PopulateCtx<'_>, out: &mut Vec<PopulatedEntity>) {
     let Some(components) = root.get("components").and_then(|v| v.as_object()) else {
         return;
@@ -60,7 +64,7 @@ fn resolve_group_for_ref(
     file_part: &str,
 ) -> Option<String> {
     if file_part.is_empty() {
-        return Some(COMPONENTS_GROUP.to_string());
+        return Some(entity_group(ctx).to_string());
     }
     let file_part = switchback_jsonschema::paths::strip_dot_slash(file_part);
     let candidate = std::path::Path::new(ctx.doc_uri)
@@ -71,7 +75,7 @@ fn resolve_group_for_ref(
     ctx.uri_to_group
         .get(&normalized)
         .cloned()
-        .or_else(|| Some(COMPONENTS_GROUP.to_string()))
+        .or_else(|| Some(entity_group(ctx).to_string()))
 }
 
 fn push_schema_entity(
@@ -84,7 +88,7 @@ fn push_schema_entity(
         value,
         ctx.doc,
         ctx.module_id,
-        COMPONENTS_GROUP,
+        entity_group(ctx),
         &|base_uri, file_part| resolve_group_for_ref(ctx, base_uri, file_part),
     );
     let doc_text = description(value);
@@ -97,7 +101,7 @@ fn push_schema_entity(
     );
     out.push(PopulatedEntity {
         entity: Entity {
-            id: EntityId::new(COMPONENTS_GROUP, OpenApiCategory::Schema.as_str(), name),
+            id: EntityId::new(entity_group(ctx), OpenApiCategory::Schema.as_str(), name),
             category: OpenApiCategory::Schema,
             title: name.to_string(),
             doc: doc_text,
@@ -129,7 +133,7 @@ fn push_parameter_entity(
         schema_val,
         ctx.doc,
         ctx.module_id,
-        COMPONENTS_GROUP,
+        entity_group(ctx),
         &|base_uri, file_part| resolve_group_for_ref(ctx, base_uri, file_part),
     );
     let refs = structural_refs(
@@ -141,7 +145,7 @@ fn push_parameter_entity(
     );
     out.push(PopulatedEntity {
         entity: Entity {
-            id: EntityId::new(COMPONENTS_GROUP, OpenApiCategory::Parameter.as_str(), name),
+            id: EntityId::new(entity_group(ctx), OpenApiCategory::Parameter.as_str(), name),
             category: OpenApiCategory::Parameter,
             title: name.to_string(),
             doc: description(value),
@@ -178,7 +182,7 @@ fn push_response_entity(
     );
     out.push(PopulatedEntity {
         entity: Entity {
-            id: EntityId::new(COMPONENTS_GROUP, OpenApiCategory::Response.as_str(), name),
+            id: EntityId::new(entity_group(ctx), OpenApiCategory::Response.as_str(), name),
             category: OpenApiCategory::Response,
             title: name.to_string(),
             doc: description(value),
@@ -217,7 +221,7 @@ fn push_request_body_entity(
     out.push(PopulatedEntity {
         entity: Entity {
             id: EntityId::new(
-                COMPONENTS_GROUP,
+                entity_group(ctx),
                 OpenApiCategory::RequestBody.as_str(),
                 name,
             ),
@@ -257,7 +261,7 @@ fn push_security_scheme_entity(
     out.push(PopulatedEntity {
         entity: Entity {
             id: EntityId::new(
-                COMPONENTS_GROUP,
+                entity_group(ctx),
                 OpenApiCategory::SecurityScheme.as_str(),
                 name,
             ),

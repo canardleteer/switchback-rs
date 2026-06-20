@@ -35,8 +35,8 @@ EchoUnary is the hello-world RPC for this fixture.
 
  | Direction | Type |
  |-----------|------|
- | request | EchoUnaryRequest |
- | response | EchoUnaryResponse |
+ | request | [EchoUnaryRequest](../messages/EchoUnaryRequest.md) |
+ | response | [EchoUnaryResponse](../messages/EchoUnaryResponse.md) |
 
  hello-world RPC — leading comment preserved for mdBook heading link tests.
 

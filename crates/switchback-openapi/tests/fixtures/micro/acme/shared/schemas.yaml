@@ -1,0 +1,37 @@
+---
+# RFC 9457 Problem Details for JSON (shared across Acme OpenAPI entries).
+Problem:
+  type: object
+  description: >
+    Standard problem response object (RFC 9457). Used by synthetic error
+    responses across v1–v3alpha1 entry documents.
+  properties:
+    type:
+      type: string
+      format: uri-reference
+      description: URI reference identifying the problem type.
+      example: https://api.acme.example/problems/not-found
+    title:
+      type: string
+      description: Short, human-readable summary.
+      example: Resource not found
+    status:
+      type: integer
+      description: HTTP status code for this occurrence.
+      minimum: 400
+      maximum: 599
+      example: 404
+    detail:
+      type: string
+      description: Human-readable explanation specific to this occurrence.
+    instance:
+      type: string
+      format: uri-reference
+      description: URI reference identifying this occurrence.
+    trace_id:
+      type: string
+      description: Acme extension correlating errors with request metadata.
+  required:
+    - type
+    - title
+    - status

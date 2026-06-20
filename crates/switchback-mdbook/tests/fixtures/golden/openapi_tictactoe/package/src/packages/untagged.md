@@ -2,7 +2,7 @@
 
 ## Operations
 
-### Status of mark operation
+### markStatus
 
 **POST** `markStatus`
 

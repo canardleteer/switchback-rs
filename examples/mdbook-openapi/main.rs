@@ -14,10 +14,12 @@ use clap::{Parser, ValueEnum};
 use switchback_codec_pb::ProtobufCodec;
 use switchback_mdbook::{write_output_files, MdBookRenderer};
 use switchback_openapi::{
-    example_fixture, fixtures_for_tier, load_example, ExampleFixture, ExampleTier, EXAMPLE_FIXTURES,
+    default_example_fixtures, example_fixture, fixtures_for_tier, load_example, ExampleFixture,
+    ExampleTier, EXAMPLE_FIXTURES,
 };
 use switchback_traits::{
-    Layout, OpenApiOperationSource, Options, ReferenceManual, SyncRenderer, SyncSwitchbackCodec,
+    Layout, OpenApiOperationSource, OpenApiSummaryLabel, Options, ReferenceManual, SyncRenderer,
+    SyncSwitchbackCodec,
 };
 
 #[derive(Parser)]
@@ -30,7 +32,7 @@ struct Cli {
     #[arg(long = "fixture", value_name = "ID")]
     fixtures: Vec<String>,
     /// Which fixture tier to render when `--fixture` is not set.
-    #[arg(long, value_enum, default_value_t = TierArg::Upstream)]
+    #[arg(long, value_enum, default_value_t = TierArg::Example)]
     tier: TierArg,
     /// Render every catalogued fixture (upstream + micro).
     #[arg(long)]
@@ -62,6 +64,9 @@ struct Cli {
     /// How to render raw OpenAPI operation YAML: collapsed, trimmed, or hidden.
     #[arg(long, value_parser = parse_openapi_operation_source, default_value = "collapsed")]
     openapi_operation_source: OpenApiOperationSource,
+    /// SUMMARY link text for OpenAPI operations: endpoint, summary, or prefixed.
+    #[arg(long, value_parser = parse_openapi_summary_label, default_value = "endpoint")]
+    openapi_summary_label: OpenApiSummaryLabel,
     /// Render from a serialized switchback wire artifact instead of loading a fixture.
     #[arg(long, conflicts_with_all = ["fixtures", "tier", "all_fixtures"])]
     via_binpb: Option<PathBuf>,
@@ -70,6 +75,7 @@ struct Cli {
 #[derive(Clone, Copy, Debug, ValueEnum, Default)]
 enum TierArg {
     #[default]
+    Example,
     Upstream,
     Micro,
     All,
@@ -78,6 +84,7 @@ enum TierArg {
 impl TierArg {
     fn fixtures(self) -> Vec<&'static ExampleFixture> {
         match self {
+            Self::Example => default_example_fixtures().collect(),
             Self::Upstream => fixtures_for_tier(ExampleTier::Upstream).collect(),
             Self::Micro => fixtures_for_tier(ExampleTier::Micro).collect(),
             Self::All => EXAMPLE_FIXTURES.iter().collect(),
@@ -101,6 +108,17 @@ fn parse_openapi_operation_source(s: &str) -> Result<OpenApiOperationSource> {
         "hidden" => Ok(OpenApiOperationSource::Hidden),
         other => {
             bail!("unknown openapi-operation-source {other:?}; use collapsed, trimmed, or hidden")
+        }
+    }
+}
+
+fn parse_openapi_summary_label(s: &str) -> Result<OpenApiSummaryLabel> {
+    match s {
+        "endpoint" => Ok(OpenApiSummaryLabel::Endpoint),
+        "summary" => Ok(OpenApiSummaryLabel::Summary),
+        "prefixed" => Ok(OpenApiSummaryLabel::Prefixed),
+        other => {
+            bail!("unknown openapi-summary-label {other:?}; use endpoint, summary, or prefixed")
         }
     }
 }
@@ -156,6 +174,7 @@ fn render_opts(cli: &Cli, manual: &ReferenceManual) -> Options {
         no_cel_highlight: cli.no_cel_highlight,
         link_format: cli.link_format.clone(),
         openapi_operation_source: cli.openapi_operation_source,
+        openapi_summary_label: cli.openapi_summary_label,
         ignore_git: true,
         ..Default::default()
     }

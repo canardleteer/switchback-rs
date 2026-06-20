@@ -1,4 +1,4 @@
-# Set a single board square
+# /board/{row}/{column}
 
 **PUT** `/board/{row}/{column}`
 

@@ -12,7 +12,9 @@ use switchback_traits::{Group, LinkContext, Options, ReferenceManual, StoredEnti
 use crate::companion::CompanionNav;
 use crate::init::DEFAULT_BOOK_TITLE;
 use crate::render::output_file;
-use crate::summary::chapters::{build_flat_summary, build_openapi_summary};
+use crate::summary::chapters::{
+    build_flat_summary, build_mixed_family_summary, build_openapi_summary,
+};
 use crate::summary::nav_tree::{build_summary, package_rel_dir, NavInput, PackageAtDir};
 
 pub fn render_summary(
@@ -29,8 +31,21 @@ pub fn render_summary(
     let package_only = opts.package_only_summary();
     let packages = packages_nav_input(manual);
     let openapi_only = !packages.is_empty() && packages.iter().all(|p| p.family == "openapi");
+    let mixed_family = contract_families(manual).len() > 1;
 
-    let summary = if openapi_only {
+    let summary = if mixed_family {
+        build_mixed_family_summary(
+            &h1,
+            manual,
+            &packages,
+            companions,
+            opts.layout,
+            package_only,
+            links,
+            summary_from,
+            opts.openapi_summary_label,
+        )
+    } else if openapi_only {
         build_openapi_summary(
             &h1,
             &packages,
@@ -38,6 +53,7 @@ pub fn render_summary(
             package_only,
             links,
             summary_from,
+            opts.openapi_summary_label,
         )
     } else if opts.no_proto_markdown {
         build_flat_summary(
@@ -47,6 +63,7 @@ pub fn render_summary(
             package_only,
             links,
             summary_from,
+            opts.openapi_summary_label,
         )
     } else {
         build_summary(
@@ -56,6 +73,7 @@ pub fn render_summary(
                 packages,
                 summary_from,
                 links,
+                openapi_summary_label: opts.openapi_summary_label,
             },
             opts.layout,
             package_only,
@@ -108,6 +126,16 @@ fn packages_nav_input(manual: &ReferenceManual) -> Vec<PackageAtDir<'_>> {
         }
     }
     out
+}
+
+fn contract_families(manual: &ReferenceManual) -> std::collections::BTreeSet<&str> {
+    let mut families = std::collections::BTreeSet::new();
+    for module in &manual.modules {
+        for contract in &module.contracts {
+            families.insert(contract.family.as_str());
+        }
+    }
+    families
 }
 
 fn flat_packages_from_manual(

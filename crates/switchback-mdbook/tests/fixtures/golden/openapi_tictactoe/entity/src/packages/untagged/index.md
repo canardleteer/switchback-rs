@@ -2,5 +2,5 @@
 
 ## Operations
 
-- [Operation POST markStatus](operations/POST%20markStatus.md)
+- [markStatus](operations/POST%20markStatus.md)
 

@@ -1844,6 +1844,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "reference-manual-example"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "serde",
+ "serde_yaml",
+ "switchback-assemble",
+ "switchback-codec-pb",
+ "switchback-mdbook",
+ "switchback-openapi",
+ "switchback-protobuf",
+ "switchback-traits",
+]
+
+[[package]]
 name = "referencing"
 version = "0.29.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2121,6 +2137,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "serde_yaml"
+version = "0.9.34+deprecated"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6a8b1a1a2ebf674015cc02edccce75287f1a0130d394307b36743c2f5d504b47"
+dependencies = [
+ "indexmap",
+ "itoa",
+ "ryu",
+ "serde",
+ "unsafe-libyaml",
+]
+
+[[package]]
 name = "sha2"
 version = "0.10.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2237,6 +2266,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "13c2bddecc57b384dee18652358fb23172facb8a2c51ccc10d74c157bdea3292"
 
 [[package]]
+name = "switchback-assemble"
+version = "0.0.0"
+dependencies = [
+ "switchback-openapi",
+ "switchback-protobuf",
+ "switchback-traits",
+]
+
+[[package]]
 name = "switchback-asyncapi"
 version = "0.0.0"
 dependencies = [
@@ -2296,6 +2334,7 @@ dependencies = [
  "regex",
  "serde-saphyr",
  "serde_json",
+ "switchback-assemble",
  "switchback-codec-pb",
  "switchback-openapi",
  "switchback-protobuf",
@@ -2729,6 +2768,12 @@ name = "unicode-width"
 version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b4ac048d71ede7ee76d585517add45da530660ef4390e49b098733c6e897f254"
+
+[[package]]
+name = "unsafe-libyaml"
+version = "0.2.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "673aac59facbab8a9007c7f6108d11f63b603f7cabff99fabf650fea5c32b861"
 
 [[package]]
 name = "untrusted"

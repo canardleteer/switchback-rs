@@ -13,6 +13,88 @@ use switchback_traits::{EntityBody, SyncSwitchbackCodec};
 use tempfile::tempdir;
 
 #[test]
+fn micro_acme_multi_entry_loads() {
+    let manual = switchback_openapi::load_acme_example().expect("load acme-api");
+    let contract = &manual.modules[0].contracts[0];
+    assert_eq!(contract.family, "openapi");
+    let group_ids: Vec<_> = contract.groups.iter().map(|g| g.id.as_str()).collect();
+    assert!(group_ids.contains(&"acme.example.v1"));
+    assert!(group_ids.contains(&"acme.example.v2"));
+    assert!(group_ids.contains(&"acme.example.v3alpha1"));
+    assert!(count_entities(&manual) > 20);
+    assert!(!contract.companions.is_empty());
+}
+
+#[test]
+fn micro_acme_operation_fields() {
+    let manual = switchback_openapi::load_acme_example().expect("load acme-api");
+    let contract = &manual.modules[0].contracts[0];
+    let registry = ProtocolRegistry::with_builtins();
+
+    let post_echo = contract
+        .groups
+        .iter()
+        .find(|g| g.id.as_str() == "acme.example.v1")
+        .and_then(|g| g.entities.iter().find(|e| e.name == "POST /echo"))
+        .expect("POST /echo operation");
+    let EntityBody::Operation(body) = &post_echo.body else {
+        panic!("expected operation body");
+    };
+    let req_id = body
+        .parameters
+        .iter()
+        .find(|p| p.name == "XRequestId")
+        .expect("XRequestId parameter ref");
+    assert_eq!(req_id.location, "header");
+    assert!(req_id.required);
+    let auth = body
+        .parameters
+        .iter()
+        .find(|p| p.name == "Authorization")
+        .expect("Authorization parameter ref");
+    assert_eq!(auth.location, "header");
+    let bad = body
+        .responses
+        .iter()
+        .find(|r| r.status == "400")
+        .expect("400 response");
+    assert_eq!(
+        bad.severity,
+        switchback_traits::ResponseSeverity::ClientError
+    );
+
+    let get_stream = contract
+        .groups
+        .iter()
+        .find(|g| g.id.as_str() == "acme.example.v1")
+        .and_then(|g| g.entities.iter().find(|e| e.name == "GET /echo/stream"))
+        .expect("GET /echo/stream operation");
+    let EntityBody::Operation(stream_body) = &get_stream.body else {
+        panic!("expected operation body");
+    };
+    let stream_meta = registry
+        .http_operation_from_attachments(&stream_body.protocols)
+        .expect("HTTP operation meta");
+    assert!(stream_meta.response_streaming);
+    assert!(!stream_meta.request_streaming);
+
+    let put_upload = contract
+        .groups
+        .iter()
+        .find(|g| g.id.as_str() == "acme.example.v1")
+        .and_then(|g| g.entities.iter().find(|e| e.name == "PUT /echo/upload"))
+        .expect("PUT /echo/upload operation");
+    let EntityBody::Operation(upload_body) = &put_upload.body else {
+        panic!("expected operation body");
+    };
+    let upload_meta = registry
+        .http_operation_from_attachments(&upload_body.protocols)
+        .expect("HTTP operation meta");
+    assert!(upload_meta.request_streaming);
+    assert!(!upload_meta.response_streaming);
+}
+
+#[test]
 fn micro_tag_groups_loads() {
     let manual = load_fixture(MICRO_TAG_GROUPS);
     let contract = &manual.modules[0].contracts[0];

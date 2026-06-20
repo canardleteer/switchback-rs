@@ -4,9 +4,17 @@ use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 
 use mdbook_summary::{Link, Summary, SummaryItem};
-use switchback_traits::{EntityBody, Group, Layout, LinkContext, ProtobufEntityKind, StoredEntity};
+use switchback_traits::{
+    EntityBody, Group, Layout, LinkContext, OpenApiSummaryLabel, ProtobufEntityKind,
+    ReferenceManual, StoredEntity,
+};
 
-use crate::render::openapi::{openapi_category_rank, renderable_openapi_entities, summary_prefix};
+use crate::companion::CompanionNav;
+use crate::render::openapi::{
+    openapi_category_rank, openapi_summary_link_text, openapi_summary_sort_key,
+    renderable_openapi_entities,
+};
+use crate::summary::nav_tree::{build_summary, NavInput};
 use crate::summary::render_md;
 
 /// Target markdown path for a package page under the current layout.
@@ -24,9 +32,17 @@ pub fn entity_summary_items(
     family: &str,
     links: &LinkContext,
     summary_from: &Path,
+    openapi_summary_label: OpenApiSummaryLabel,
 ) -> Vec<SummaryItem> {
     if family == "openapi" {
-        return openapi_entity_summary_items(package, group_dir, entities, links, summary_from);
+        return openapi_entity_summary_items(
+            package,
+            group_dir,
+            entities,
+            links,
+            summary_from,
+            openapi_summary_label,
+        );
     }
 
     let mut out = Vec::new();
@@ -54,12 +70,16 @@ fn openapi_entity_summary_items(
     entities: &[StoredEntity],
     links: &LinkContext,
     summary_from: &Path,
+    summary_label: OpenApiSummaryLabel,
 ) -> Vec<SummaryItem> {
     let mut renderable: Vec<_> = renderable_openapi_entities(entities);
     renderable.sort_by(|a, b| {
         openapi_category_rank(&a.category)
             .cmp(&openapi_category_rank(&b.category))
-            .then_with(|| a.title.cmp(&b.title))
+            .then_with(|| {
+                openapi_summary_sort_key(a, summary_label)
+                    .cmp(&openapi_summary_sort_key(b, summary_label))
+            })
     });
 
     let mut out = Vec::new();
@@ -80,7 +100,7 @@ fn openapi_entity_summary_items(
                 PathBuf::from(format!("{}/{}", links.markdown_root, rel))
             });
         let path = render_md::link_path_for_summary(summary_from, &p);
-        let title = format!("{} {}", summary_prefix(&entity.category), entity.name);
+        let title = openapi_summary_link_text(entity, summary_label);
         out.push(SummaryItem::Link(Link::new(title, path)));
     }
     out
@@ -97,6 +117,7 @@ pub fn flat_package_chapter(
     package_only: bool,
     links: &LinkContext,
     summary_from: &Path,
+    openapi_summary_label: OpenApiSummaryLabel,
 ) -> SummaryItem {
     match layout {
         Layout::Package => {
@@ -113,16 +134,30 @@ pub fn flat_package_chapter(
             let target = links.package_index_rel(package);
             let path = render_md::link_path_for_summary(summary_from, &target);
             let mut link = Link::new(display_title, path);
-            link.nested_items =
-                entity_summary_items(package, group_dir, &entities, family, links, summary_from);
+            link.nested_items = entity_summary_items(
+                package,
+                group_dir,
+                &entities,
+                family,
+                links,
+                summary_from,
+                openapi_summary_label,
+            );
             SummaryItem::Link(link)
         }
         Layout::Entity => {
             let mut link = Link::default();
             link.name = display_title.to_string();
             link.location = None;
-            link.nested_items =
-                entity_summary_items(package, group_dir, &entities, family, links, summary_from);
+            link.nested_items = entity_summary_items(
+                package,
+                group_dir,
+                &entities,
+                family,
+                links,
+                summary_from,
+                openapi_summary_label,
+            );
             SummaryItem::Link(link)
         }
     }
@@ -135,6 +170,7 @@ pub fn build_openapi_summary(
     package_only: bool,
     links: &LinkContext,
     summary_from: &Path,
+    openapi_summary_label: OpenApiSummaryLabel,
 ) -> Summary {
     let mut summary = Summary::default();
     summary.title = Some(h1.to_string());
@@ -151,9 +187,88 @@ pub fn build_openapi_summary(
                 package_only,
                 links,
                 summary_from,
+                openapi_summary_label,
             )
         })
         .collect();
+    summary
+}
+
+/// Top-level SUMMARY with one section per contract family (HTTP + gRPC, etc.).
+#[allow(clippy::too_many_arguments)]
+pub fn build_mixed_family_summary(
+    h1: &str,
+    manual: &ReferenceManual,
+    packages: &[super::nav_tree::PackageAtDir<'_>],
+    companions: &[CompanionNav],
+    layout: Layout,
+    package_only: bool,
+    links: &LinkContext,
+    summary_from: &Path,
+    openapi_summary_label: OpenApiSummaryLabel,
+) -> Summary {
+    use mdbook_summary::{Link, Summary, SummaryItem};
+
+    let mut summary = Summary::default();
+    summary.title = Some(h1.to_string());
+
+    let sections: [(&str, &str); 2] = [
+        ("openapi", "HTTP (OpenAPI)"),
+        ("protobuf", "gRPC (Protobuf)"),
+    ];
+
+    for (family, section_title) in sections {
+        let family_packages: Vec<_> = packages
+            .iter()
+            .filter(|pkg| pkg.family == family)
+            .cloned()
+            .collect();
+        if family_packages.is_empty() {
+            continue;
+        }
+
+        let nested = if family == "openapi" {
+            build_openapi_summary(
+                "",
+                &family_packages,
+                layout,
+                package_only,
+                links,
+                summary_from,
+                openapi_summary_label,
+            )
+            .numbered_chapters
+        } else {
+            let family_companions: Vec<CompanionNav> = manual
+                .modules
+                .iter()
+                .flat_map(|module| &module.contracts)
+                .filter(|contract| contract.family == family)
+                .flat_map(|contract| contract.companions.iter().map(CompanionNav::from_companion))
+                .collect();
+            build_summary(
+                "",
+                NavInput {
+                    companions: &family_companions,
+                    packages: family_packages,
+                    summary_from,
+                    links,
+                    openapi_summary_label,
+                },
+                layout,
+                package_only,
+            )
+            .numbered_chapters
+        };
+
+        let mut section = Link::default();
+        section.name = section_title.to_string();
+        section.location = None;
+        section.nested_items = nested;
+        summary.numbered_chapters.push(SummaryItem::Link(section));
+    }
+
+    let _ = companions;
     summary
 }
 
@@ -164,6 +279,7 @@ pub fn build_flat_summary(
     package_only: bool,
     links: &LinkContext,
     summary_from: &Path,
+    openapi_summary_label: OpenApiSummaryLabel,
 ) -> Summary {
     let mut summary = Summary::default();
     summary.title = Some(h1.to_string());
@@ -180,6 +296,7 @@ pub fn build_flat_summary(
                 package_only,
                 links,
                 summary_from,
+                openapi_summary_label,
             )
         })
         .collect();

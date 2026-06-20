@@ -64,8 +64,66 @@ pub fn load_openapi_tictactoe() -> ReferenceManual {
     )
 }
 
+pub fn load_openapi_acme() -> ReferenceManual {
+    switchback_openapi::load_acme_example().expect("load acme-api")
+}
+
+pub fn load_reference_manual_acme_v1() -> ReferenceManual {
+    use std::path::PathBuf;
+
+    use switchback_assemble::{assemble_module, AssembleArgs, GroupPrefixPolicy};
+    use switchback_openapi::examples::{fixtures_dir, EXAMPLE_ACME_INPUTS, MICRO_ACME_ROOT};
+    use switchback_openapi::load::LoadArgs as OpenApiLoadArgs;
+    use switchback_protobuf::examples::EXAMPLE_PROTO_INPUTS;
+    use switchback_protobuf::load::LoadArgs as ProtobufLoadArgs;
+
+    let openapi_root = fixtures_dir().join(MICRO_ACME_ROOT);
+    let proto_root = fixtures_proto_dir();
+    let export = ensure_proto_deps_export();
+    assemble_module(&AssembleArgs {
+        module_id: "acme".into(),
+        title: "Acme APIs".into(),
+        overview: "Acme HTTP + gRPC reference (v1, v2, v3alpha1).".into(),
+        group_prefix: GroupPrefixPolicy::ContractFamily,
+        openapi: Some(OpenApiLoadArgs {
+            module_root: openapi_root.clone(),
+            inputs: EXAMPLE_ACME_INPUTS
+                .iter()
+                .map(|p| PathBuf::from(*p))
+                .collect(),
+            search_roots: vec![openapi_root],
+            title: None,
+        }),
+        protobuf: Some(ProtobufLoadArgs {
+            compiler: Compiler::Buf,
+            module_root: proto_root.clone(),
+            inputs: EXAMPLE_PROTO_INPUTS
+                .iter()
+                .map(|p| PathBuf::from(*p))
+                .collect(),
+            proto_paths: vec![proto_root.clone(), export.clone()],
+            protoc_path: None,
+            buf_path: None,
+            proto_deps_export: Some(export),
+            title: None,
+        }),
+    })
+    .expect("assemble acme reference manual")
+}
+
 pub fn render_openapi(layout: Layout, extra: &str) -> tempfile::TempDir {
     let manual = load_openapi_tictactoe();
+    let mut param = format!("layout={}", layout_name(layout));
+    if !extra.is_empty() {
+        param.push(',');
+        param.push_str(extra);
+    }
+    let opts = parse_parameter(&Some(param)).expect("parse options");
+    render_to_tempdir(&manual, &opts)
+}
+
+pub fn render_openapi_acme(layout: Layout, extra: &str) -> tempfile::TempDir {
+    let manual = load_openapi_acme();
     let mut param = format!("layout={}", layout_name(layout));
     if !extra.is_empty() {
         param.push(',');

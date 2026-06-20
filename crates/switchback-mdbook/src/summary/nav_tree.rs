@@ -4,7 +4,7 @@ use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 
 use mdbook_summary::{Link, Summary, SummaryItem};
-use switchback_traits::{Layout, LinkContext, StoredEntity};
+use switchback_traits::{Layout, LinkContext, OpenApiSummaryLabel, StoredEntity};
 
 use crate::companion::CompanionNav;
 use crate::summary::chapters::{entity_summary_items, package_target};
@@ -15,8 +15,10 @@ pub struct NavInput<'a> {
     pub packages: Vec<PackageAtDir<'a>>,
     pub summary_from: &'a Path,
     pub links: &'a LinkContext,
+    pub openapi_summary_label: OpenApiSummaryLabel,
 }
 
+#[derive(Clone)]
 pub struct PackageAtDir<'a> {
     pub rel_dir: PathBuf,
     pub package: &'a str,
@@ -82,6 +84,7 @@ pub fn build_summary(
                 info.family,
                 input.links,
                 input.summary_from,
+                input.openapi_summary_label,
             )
         } else {
             Vec::new()
@@ -384,6 +387,7 @@ mod tests {
                 packages,
                 summary_from: Path::new("src/SUMMARY.md"),
                 links: &links,
+                openapi_summary_label: OpenApiSummaryLabel::default(),
             },
             Layout::Package,
             true,
@@ -440,6 +444,7 @@ mod tests {
                 packages,
                 summary_from: Path::new("src/SUMMARY.md"),
                 links: &links,
+                openapi_summary_label: OpenApiSummaryLabel::default(),
             },
             Layout::Package,
             true,

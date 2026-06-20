@@ -112,6 +112,13 @@ flowchart TB
 | 5 | [group](#group) | Intra-contract grouping: a protobuf package, an OpenAPI tag/`x-tagGroup`, an AsyncAPI application/tag. | `acme.user.v1`, the `admin` tag group |
 | 6 | [entity](#entity) | An addressable renderable unit. Carries `protocols[]` on operation, response, and parameter bodies and on `ResponseRef` / `ParameterRef` attachments where the spec describes transport-specific facts. | a schema, an operation, a channel, a message, a parameter, a response, a security scheme |
 
+The hand-maintained **Acme** corpora in
+[`switchback-protobuf/tests/fixtures/proto/acme/`](../crates/switchback-protobuf/tests/fixtures/proto/acme/)
+and
+[`switchback-openapi/tests/fixtures/micro/acme/`](../crates/switchback-openapi/tests/fixtures/micro/acme/)
+use matching version groups (`acme.example.v1`, `v2`, `v3alpha1`) for regression
+and workspace examples (`acme-api`, `examples/reference-manual`).
+
 ## Cross-cutting kinds
 
 | Term | Meaning |
@@ -297,6 +304,12 @@ A `module.yaml` file beside the contracts that names the module, its overview,
 and the contracts that belong to it. Parsed on the parser side before the
 [switchback](#switchback) is frozen; recorded in the switchback [source
 layer](#source-layer) so the manual is reproducible.
+
+MVP assembly (OpenAPI + protobuf in one module) is demonstrated by
+[`examples/reference-manual/`](../examples/reference-manual/) using
+[`switchback-assemble`](../crates/switchback-assemble/); see
+[ADR 0014](adr/0014-multi-contract-reference-manual-assembly.md). Full
+`module.yaml` parsing inside every family parser remains deferred.
 
 ### operation
 

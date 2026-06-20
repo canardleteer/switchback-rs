@@ -1,4 +1,4 @@
-# Get the whole board
+# /board
 
 **GET** `/board`
 

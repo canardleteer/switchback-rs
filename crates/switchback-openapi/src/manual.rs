@@ -54,12 +54,14 @@ pub fn build_reference_manual(
         .unwrap_or_default();
 
     let companions = companion_files_to_stored(&populated.companions, "text/markdown");
-    let contract_protocols = resolved
-        .entry_uris
-        .first()
-        .and_then(|uri| resolved.docs.iter().find(|d| &d.uri == uri))
-        .map(|doc| crate::populate::http_attach::contract_attachments(&doc.value))
-        .unwrap_or_default();
+    let mut contract_protocols = Vec::new();
+    for entry_uri in &resolved.entry_uris {
+        if let Some(doc) = resolved.docs.iter().find(|d| &d.uri == entry_uri) {
+            contract_protocols.extend(crate::populate::http_attach::contract_attachments(
+                &doc.value,
+            ));
+        }
+    }
 
     Ok(ReferenceManual {
         switchback_version: WIRE_VERSION.to_string(),

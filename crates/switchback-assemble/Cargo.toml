@@ -1,0 +1,13 @@
+[package]
+name = "switchback-assemble"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Merge family-specific reference manuals into one multi-contract module."
+
+[dependencies]
+switchback-traits.workspace = true
+switchback-openapi.workspace = true
+switchback-protobuf = { workspace = true, features = ["buf", "protoc"] }

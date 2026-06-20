@@ -2,7 +2,7 @@
 
 use anyhow::{bail, Result};
 use std::path::PathBuf;
-use switchback_traits::{EscapeTags, Layout, OpenApiOperationSource, Options};
+use switchback_traits::{EscapeTags, Layout, OpenApiOperationSource, OpenApiSummaryLabel, Options};
 
 use crate::paths::normalize_rel_path;
 
@@ -39,6 +39,7 @@ enum ParsedToken {
     AlphabetizeServices,
     AlphabetizeMessages,
     OpenApiOperationSource(OpenApiOperationSource),
+    OpenApiSummaryLabel(OpenApiSummaryLabel),
 }
 
 fn parse_token(token: &str) -> Result<ParsedToken> {
@@ -112,6 +113,16 @@ fn parse_token(token: &str) -> Result<ParsedToken> {
             ),
         }));
     }
+    if let Some(v) = token.strip_prefix("openapi-summary-label=") {
+        return Ok(ParsedToken::OpenApiSummaryLabel(match v {
+            "endpoint" => OpenApiSummaryLabel::Endpoint,
+            "summary" => OpenApiSummaryLabel::Summary,
+            "prefixed" => OpenApiSummaryLabel::Prefixed,
+            other => bail!(
+                "unknown openapi-summary-label value {other:?}; use endpoint, summary, or prefixed"
+            ),
+        }));
+    }
 
     match token {
         "init" => Ok(ParsedToken::Init),
@@ -157,6 +168,7 @@ fn apply_parsed(opts: &mut Options, token: ParsedToken) {
         ParsedToken::AlphabetizeServices => opts.alphabetize_services = true,
         ParsedToken::AlphabetizeMessages => opts.alphabetize_messages = true,
         ParsedToken::OpenApiOperationSource(mode) => opts.openapi_operation_source = mode,
+        ParsedToken::OpenApiSummaryLabel(label) => opts.openapi_summary_label = label,
     }
 }
 
@@ -224,6 +236,18 @@ mod tests {
         let opts = parse_parameter(&Some("alphabetize_services".into())).unwrap();
         assert!(opts.alphabetize_services);
         assert!(!opts.alphabetize_messages);
+    }
+
+    #[test]
+    fn openapi_summary_label_flag() {
+        let opts = parse_parameter(&Some("openapi-summary-label=summary".into())).unwrap();
+        assert_eq!(opts.openapi_summary_label, OpenApiSummaryLabel::Summary);
+    }
+
+    #[test]
+    fn openapi_summary_label_defaults_endpoint() {
+        let opts = parse_parameter(&None).unwrap();
+        assert_eq!(opts.openapi_summary_label, OpenApiSummaryLabel::Endpoint);
     }
 
     #[test]

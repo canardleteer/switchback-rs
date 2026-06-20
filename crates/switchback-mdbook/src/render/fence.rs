@@ -2,7 +2,7 @@
 
 use switchback_protocols::ProtocolRegistry;
 use switchback_traits::{
-    apply_intra_links, EscapeTags, IntraLink, LinkContext, LinkFormatter, OperationBody,
+    apply_intra_links, EntityRef, EscapeTags, IntraLink, LinkContext, LinkFormatter, OperationBody,
     OperationRequestBodyRef, ParameterRef, ProtocolAttachment, RefKind, Reference, ResponseRef,
     StoredEntity,
 };
@@ -116,9 +116,9 @@ pub fn operation_signature_markdown(
 }
 
 pub fn openapi_operation_markdown(
+    entity: &StoredEntity,
     body: &OperationBody,
-    entity_doc: Option<&str>,
-    intra_links: &[IntraLink],
+    group: &str,
     escape_tags: EscapeTags,
     formatter: &dyn LinkFormatter,
     ctx: &LinkContext,
@@ -127,9 +127,16 @@ pub fn openapi_operation_markdown(
         .render_from
         .as_deref()
         .unwrap_or_else(|| std::path::Path::new(&ctx.markdown_root));
+    let module = entity
+        .refs
+        .iter()
+        .find(|r| !r.target.module.is_empty())
+        .map(|r| r.target.module.as_str())
+        .unwrap_or("");
     let mut out = format_method_path_line(&body.signature, &body.protocols);
-    if let Some(doc) = entity_doc {
-        let doc = apply_intra_links("doc", doc, intra_links, formatter, ctx);
+    if let Some(doc) = entity.doc.as_deref() {
+        let doc = apply_intra_links("doc", doc, &entity.intra_links, formatter, ctx);
+        let doc = link_structural_refs_in_prose(&doc, &entity.refs, module, group, ctx, from);
         push_markdown_doc(&mut out, &doc, escape_tags);
     }
     if !body.parameters.is_empty() {
@@ -156,7 +163,15 @@ pub fn openapi_operation_markdown(
                 "optional"
             });
             out.push_str(" | ");
-            out.push_str(&escape_table_cell(&param.description));
+            let description = link_structural_refs_in_prose(
+                &param.description,
+                &entity.refs,
+                module,
+                group,
+                ctx,
+                from,
+            );
+            out.push_str(&escape_table_cell(&description));
             out.push_str(" |\n");
         }
         out.push('\n');
@@ -175,7 +190,15 @@ pub fn openapi_operation_markdown(
             out.push(' ');
             out.push_str(&response.status);
             out.push_str(" | ");
-            out.push_str(&escape_table_cell(&response.description));
+            let description = link_structural_refs_in_prose(
+                &response.description,
+                &entity.refs,
+                module,
+                group,
+                ctx,
+                from,
+            );
+            out.push_str(&escape_table_cell(&description));
             out.push_str(" | ");
             if response.media_type.is_empty() {
                 out.push('—');
@@ -314,4 +337,173 @@ pub fn link_ref(reference: &Reference, ctx: &LinkContext, from: &std::path::Path
         name = reference.target.name
     );
     ctx.link_type(from, &fqn)
+}
+
+pub fn entity_module_group(entity: &StoredEntity) -> (&str, &str) {
+    entity
+        .refs
+        .first()
+        .map(|r| (r.target.module.as_str(), r.target.group.as_str()))
+        .unwrap_or(("", ""))
+}
+
+pub fn link_structural_refs_in_prose(
+    doc: &str,
+    refs: &[Reference],
+    module: &str,
+    group: &str,
+    ctx: &LinkContext,
+    from: &std::path::Path,
+) -> String {
+    let doc = link_qualified_backtick_schema_refs(doc, refs, module, group, ctx, from);
+    let doc = link_markdown_backticks_by_reference(&doc, refs, ctx, from);
+    let doc = link_markdown_backticks_for_group_schemas(&doc, module, group, ctx, from);
+    link_bare_structural_refs_in_tables(&doc, refs, ctx, from)
+}
+
+fn link_qualified_backtick_schema_refs(
+    doc: &str,
+    refs: &[Reference],
+    module: &str,
+    group: &str,
+    ctx: &LinkContext,
+    from: &std::path::Path,
+) -> String {
+    let mut targets: Vec<(String, EntityRef)> = refs
+        .iter()
+        .filter(|r| !r.target.name.is_empty() && !r.target.category.is_empty())
+        .map(|r| (r.target.name.clone(), r.target.clone()))
+        .collect();
+    if !module.is_empty() && !group.is_empty() {
+        targets.extend(
+            ctx.entity_paths
+                .keys()
+                .filter(|key| key.module == module && key.group == group)
+                .map(|key| (key.name.clone(), key.clone())),
+        );
+    }
+    targets.sort_by_key(|(name, _)| std::cmp::Reverse(name.len()));
+    let mut seen = std::collections::HashSet::new();
+    targets.retain(|(name, _)| seen.insert(name.clone()));
+
+    let mut out = doc.to_string();
+    for (name, entity_ref) in targets {
+        let link = ctx.link_entity(from, &entity_ref);
+        if !link.starts_with('[') {
+            continue;
+        }
+        let Some(url) = markdown_link_target(&link) else {
+            continue;
+        };
+        let prefix = format!("`{name}.");
+        let mut rebuilt = String::new();
+        let mut rest = out.as_str();
+        while let Some(idx) = rest.find(&prefix) {
+            rebuilt.push_str(&rest[..idx]);
+            let after_prefix = &rest[idx + prefix.len()..];
+            let Some(end) = after_prefix.find('`') else {
+                rebuilt.push_str(&rest[idx..]);
+                return rebuilt;
+            };
+            let suffix = &after_prefix[..end];
+            rebuilt.push('[');
+            rebuilt.push_str(&name);
+            rebuilt.push_str("](");
+            rebuilt.push_str(url);
+            rebuilt.push_str(").");
+            rebuilt.push_str(suffix);
+            rest = &after_prefix[end + 1..];
+        }
+        rebuilt.push_str(rest);
+        out = rebuilt;
+    }
+    out
+}
+
+fn markdown_link_target(link: &str) -> Option<&str> {
+    let open = link.find("](")?;
+    let close = link[open + 2..].find(')')?;
+    Some(&link[open + 2..open + 2 + close])
+}
+
+fn link_bare_structural_refs_in_tables(
+    doc: &str,
+    refs: &[Reference],
+    ctx: &LinkContext,
+    from: &std::path::Path,
+) -> String {
+    let mut sorted: Vec<_> = refs
+        .iter()
+        .filter(|r| !r.target.name.is_empty() && !r.target.category.is_empty())
+        .collect();
+    sorted.sort_by_key(|r| std::cmp::Reverse(r.target.name.len()));
+    let mut out = doc.to_string();
+    for reference in sorted {
+        let link = link_ref(reference, ctx, from);
+        if !link.starts_with('[') {
+            continue;
+        }
+        let cell = format!("| {} |", reference.target.name);
+        let linked = format!("| {link} |");
+        out = out.replace(&cell, &linked);
+    }
+    out
+}
+
+fn link_markdown_backticks_by_reference(
+    doc: &str,
+    refs: &[Reference],
+    ctx: &LinkContext,
+    from: &std::path::Path,
+) -> String {
+    let mut out = doc.to_string();
+    let mut sorted: Vec<_> = refs
+        .iter()
+        .filter(|r| !r.target.name.is_empty() && !r.target.category.is_empty())
+        .collect();
+    sorted.sort_by_key(|r| std::cmp::Reverse(r.target.name.len()));
+    for reference in sorted {
+        let link = link_ref(reference, ctx, from);
+        if !link.starts_with('[') {
+            continue;
+        }
+        let needle = format!("`{}`", reference.target.name);
+        out = out.replace(&needle, &link);
+    }
+    out
+}
+
+fn link_markdown_backticks_for_group_schemas(
+    doc: &str,
+    module: &str,
+    group: &str,
+    ctx: &LinkContext,
+    from: &std::path::Path,
+) -> String {
+    if module.is_empty() || group.is_empty() {
+        return doc.to_string();
+    }
+    let mut names: Vec<String> = ctx
+        .entity_paths
+        .keys()
+        .filter(|key| key.module == module && key.group == group && key.category == "schema")
+        .map(|key| key.name.clone())
+        .collect();
+    names.sort_by_key(|name| std::cmp::Reverse(name.len()));
+    let mut out = doc.to_string();
+    for name in names {
+        let entity_ref = EntityRef {
+            module: module.to_string(),
+            group: group.to_string(),
+            category: "schema".into(),
+            name: name.clone(),
+        };
+        let link = ctx.link_entity(from, &entity_ref);
+        if !link.starts_with('[') {
+            continue;
+        }
+        let needle = format!("`{name}`");
+        out = out.replace(&needle, &link);
+    }
+    out
 }

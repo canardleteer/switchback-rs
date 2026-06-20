@@ -1,0 +1,24 @@
+[package]
+name = "reference-manual-example"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[[bin]]
+name = "reference-manual"
+path = "main.rs"
+
+[dependencies]
+anyhow.workspace = true
+clap.workspace = true
+serde = { workspace = true, features = ["derive"] }
+serde_yaml = "0.9"
+switchback-assemble.workspace = true
+switchback-codec-pb.workspace = true
+switchback-mdbook.workspace = true
+switchback-openapi.workspace = true
+switchback-protobuf = { workspace = true, features = ["buf", "protoc"] }
+switchback-traits.workspace = true

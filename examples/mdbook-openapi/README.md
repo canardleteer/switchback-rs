@@ -5,19 +5,24 @@ End-to-end workspace example: load OpenAPI fixtures from
 render reference manuals with `switchback-mdbook`, and write one mdBook project
 per fixture.
 
-Default output builds **four upstream books** (the 2×2 OpenAPI 3.0 / 3.1
-matrix). Use `--tier micro` or `--all-fixtures` for the hand-maintained corpora
-too.
+**Default output** builds one **Acme APIs** book (`acme-api`): a synthetic
+three-version corpus (`v1`, `v2`, `v3alpha1`) mirroring the protobuf Acme
+packages. Use `--tier upstream` for the vendored learn.openapis.org matrix, or
+`--tier micro` / `--all-fixtures` for other hand-maintained corpora.
+
+See also the combined HTTP+gRPC example at
+[`examples/reference-manual/`](../reference-manual/).
 
 ## Prerequisites
 
-- Upstream fixtures vendored once per machine:
+- Upstream fixtures vendored once per machine (only when using `--tier upstream`
+  or upstream fixture ids):
 
   ```bash
   cargo xtask spec-vendor fetch-fixtures --family openapi
   ```
 
-  Micro fixtures ship in-repo and need no fetch step.
+  Micro fixtures (including Acme) ship in-repo and need no fetch step.
 
 - Optional preview: **mdbook** CLI pinned to **0.5.3** (see workspace
   `Cargo.toml`).
@@ -26,42 +31,41 @@ too.
 
 From the repository root:
 
-### Default — four upstream mdBook projects
+### Default — Acme APIs mdBook
 
 ```bash
-cargo run -p mdbook-openapi-example -- -o /tmp/openapi-books
+cargo run -p mdbook-openapi-example -- -o /tmp/acme-book
 ```
 
-Creates:
+Creates `acme-api/` with three version groups, streaming operations, shared
+error components, and companion markdown.
 
-| Directory | Fixture |
-| --- | --- |
-| `petstore-3.0/` | OAI petstore (3.0) |
-| `link-example-3.0/` | OAI link example (3.0) |
-| `tictactoe-3.1/` | learn.openapis.org tictactoe (3.1) |
-| `webhook-3.1/` | learn.openapis.org webhook (3.1) |
-
-Preview one book:
+Preview:
 
 ```bash
-cd /tmp/openapi-books/tictactoe-3.1
+cd /tmp/acme-book/acme-api
 mdbook serve
+```
+
+### Upstream fixtures (four books)
+
+```bash
+cargo run -p mdbook-openapi-example -- --tier upstream -o /tmp/openapi-books
 ```
 
 ### One fixture
 
 ```bash
-cargo run -p mdbook-openapi-example -- --fixture petstore-3.0 -o /tmp/openapi-books
-# → /tmp/openapi-books/petstore-3.0/
+cargo run -p mdbook-openapi-example -- --fixture tictactoe-3.1 -o /tmp/openapi-books
 ```
 
-### Micro fixtures (four books)
+### Micro fixtures
 
 ```bash
 cargo run -p mdbook-openapi-example -- --tier micro -o /tmp/openapi-micro
 ```
 
-### All eight fixtures
+### All catalogued fixtures
 
 ```bash
 cargo run -p mdbook-openapi-example -- --all-fixtures -o /tmp/openapi-all
@@ -70,7 +74,7 @@ cargo run -p mdbook-openapi-example -- --all-fixtures -o /tmp/openapi-all
 ### Entity layout
 
 ```bash
-cargo run -p mdbook-openapi-example -- --layout entity -o /tmp/openapi-books
+cargo run -p mdbook-openapi-example -- --layout entity -o /tmp/acme-book
 ```
 
 Layouts: `package` (default), `entity`, `split`.
@@ -95,19 +99,33 @@ cargo run -p mdbook-openapi-example -- --list-fixtures
 cargo run -p mdbook-openapi-example -- --via-binpb /tmp/switchback.binpb -o /tmp/api-book
 ```
 
+## Acme corpus notes
+
+The Acme OpenAPI fixture parallels
+[`switchback-protobuf/tests/fixtures/proto/acme/`](../../crates/switchback-protobuf/tests/fixtures/proto/acme/).
+All three API versions are documented as concurrently supported, each with its
+own `servers[]` URL.
+
+**OpenAPI modeling limits:** bidirectional streaming is not a single operation
+in OpenAPI (HTTP supports relay patterns; the v1 corpus uses SSE + POST and
+companion prose explains the gap). gRPC bidi remains on the protobuf side in
+[`examples/reference-manual/`](../reference-manual/).
+
 ## Useful flags
 
 | Flag | Purpose |
 | --- | --- |
 | `-o`, `--output` | Parent output directory (default `./openapi-books`) |
 | `--fixture ID` | Repeatable; render only these ids |
-| `--tier upstream\|micro\|all` | Tier when `--fixture` omitted (default `upstream`) |
-| `--all-fixtures` | Render all eight catalogued fixtures |
+| `--tier example\|upstream\|micro\|all` | Tier when `--fixture` omitted (default `example` → acme-api) |
+| `--all-fixtures` | Render every catalogued fixture |
 | `--list-fixtures` | Print fixture ids and exit |
 | `--markdown-only` / `--no-init` | Skip mdBook scaffold |
 | `--summary` | Regenerate SUMMARY (requires `--markdown-only`) |
 | `--title` | Override init book title |
 | `--layout` | `package`, `entity`, or `split` |
+| `--openapi-summary-label` | SUMMARY link text: `endpoint` (path only, default), `summary`, or `prefixed` |
+| `--openapi-operation-source` | Raw operation YAML: `collapsed`, `trimmed`, or `hidden` |
 
 All options:
 

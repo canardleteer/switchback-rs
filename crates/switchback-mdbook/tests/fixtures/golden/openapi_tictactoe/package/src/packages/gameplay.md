@@ -2,7 +2,43 @@
 
 ## Operations
 
-### Get a single board square
+### /board
+
+**GET** `/board`
+
+Retrieves the current state of the board and the winner.
+
+#### Responses
+
+| Status | Description | Media type | Schema |
+| --- | --- | --- | --- |
+| 200 | OK | application/json | [status](components.md#status) |
+
+<details>
+<summary>Operation definition (YAML)</summary>
+
+```yaml
+description: Retrieves the current state of the board and the winner.
+operationId: get-board
+responses:
+  "200":
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/status"
+    description: OK
+security:
+- defaultApiKey: []
+- app2AppOauth:
+  - board:read
+summary: Get the whole board
+tags:
+- Gameplay
+```
+
+</details>
+
+### /board/{row}/{column}
 
 **GET** `/board/{row}/{column}`
 
@@ -60,43 +96,7 @@ tags:
 
 </details>
 
-### Get the whole board
-
-**GET** `/board`
-
-Retrieves the current state of the board and the winner.
-
-#### Responses
-
-| Status | Description | Media type | Schema |
-| --- | --- | --- | --- |
-| 200 | OK | application/json | [status](components.md#status) |
-
-<details>
-<summary>Operation definition (YAML)</summary>
-
-```yaml
-description: Retrieves the current state of the board and the winner.
-operationId: get-board
-responses:
-  "200":
-    content:
-      application/json:
-        schema:
-          $ref: "#/components/schemas/status"
-    description: OK
-security:
-- defaultApiKey: []
-- app2AppOauth:
-  - board:read
-summary: Get the whole board
-tags:
-- Gameplay
-```
-
-</details>
-
-### Set a single board square
+### /board/{row}/{column}
 
 **PUT** `/board/{row}/{column}`
 

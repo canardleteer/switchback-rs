@@ -31,6 +31,20 @@ pub enum EscapeTags {
     Entities,
 }
 
+/// How to label OpenAPI operations in SUMMARY and package index links.
+///
+/// Renderer-local option; not serialized on the wire.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub enum OpenApiSummaryLabel {
+    /// HTTP path only, without method (for example `/products`).
+    #[default]
+    Endpoint,
+    /// OpenAPI `summary` / `operationId` title from populate.
+    Summary,
+    /// Legacy `Operation /path` prefix plus path (no method).
+    Prefixed,
+}
+
 /// How to render the raw OpenAPI operation YAML/JSON on operation pages.
 ///
 /// Renderer-local option; not serialized on the wire.
@@ -96,6 +110,8 @@ pub struct Options {
     pub alphabetize_messages: bool,
     /// How to render raw OpenAPI operation source on operation pages.
     pub openapi_operation_source: OpenApiOperationSource,
+    /// How to label OpenAPI operations in SUMMARY and index navigation.
+    pub openapi_summary_label: OpenApiSummaryLabel,
 }
 
 impl Default for Options {
@@ -123,6 +139,7 @@ impl Default for Options {
             alphabetize_services: false,
             alphabetize_messages: false,
             openapi_operation_source: OpenApiOperationSource::default(),
+            openapi_summary_label: OpenApiSummaryLabel::default(),
         }
     }
 }

@@ -9,6 +9,13 @@ pub const MICRO_NULLABLE_3_0: &str = "micro/nullable-3.0/openapi.yaml";
 pub const MICRO_COMPANION: &str = "micro/companion/openapi.yaml";
 pub const MICRO_MULTIFILE: &str = "micro/multifile/openapi.yaml";
 pub const MICRO_STREAMING: &str = "micro/streaming/openapi.yaml";
+pub const MICRO_ACME_ROOT: &str = "micro/acme";
+
+pub const EXAMPLE_ACME_INPUTS: &[&str] = &[
+    "v1/openapi.yaml",
+    "v2/openapi.yaml",
+    "v3alpha1/openapi.yaml",
+];
 
 pub const UPSTREAM_LOW_3_0: &str = "upstream/oas3.0-petstore/petstore.yaml";
 pub const UPSTREAM_HIGH_3_0: &str = "upstream/oas3.0-link-example/link-example.yaml";
@@ -101,11 +108,31 @@ pub const EXAMPLE_FIXTURES: &[ExampleFixture] = &[
         label: "HTTP streaming (micro)",
         tier: ExampleTier::Micro,
     },
+    ExampleFixture {
+        id: "acme-api",
+        relative: MICRO_ACME_ROOT,
+        label: "Acme APIs (micro, 3 versions)",
+        tier: ExampleTier::Micro,
+    },
 ];
 
-/// Default upstream-only subset (2×2 OAS version matrix).
+/// Default example corpus (Acme three-version API).
 pub fn default_example_fixtures() -> impl Iterator<Item = &'static ExampleFixture> {
-    fixtures_for_tier(ExampleTier::Upstream)
+    std::iter::once(example_fixture("acme-api").expect("acme-api fixture registered"))
+}
+
+/// Load the Acme three-version OpenAPI corpus.
+pub fn load_acme_example() -> switchback_traits::Result<switchback_traits::ReferenceManual> {
+    let module_root = fixtures_dir().join(MICRO_ACME_ROOT);
+    load(&LoadArgs {
+        module_root: module_root.clone(),
+        inputs: EXAMPLE_ACME_INPUTS
+            .iter()
+            .map(|p| PathBuf::from(*p))
+            .collect(),
+        search_roots: vec![module_root],
+        title: Some("Acme APIs".into()),
+    })
 }
 
 /// Path to `tests/fixtures/` in this crate.
@@ -143,6 +170,9 @@ pub fn load_fixture_relative(
 pub fn load_example(
     fixture: &ExampleFixture,
 ) -> switchback_traits::Result<switchback_traits::ReferenceManual> {
+    if fixture.id == "acme-api" {
+        return load_acme_example();
+    }
     load_fixture_relative(fixture.relative)
 }
 

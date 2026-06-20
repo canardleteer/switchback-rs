@@ -128,7 +128,11 @@ fn populate_path_item(
                     .collect()
             })
             .unwrap_or_default();
-        let target_groups = merge_operation_tags(&op_tags, &path_tags);
+        let target_groups: Vec<String> = if let Some(group) = ctx.entry_group {
+            vec![group.to_string()]
+        } else {
+            merge_operation_tags(&op_tags, &path_tags)
+        };
         let name = crate::populate::operation::operation_name(method, path);
         let title = op
             .get("summary")

@@ -148,13 +148,15 @@ fn resolve_ref(
             .get(base_doc_uri)
             .with_context(|| format!("unknown base document {base_doc_uri}"))?;
         let file_part = crate::paths::strip_dot_slash(file_part);
-        let candidate = base_doc
-            .path
-            .parent()
-            .unwrap_or(&base_doc.path)
-            .join(file_part);
+        let candidate = crate::paths::normalize_path(
+            &base_doc
+                .path
+                .parent()
+                .unwrap_or(&base_doc.path)
+                .join(file_part),
+        );
         docs.values()
-            .find(|d| d.path == candidate)
+            .find(|d| crate::paths::normalize_path(&d.path) == candidate)
             .map(|d| d.uri.clone())
             .ok_or_else(|| anyhow!("unresolved external $ref file: {file_part}"))?
     };

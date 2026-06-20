@@ -1,4 +1,4 @@
-# Get a single board square
+# /board/{row}/{column}
 
 **GET** `/board/{row}/{column}`
 

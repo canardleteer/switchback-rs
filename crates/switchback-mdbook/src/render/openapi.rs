@@ -1,8 +1,9 @@
 //! OpenAPI-specific mdBook rendering helpers.
 
 use switchback_traits::{
-    apply_intra_links, entity_category_dir, EntityBody, LinkContext, LinkFormatter, Options,
-    ParameterBody, RequestBodyBody, ResponseBody, SchemaBody, SecuritySchemeBody, StoredEntity,
+    apply_intra_links, entity_category_dir, EntityBody, LinkContext, LinkFormatter,
+    OpenApiSummaryLabel, Options, ParameterBody, RequestBodyBody, ResponseBody, SchemaBody,
+    SecuritySchemeBody, StoredEntity,
 };
 
 use crate::render::fence::{
@@ -28,6 +29,58 @@ pub fn category_section_title(category: &str) -> &'static str {
         "request-body" => "Request bodies",
         "security-scheme" => "Security schemes",
         _ => "Entities",
+    }
+}
+
+/// SUMMARY / index link text for one OpenAPI entity.
+pub fn openapi_operation_path(entity: &StoredEntity) -> Option<&str> {
+    if entity.category != "operation" {
+        return None;
+    }
+    entity.name.split_once(' ').map(|(_, path)| path)
+}
+
+/// Page heading for an OpenAPI entity (operations follow [`OpenApiSummaryLabel`]).
+pub fn openapi_entity_heading(entity: &StoredEntity, label: OpenApiSummaryLabel) -> String {
+    if entity.category == "operation" {
+        openapi_summary_link_text(entity, label)
+    } else {
+        entity.title.clone()
+    }
+}
+
+/// SUMMARY / index link text for one OpenAPI entity.
+pub fn openapi_summary_link_text(entity: &StoredEntity, label: OpenApiSummaryLabel) -> String {
+    match (entity.category.as_str(), label) {
+        ("operation", OpenApiSummaryLabel::Endpoint) => openapi_operation_path(entity)
+            .unwrap_or(entity.name.as_str())
+            .to_string(),
+        (_, OpenApiSummaryLabel::Endpoint) => entity.name.clone(),
+        (_, OpenApiSummaryLabel::Summary) => entity.title.clone(),
+        (category, OpenApiSummaryLabel::Prefixed) => {
+            let name = if category == "operation" {
+                openapi_operation_path(entity).unwrap_or(&entity.name)
+            } else {
+                &entity.name
+            };
+            format!("{} {}", summary_prefix(category), name)
+        }
+    }
+}
+
+/// Sort key for OpenAPI entities in navigation lists.
+pub fn openapi_summary_sort_key(entity: &StoredEntity, label: OpenApiSummaryLabel) -> String {
+    match label {
+        OpenApiSummaryLabel::Summary => entity.title.clone(),
+        OpenApiSummaryLabel::Endpoint | OpenApiSummaryLabel::Prefixed => {
+            if entity.category == "operation" {
+                openapi_operation_path(entity)
+                    .unwrap_or(entity.name.as_str())
+                    .to_string()
+            } else {
+                entity.name.clone()
+            }
+        }
     }
 }
 
@@ -87,6 +140,7 @@ pub fn render_openapi_index_sections(
     markdown_root: &str,
     index_from: &std::path::Path,
     links: &LinkContext,
+    summary_label: OpenApiSummaryLabel,
 ) {
     for category in openapi_index_categories() {
         let mut section: Vec<_> = renderable_openapi_entities(entities)
@@ -96,12 +150,15 @@ pub fn render_openapi_index_sections(
         if section.is_empty() {
             continue;
         }
-        section.sort_by(|a, b| a.title.cmp(&b.title));
+        section.sort_by(|a, b| {
+            openapi_summary_sort_key(a, summary_label)
+                .cmp(&openapi_summary_sort_key(b, summary_label))
+        });
         out.push_str(&md_heading(SECTION_LEVEL, category_section_title(category)));
         for entity in section {
             let rel = openapi_entity_rel_path(markdown_root, group_dir, entity);
             let p = std::path::PathBuf::from(rel);
-            let title = format!("{} {}", summary_prefix(&entity.category), entity.name);
+            let title = openapi_summary_link_text(entity, summary_label);
             out.push_str("- ");
             out.push_str(&links.summary_link(index_from, &p, &title));
             out.push('\n');
@@ -113,6 +170,7 @@ pub fn render_openapi_index_sections(
 pub fn render_openapi_package_sections(
     out: &mut String,
     entities: &[StoredEntity],
+    group: &str,
     ctx: &LinkContext,
     opts: &Options,
     formatter: &dyn LinkFormatter,
@@ -130,28 +188,48 @@ pub fn render_openapi_package_sections(
         if section.is_empty() {
             continue;
         }
-        section.sort_by(|a, b| a.title.cmp(&b.title));
+        section.sort_by(|a, b| {
+            if category == "operation" {
+                openapi_summary_sort_key(a, opts.openapi_summary_label)
+                    .cmp(&openapi_summary_sort_key(b, opts.openapi_summary_label))
+            } else {
+                a.title.cmp(&b.title)
+            }
+        });
         out.push_str(&md_heading(SECTION_LEVEL, category_section_title(category)));
         for entity in section {
-            render_openapi_entity_section(out, entity, ctx, opts, formatter);
+            render_openapi_entity_section(out, entity, group, ctx, opts, formatter);
         }
     }
+}
+
+fn entity_link_group(entity: &StoredEntity) -> &str {
+    entity
+        .refs
+        .iter()
+        .find(|r| !r.target.group.is_empty())
+        .map(|r| r.target.group.as_str())
+        .unwrap_or("")
 }
 
 fn render_openapi_entity_section(
     out: &mut String,
     entity: &StoredEntity,
+    group: &str,
     ctx: &LinkContext,
     opts: &Options,
     formatter: &dyn LinkFormatter,
 ) {
-    out.push_str(&md_heading(ENTITY_LEVEL, &entity.title));
+    out.push_str(&md_heading(
+        ENTITY_LEVEL,
+        &openapi_entity_heading(entity, opts.openapi_summary_label),
+    ));
     match &entity.body {
         EntityBody::Operation(body) => {
             out.push_str(&openapi_operation_markdown(
+                entity,
                 body,
-                entity.doc.as_deref(),
-                &entity.intra_links,
+                group,
                 opts.escape_tags,
                 formatter,
                 ctx,
@@ -198,13 +276,16 @@ pub fn render_openapi_entity_page(
     opts: &Options,
     formatter: &dyn LinkFormatter,
 ) -> String {
-    let mut page = md_heading(1, &entity.title);
+    let mut page = md_heading(
+        1,
+        &openapi_entity_heading(entity, opts.openapi_summary_label),
+    );
     match &entity.body {
         EntityBody::Operation(body) => {
             page.push_str(&openapi_operation_markdown(
+                entity,
                 body,
-                entity.doc.as_deref(),
-                &entity.intra_links,
+                entity_link_group(entity),
                 opts.escape_tags,
                 formatter,
                 ctx,

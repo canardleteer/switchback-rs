@@ -1,0 +1,320 @@
+---
+openapi: 3.1.0
+info:
+  title: Acme APIs
+  version: 1.0.0
+  description: >
+    Echo, streaming, and gateway entry for the Acme documentation fixture.
+servers:
+  - url: https://api.acme.example/v1
+    description: Live v1 base URL (concurrent with v2 and v3alpha1)
+security:
+  - bearerAuth: []
+paths:
+  /echo:
+    post:
+      operationId: echoUnary
+      summary: Echo a message (unary)
+      description: |
+        Round-trips a JSON payload for latency and auth testing.
+
+        Requires a valid **Bearer** token when `security` is enforced. Include
+        `x-request-id` on every call for trace correlation.
+      parameters:
+        - $ref: '#/components/parameters/XRequestId'
+        - $ref: '#/components/parameters/Authorization'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EchoUnaryRequest'
+      responses:
+        '200':
+          description: Echoed payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EchoUnaryResponse'
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '429': {$ref: '#/components/responses/TooManyRequests'}
+        '500': {$ref: '#/components/responses/InternalError'}
+  /echo/stream:
+    get:
+      operationId: echoServerStream
+      summary: Stream echo chunks (SSE)
+      description: |
+        Streams `chunk_count` echo fragments as **SSE** frames. Each `data` line
+        contains JSON matching `EchoStreamChunk`.
+
+        Tune `chunk_count` (default 3) to stress long-lived connections in docs
+        previews.
+      parameters:
+        - $ref: '#/components/parameters/XRequestId'
+        - name: message
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: chunk_count
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 3
+      responses:
+        '200':
+          description: Server-sent echo chunks
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                description: >
+                  SSE frames carrying EchoStreamChunk JSON in `data` fields.
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '429': {$ref: '#/components/responses/TooManyRequests'}
+        '500': {$ref: '#/components/responses/InternalError'}
+  /echo/upload:
+    put:
+      operationId: echoClientStream
+      summary: Upload echo parts (octet-stream)
+      parameters:
+        - $ref: '#/components/parameters/XRequestId'
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              contentMediaType: application/octet-stream
+      responses:
+        '200':
+          description: Aggregated upload result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EchoUploadResponse'
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '413': {$ref: '#/components/responses/BadRequest'}
+        '500': {$ref: '#/components/responses/InternalError'}
+  /echo/watch:
+    get:
+      operationId: watchEcho
+      summary: Watch echo events (NDJSON)
+      parameters:
+        - $ref: '#/components/parameters/XRequestId'
+        - name: topic
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Newline-delimited echo events
+          content:
+            application/x-ndjson:
+              schema:
+                $ref: '#/components/schemas/WatchEchoEvent'
+        '404': {$ref: '#/components/responses/NotFound'}
+        '500': {$ref: '#/components/responses/InternalError'}
+  /gateway/relay:
+    post:
+      operationId: relayConnect
+      summary: Open relay session (server SSE + client POST frames)
+      description: >
+        Returns outbound relay frames as SSE. Send inbound frames via separate
+        POST requests; see v1 README for the OpenAPI bidi modeling gap.
+      parameters:
+        - $ref: '#/components/parameters/XRequestId'
+        - name: x-session-token
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RelayOpen'
+      responses:
+        '200':
+          description: Relay outbound frame stream
+          content:
+            text/event-stream:
+              schema:
+                type: string
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '500': {$ref: '#/components/responses/InternalError'}
+  /gateway/relay/frames:
+    post:
+      operationId: relaySendFrame
+      summary: Send one inbound relay frame
+      parameters:
+        - $ref: '#/components/parameters/XRequestId'
+        - name: x-session-token
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RelayFrame'
+      responses:
+        '202':
+          description: Frame accepted
+        '404': {$ref: '#/components/responses/NotFound'}
+  /catalog/products:
+    get:
+      operationId: listCatalogProducts
+      summary: Proxy list products (v2 catalog types)
+      description: |
+        Gateway proxy to the v2 catalog list operation. Response bodies use
+        **v2 schemas** even though the path lives under v1.
+
+        See `GET /products` in the v2 spec for pagination semantics.
+      parameters:
+        - $ref: '#/components/parameters/XRequestId'
+        - $ref: '#/components/parameters/Authorization'
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        '200':
+          description: Product page from v2 catalog schema
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  ../v2/openapi.yaml#/components/schemas/ListProductsResponse
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '500': {$ref: '#/components/responses/InternalError'}
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    XRequestId:
+      name: x-request-id
+      in: header
+      required: true
+      description: Caller correlation id echoed in logs and problem details.
+      schema:
+        type: string
+        minLength: 1
+    Authorization:
+      name: authorization
+      in: header
+      required: false
+      schema:
+        type: string
+  schemas:
+    EchoUnaryRequest:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+        locale:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+    EchoUnaryResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        echoed_at:
+          type: string
+          format: date-time
+    EchoUploadResponse:
+      type: object
+      properties:
+        joined_message:
+          type: string
+        parts_received:
+          type: integer
+        completed_at:
+          type: string
+          format: date-time
+    WatchEchoEvent:
+      type: object
+      properties:
+        event_id:
+          type: string
+        payload:
+          $ref: '#/components/schemas/EchoUnaryResponse'
+        observed_at:
+          type: string
+          format: date-time
+    RelayOpen:
+      type: object
+      required: [session_name]
+      properties:
+        session_name:
+          type: string
+    RelayFrame:
+      type: object
+      properties:
+        sequence:
+          type: integer
+          format: int64
+        payload:
+          type: string
+          contentEncoding: base64
+        fin:
+          type: boolean
+    Problem:
+      $ref: '../shared/schemas.yaml#/Problem'
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    Unauthorized:
+      description: Missing or invalid credentials
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    Forbidden:
+      description: Authenticated but not permitted
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    NotFound:
+      description: Resource not found
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    TooManyRequests:
+      description: Rate limit exceeded
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    InternalError:
+      description: Unexpected server error
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
