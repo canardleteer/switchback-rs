@@ -2,10 +2,11 @@
 
 //! Workspace task runner for `switchback-rs`.
 //!
-//! Commands: `ci`, `fmt`, `fmt-check`, `clippy`, `test`, `publish-check`,
+//! Commands: `ci`, `fmt`, `fmt-check`, `clippy`, `test`, `align-workspace-versions`,
 //! `spec-vendor`, `parse` (`--parser <family>`), `render` (`--renderer <target>`), `link-check`,
 //! `check-highlight-rust`, `update-highlight-golden`, `update-golden`, and `check-toolchain`.
 
+mod align_versions;
 mod ci;
 mod example_fixtures;
 mod highlight;
@@ -14,6 +15,7 @@ mod render;
 mod spec_vendor;
 mod workspace;
 
+use align_versions::{align_workspace_versions, AlignVersionsArgs};
 use anyhow::{bail, Result};
 use clap::{Parser, Subcommand};
 use workspace::run;
@@ -27,15 +29,13 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Cmd {
-    /// Always-on gate: toolchain, fmt-check, check, clippy, test, render,
-    /// link-check, check-highlight-rust, spec-vendor, audit, rumdl, ryl.
+    /// Rust/parser gate: toolchain, fmt-check, check, clippy, test, render,
+    /// link-check, check-highlight-rust, spec-vendor, example-fixtures.
     Ci,
     /// `cargo fmt --all` plus `rumdl fmt` and `ryl --fix`.
     Fmt,
     /// `cargo fmt --all --check` plus wire-schema `buf lint` / `buf format --diff`.
     FmtCheck,
-    /// Dry-run `cargo package` for publishable workspace crates in dependency order.
-    PublishCheck,
     Check,
     Clippy,
     Test,
@@ -43,6 +43,8 @@ enum Cmd {
     RumdlCheck,
     RumdlFmt,
     Ryl,
+    /// Sync `[workspace.package].version` with `switchback-*` workspace deps.
+    AlignWorkspaceVersions(AlignVersionsArgs),
     CheckToolchain {
         #[arg(long)]
         strict: bool,
@@ -119,9 +121,6 @@ fn main() -> Result<()> {
             run("example-fixtures validate", || {
                 example_fixtures::validate_openapi()
             })?;
-            run("audit", ci::audit)?;
-            run("rumdl check", ci::rumdl_check)?;
-            run("ryl", ci::ryl_check)?;
             Ok(())
         }
         Cmd::Fmt => {
@@ -129,7 +128,6 @@ fn main() -> Result<()> {
             ci::ryl_fix()
         }
         Cmd::FmtCheck => ci::fmt_check(),
-        Cmd::PublishCheck => ci::publish_check(),
         Cmd::Check => ci::check(),
         Cmd::Clippy => ci::clippy(),
         Cmd::Test => ci::test(),
@@ -137,6 +135,7 @@ fn main() -> Result<()> {
         Cmd::RumdlCheck => ci::rumdl_check(),
         Cmd::RumdlFmt => ci::rumdl_fmt(),
         Cmd::Ryl => ci::ryl_check(),
+        Cmd::AlignWorkspaceVersions(args) => align_workspace_versions(args),
         Cmd::CheckToolchain { strict } => ci::check_toolchain(strict),
         Cmd::Parse { parser } => bail!("parse --parser {parser}: not implemented yet"),
         Cmd::Render { renderer } => {

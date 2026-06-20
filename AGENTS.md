@@ -114,7 +114,35 @@ The workspace task runner lives in [`xtask/`](xtask/).
 components (`rustfmt`, `clippy`). Run `rustup toolchain install` in the repo
 root if `cargo xtask check-toolchain` reports missing components.
 
-`cargo xtask ci` also needs these tools on `PATH` (install once per machine):
+Before opening a PR, run the full pre-merge block below (or the subset matching
+your changed paths).
+
+### Matching GitHub Actions locally
+
+| Workflow | When (GHA) | Local equivalent |
+| --- | --- | --- |
+| [`rust-tests.yml`](.github/workflows/rust-tests.yml) | Every push/PR to `main`; matrix linux / macOS / Windows | `cargo xtask ci` then `cargo xtask audit` |
+| `rust-tests.yml` (linux-only step) | Same, `ubuntu-latest` cell only | `cargo xtask align-workspace-versions --check` |
+| [`rumdl.yml`](.github/workflows/rumdl.yml) | Push/PR when `**/*.md` or `.rumdl.toml` change | `cargo xtask rumdl-check` |
+| [`yaml-lint.yml`](.github/workflows/yaml-lint.yml) | Push/PR when `**/*.{yaml,yml}` or `.yamllint` change | `cargo xtask ryl` |
+
+GHA uses
+[`rustsec/audit-check`](https://github.com/rustsec/audit-check/commit/858dc40f52ca2b8570b7a997c1c4e35c6fc9a432)
+(Node 24); locally that is the same check as `cargo xtask audit` →
+`cargo audit`.
+
+**Full pre-merge gate (linux-equivalent)** — mirrors all three workflows on a
+typical PR:
+
+```bash
+cargo xtask align-workspace-versions --check   # rust-tests.yml (linux only)
+cargo xtask ci                                 # rust-tests.yml (all platforms)
+cargo xtask audit                              # rust-tests.yml (all platforms)
+cargo xtask rumdl-check                        # rumdl.yml
+cargo xtask ryl                                # yaml-lint.yml
+```
+
+Hygiene subcommands require these tools on `PATH` (install once per machine):
 
 - [`cargo-audit`](https://github.com/rustsec/rustsec/tree/main/cargo-audit) —
   `cargo install cargo-audit --locked`
@@ -123,34 +151,48 @@ root if `cargo xtask check-toolchain` reports missing components.
 
 If any are missing, `xtask` prints an install hint before failing.
 
-### `cargo xtask ci` — run this before finishing
+### `cargo xtask ci` — Rust/parser gate
 
-**`ci` is the always-on gate.** It runs every check that must stay green in
-local work and in CI. Individual subcommands (`fmt-check`, `clippy`, `test`,
-etc.) exist so you can run one step while iterating; they are not a substitute
-for `ci`.
+**`ci` is the Rust/parser gate** run in
+[`rust-tests.yml`](.github/workflows/rust-tests.yml). Individual subcommands
+(`fmt-check`, `clippy`, `test`, etc.) exist so you can run one step while
+iterating; they are not a substitute for `ci`.
 
 `cargo xtask ci` runs, in order:
 
 1. `check-toolchain` — pin matches [`rust-toolchain.toml`](rust-toolchain.toml)
-2. `fmt-check` — `cargo fmt --all --check`
+2. `fmt-check` — `cargo fmt --all --check` plus wire-schema `buf lint` /
+   `buf format --diff`
 3. `check` — `cargo check --workspace --all-targets`
 4. `clippy` — `cargo clippy --workspace --all-targets -- -D warnings`
 5. `test` — `cargo test --workspace`
-6. `audit` — `cargo audit` (requires
-   [`cargo-audit`](https://github.com/rustsec/rustsec/tree/main/cargo-audit))
-7. `rumdl check --respect-gitignore .`
-8. `ryl .`
+6. `render mdbook` — golden renderer regression
+7. `link-check` — intra-link validation
+8. `check-highlight-rust` — protobuf / CEL highlighter golden HTML
+9. `spec-vendor validate` — vendored meta-schema SHA-256 locks
+10. `example-fixtures validate` — OpenAPI upstream fixture locks
 
-Later phases add parser/renderer gates (`parse`, `render`, `link-check`,
-golden checks) to `ci`; those are not part of the core seam gate yet.
+Audit, Markdown, and YAML hygiene run via separate workflows (see table above).
+
+### `cargo xtask align-workspace-versions`
+
+Syncs `[workspace.package].version` with every `switchback-*` `version` in
+`[workspace.dependencies]` (root [`Cargo.toml`](Cargo.toml) only). All member
+crates use `version.workspace = true`; do **not** run `cargo set-version` here.
+
+```bash
+# Bump workspace semver
+cargo xtask align-workspace-versions --version 0.0.1-alpha.2
+cargo generate-lockfile
+
+# CI invariant (linux rust-tests job)
+cargo xtask align-workspace-versions --check
+```
 
 ### Fix commands (not CI)
 
 - **`cargo xtask fmt`** — apply fixes: `cargo fmt --all`, `rumdl fmt` on touched
   markdown (or the whole tree), `ryl --fix` where applicable.
-- **`cargo xtask fmt-check`**, **`clippy`**, **`test`** — single-step shortcuts;
-  same flags as the matching step inside `ci`.
-
-Parser/renderer gates (`parse`, `render`, `link-check`, golden checks) are not
-part of the core seam gate yet.
+- **`cargo xtask fmt-check`**, **`clippy`**, **`test`**, **`audit`**,
+  **`rumdl-check`**, **`ryl`** — single-step shortcuts; same flags as the
+  matching hygiene or gate step.

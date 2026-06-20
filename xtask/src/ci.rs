@@ -238,22 +238,3 @@ pub fn buf_wire_proto_check() -> Result<()> {
 fn buf_wire_proto_format() -> Result<()> {
     run_buf_in_wire_module(&["format", "-w"])
 }
-
-const PUBLISH_CRATES: &[&str] = &[
-    "switchback-traits",
-    "switchback-codec-pb",
-    "switchback-jsonschema",
-    "switchback-protobuf",
-    "switchback-mdbook",
-    "switchback-openapi",
-    "switchback-asyncapi",
-    "switchback-openrpc",
-];
-
-pub fn publish_check() -> Result<()> {
-    for pkg in PUBLISH_CRATES {
-        eprintln!("xtask: cargo package --list -p {pkg}");
-        cargo(&["package", "--list", "-p", pkg, "--allow-dirty"])?;
-    }
-    Ok(())
-}
