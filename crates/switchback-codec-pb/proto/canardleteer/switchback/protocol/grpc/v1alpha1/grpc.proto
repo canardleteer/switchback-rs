@@ -5,50 +5,75 @@ syntax = "proto3";
 
 package canardleteer.switchback.protocol.grpc.v1alpha1;
 
+// gRPC protocol attachments (protocol_id = "grpc").
+//
+// Transport-agnostic RPC semantics (status codes, streaming, call metadata).
+// See PROTOCOL-GRPC and statuscodes.md. Payload bytes on ProtocolAttachment
+// encode exactly one arm of GrpcPayload below. Call metadata is not HTTP
+// headers — see metadata_options.proto and ADR 0012.
+
 // Top-level oneof for all gRPC protocol attachments.
 message GrpcPayload {
   oneof kind {
+    // Contract.protocols[] — protobuf package name for the service set.
     GrpcContractMeta contract = 1;
+    // OperationBody.protocols[] — RPC name and streaming shape.
     GrpcOperationMeta operation = 2;
+    // ResponseRef / ResponseBody.protocols[] — successful RPC completion.
     GrpcStatusMeta status = 3;
+    // ResponseRef / ResponseBody.protocols[] — RPC error (google.rpc.Status).
     GrpcErrorMeta error = 4;
+    // ParameterRef / ParameterBody.protocols[] — declared RPC call metadata key.
     GrpcMetadataMeta metadata = 5;
   }
 }
 
 // Contract-level gRPC transport context.
 message GrpcContractMeta {
+  // Protobuf package containing the service definitions.
   string package_name = 1;
 }
 
 // gRPC RPC invocation metadata.
 message GrpcOperationMeta {
+  // Short RPC method name (not fully-qualified).
   string rpc_name = 1;
+  // Client-streaming RPC when true.
   bool client_streaming = 2;
+  // Server-streaming RPC when true.
   bool server_streaming = 3;
 }
 
 // Successful gRPC status metadata.
 message GrpcStatusMeta {
+  // gRPC status code (0 = OK); see statuscodes.md.
   int32 code = 1;
+  // Status message when documented.
   string message = 2;
 }
 
 // gRPC error / fault metadata (google.rpc.Status aligned).
 message GrpcErrorMeta {
+  // Non-zero gRPC status code.
   int32 code = 1;
+  // Error message when documented.
   string message = 2;
+  // Structured error details (google.protobuf.Any aligned).
   repeated GrpcErrorDetail details = 3;
 }
 
-// gRPC metadata key on an operation or parameter.
+// gRPC call metadata key on an operation or parameter.
 message GrpcMetadataMeta {
+  // Metadata key name (for example x-request-id).
   string key = 1;
+  // Whether callers must supply this metadata key.
   bool required = 2;
 }
 
 // Structured error detail (google.protobuf.Any aligned).
 message GrpcErrorDetail {
+  // Type URL identifying the detail message.
   string type_url = 1;
+  // Serialized detail payload.
   bytes value = 2;
 }

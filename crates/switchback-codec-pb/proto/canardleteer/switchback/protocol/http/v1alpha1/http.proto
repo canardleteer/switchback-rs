@@ -5,52 +5,82 @@ syntax = "proto3";
 
 package canardleteer.switchback.protocol.http.v1alpha1;
 
+// HTTP protocol attachments (protocol_id = "http").
+//
+// Covers raw HTTP / OpenAPI operation semantics per RFC 9110 and Problem
+// Details per RFC 9457. Payload bytes on ProtocolAttachment encode exactly one
+// arm of HttpPayload below.
+
 // Top-level oneof for all HTTP protocol attachments.
 message HttpPayload {
   oneof kind {
+    // Contract.protocols[] — server URLs and default base URL.
     HttpContractMeta contract = 1;
+    // OperationBody.protocols[] — method, path template, streaming flags.
     HttpOperationMeta operation = 2;
+    // ResponseRef / ResponseBody.protocols[] — success response metadata.
     HttpResponseMeta response = 3;
+    // ResponseRef / ResponseBody.protocols[] — fault / error response metadata.
     HttpErrorMeta error = 4;
+    // ParameterRef / ParameterBody.protocols[] — query, path, header, cookie.
     HttpParameterMeta parameter = 5;
   }
 }
 
 // Contract-level HTTP transport context (servers, base URL).
 message HttpContractMeta {
+  // Advertised server URLs (OpenAPI servers, absolute base URLs).
   repeated string server_urls = 1;
+  // Preferred default when multiple server_urls are present.
   string default_server_url = 2;
 }
 
 // HTTP operation invocation (method + path template).
 message HttpOperationMeta {
+  // HTTP request method (GET, POST, PUT, PATCH, DELETE, …).
   string method = 1;
+  // OpenAPI path template (for example /board/{row}/{column}).
   string path_template = 2;
+  // True when the request body uses a streaming media type (ADR 0012 inference).
   bool request_streaming = 3;
+  // True when a success response uses a streaming media type (ADR 0012).
   bool response_streaming = 4;
 }
 
 // Successful HTTP response metadata.
 message HttpResponseMeta {
+  // Numeric status code (for example 200, 201).
   uint32 status_code = 1;
+  // Reason phrase when known (for example OK, Created).
   string reason_phrase = 2;
+  // Content-Type of the response body when documented.
   string media_type = 3;
+  // Documented response header names (values are family-specific).
   repeated string header_names = 4;
 }
 
 // HTTP error / fault metadata (Problem Details aligned).
 message HttpErrorMeta {
+  // Numeric error status code (4xx / 5xx).
   uint32 status_code = 1;
+  // Reason phrase when known.
   string reason_phrase = 2;
+  // RFC 9457 type URI when present.
   string problem_type = 3;
+  // RFC 9457 title when present.
   string problem_title = 4;
+  // Human-readable error detail when present.
   string detail = 5;
+  // Documented error response header names.
   repeated string header_names = 6;
 }
 
 // HTTP parameter / header / cookie metadata.
 message HttpParameterMeta {
+  // Parameter name as declared in the spec.
   string name = 1;
+  // Binding location: query, path, header, or cookie.
   string location = 2;
+  // Whether the parameter is required for the operation.
   bool required = 3;
 }

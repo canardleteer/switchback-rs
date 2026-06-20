@@ -41,8 +41,16 @@ message Module {
   repeated Contract contracts = 4;
 }
 
+// Transport-specific metadata envelope on contract and entity nodes.
+//
+// protocol_id is a stable slug ("http", "grpc", or a custom id). payload bytes
+// encode exactly one arm of a protocol-package top-level oneof (HttpPayload or
+// GrpcPayload in canardleteer.switchback.protocol.{http,grpc}.v1alpha1). The
+// core schema does not import those packages — decode by protocol_id.
 message ProtocolAttachment {
+  // Protocol slug; built-in values are "http" and "grpc".
   string protocol_id = 1;
+  // Serialized HttpPayload or GrpcPayload oneof (see ADR 0011 entity matrix).
   bytes payload = 2;
 }
 
@@ -51,6 +59,7 @@ message Contract {
   string version = 2;
   repeated Group groups = 3;
   repeated Companion companions = 4;
+  // Contract-level transport context (HttpContractMeta or GrpcContractMeta).
   repeated ProtocolAttachment protocols = 5;
 }
 
@@ -134,12 +143,14 @@ message Companion {
 }
 
 message OperationBody {
+  // Display-only invocation summary; structured facts live in protocols[].
   string signature = 1;
   string fence_language = 2;
   string fence_body = 3;
   repeated ParameterRef parameters = 4;
   repeated ResponseRef responses = 5;
   OperationRequestBodyRef request_body = 6;
+  // Operation invocation (HttpOperationMeta or GrpcOperationMeta).
   repeated ProtocolAttachment protocols = 7;
 }
 
@@ -174,6 +185,7 @@ message ParameterBody {
   bool required = 3;
   string fence_language = 4;
   string fence_body = 5;
+  // Parameter transport facts (HttpParameterMeta or GrpcMetadataMeta).
   repeated ProtocolAttachment protocols = 6;
 }
 
@@ -183,6 +195,7 @@ message ResponseBody {
   string fence_language = 3;
   string fence_body = 4;
   ResponseSeverity severity = 5;
+  // Response transport facts (HttpResponseMeta, HttpErrorMeta, GrpcStatusMeta, or GrpcErrorMeta).
   repeated ProtocolAttachment protocols = 6;
 }
 
@@ -190,6 +203,7 @@ message RequestBodyBody {
   bool required = 1;
   string fence_language = 2;
   string fence_body = 3;
+  // Transport-specific request-body metadata when the family supplies it.
   repeated ProtocolAttachment protocols = 4;
 }
 
@@ -218,6 +232,7 @@ message ParameterRef {
   Reference schema_ref = 4;
   string type_label = 5;
   string description = 6;
+  // Parameter transport facts (HttpParameterMeta or GrpcMetadataMeta).
   repeated ProtocolAttachment protocols = 7;
 }
 
@@ -227,6 +242,7 @@ message ResponseRef {
   string media_type = 3;
   string description = 4;
   ResponseSeverity severity = 5;
+  // Response transport facts (HttpResponseMeta, HttpErrorMeta, GrpcStatusMeta, or GrpcErrorMeta).
   repeated ProtocolAttachment protocols = 6;
 }
 

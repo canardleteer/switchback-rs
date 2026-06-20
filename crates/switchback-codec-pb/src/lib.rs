@@ -11,6 +11,24 @@
 //! (`canardleteer.switchback.v1alpha1`). See [ADR 0003](https://github.com/canardleteer/switchback-rs/blob/main/docs/adr/0003-protobuf-switchback-wire-format-with-buffa-in-switchback-codec-pb.md)
 //! for wire-format policy.
 //!
+//! # Protocol sub-schemas
+//!
+//! Transport metadata uses [`ProtocolAttachment`](switchback_traits::ProtocolAttachment)
+//! envelopes on contract and entity nodes. Payload bytes encode one arm of a
+//! protocol-package oneof; the core schema does not import those packages.
+//!
+//! | Compiled proto | Generated Rust module |
+//! | --- | --- |
+//! | `protocol/http/v1alpha1/http.proto` | [`canardleteer::switchback::protocol::http::v1alpha1`] |
+//! | `protocol/grpc/v1alpha1/grpc.proto` | [`canardleteer::switchback::protocol::grpc::v1alpha1`] |
+//! | `protocol/grpc/v1alpha1/metadata_options.proto` | same gRPC module (MethodOptions extension) |
+//!
+//! Entity attachment matrix and decode steps: [ADR 0011](https://github.com/canardleteer/switchback-rs/blob/main/docs/adr/0011-protocol-layer-and-contract-family-binding.md).
+//! HTTP streaming and gRPC metadata authoring: [ADR 0012](https://github.com/canardleteer/switchback-rs/blob/main/docs/adr/0012-http-streaming-inference-and-grpc-metadata-from-protobuf-options.md).
+//! Application code should prefer the
+//! [`switchback-protocols`](https://github.com/canardleteer/switchback-rs/tree/main/crates/switchback-protocols)
+//! `ProtocolRegistry` for encode/decode.
+//!
 //! # Example
 //!
 //! ```

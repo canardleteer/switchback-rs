@@ -94,6 +94,28 @@ impl ProtocolRegistry {
     }
 
     /// Decode a protocol attachment envelope.
+    ///
+    /// Built-in ids `"http"` and `"grpc"` deserialize to [`DecodedAttachment::Http`]
+    /// or [`DecodedAttachment::Grpc`]; other ids return
+    /// [`DecodedAttachment::Opaque`] with bytes unchanged.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use switchback_codec_pb::canardleteer::switchback::protocol::http::v1alpha1::HttpOperationMeta;
+    /// use switchback_protocols::{DecodedAttachment, HttpPayloadKind, ProtocolRegistry};
+    ///
+    /// let registry = ProtocolRegistry::with_builtins();
+    /// let attachment = registry.http().attach_operation(&HttpOperationMeta {
+    ///     method: "GET".into(),
+    ///     path_template: "/pets".into(),
+    ///     ..Default::default()
+    /// });
+    /// match registry.decode_attachment(&attachment).unwrap() {
+    ///     DecodedAttachment::Http(HttpPayloadKind::Operation(m)) => assert_eq!(m.method, "GET"),
+    ///     _ => panic!("expected operation meta"),
+    /// }
+    /// ```
     pub fn decode_attachment(&self, attachment: &ProtocolAttachment) -> Result<DecodedAttachment> {
         match attachment.protocol_id.as_str() {
             "http" => decode_http(&attachment.payload).map(DecodedAttachment::Http),

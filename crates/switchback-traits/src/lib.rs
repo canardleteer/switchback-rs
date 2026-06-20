@@ -9,9 +9,18 @@
 //! [Glossary](https://github.com/canardleteer/switchback-rs/blob/main/docs/GLOSSARY.md)
 //! for terminology.
 //!
+//! **Protocol vs contract family:** contract family describes spec grammar
+//! (OpenAPI, Protobuf, AsyncAPI); [protocol](https://github.com/canardleteer/switchback-rs/blob/main/docs/GLOSSARY.md#protocol)
+//! describes invocation and transport semantics (`http`, `grpc`, custom). Entity
+//! and contract nodes carry [`ProtocolAttachment`] lists populated by family
+//! parsers and decoded by [`switchback-protocols`](https://docs.rs/switchback-protocols).
+//! Structured HTTP method/path and gRPC streaming facts live in attachments, not
+//! in [`OperationBody::signature`] alone.
+//!
 //! # Traits
 //!
 //! - [`ContractFamily`] and [`Contract`] — parser-side identity and loaded views
+//! - [`ProtocolAttachment`] — transport envelope on contract and entity nodes
 //! - [`Renderer`] / [`SyncRenderer`] — target-format rendering (async primary)
 //! - [`SwitchbackCodec`] / [`SyncSwitchbackCodec`] — binary switchback I/O
 //! - [`LinkExtractor`] / [`AsyncLinkExtractor`] — intra-link extraction

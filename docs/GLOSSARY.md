@@ -337,6 +337,22 @@ encode exactly one arm of a protocol-specific top-level oneof (for example
 operation use `repeated ProtocolAttachment` (motivating case: AsyncAPI
 kafka + amqp).
 
+| IR node | Typical `http` arm | Typical `grpc` arm |
+| --- | --- | --- |
+| `Contract` | `HttpContractMeta` | `GrpcContractMeta` |
+| `OperationBody` | `HttpOperationMeta` | `GrpcOperationMeta` |
+| `ResponseRef` / `ResponseBody` | `HttpResponseMeta` / `HttpErrorMeta` | `GrpcStatusMeta` / `GrpcErrorMeta` |
+| `ParameterRef` / `ParameterBody` | `HttpParameterMeta` | `GrpcMetadataMeta` |
+| `RequestBodyBody` | (when transport-specific) | — |
+
+Decode: read `protocol_id`, deserialize `payload` as the matching protocol
+package oneof, inspect the arm. Matrix and steps:
+[ADR 0011](https://github.com/canardleteer/switchback-rs/blob/main/docs/adr/0011-protocol-layer-and-contract-family-binding.md).
+gRPC call metadata authoring uses the `switchback_rpc_metadata` protobuf
+extension — see
+[ADR 0012](https://github.com/canardleteer/switchback-rs/blob/main/docs/adr/0012-http-streaming-inference-and-grpc-metadata-from-protobuf-options.md)
+and [gRPC call metadata](#grpc-call-metadata).
+
 ### reference manual
 
 The rendered artifact the toolchain produces (for example, an mdBook). Contains

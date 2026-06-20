@@ -7,12 +7,6 @@ Date: 2026-06-20
 Proposed
 
 Relates to
-[4. Protobuf parser compile-to-descriptors in switchback-protobuf](0004-protobuf-parser-compile-to-descriptors-in-switchback-protobuf.md)
-
-Relates to
-[10. OpenAPI parser library MVP in switchback-openapi](0010-openapi-parser-library-mvp-in-switchback-openapi.md)
-
-Relates to
 [11. Protocol layer and contract family binding](0011-protocol-layer-and-contract-family-binding.md)
 
 ## Context

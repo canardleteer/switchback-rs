@@ -7,9 +7,17 @@ package canardleteer.switchback.protocol.grpc.v1alpha1;
 
 import "google/protobuf/descriptor.proto";
 
+// Author-facing protobuf extension for declaring gRPC call metadata keys on RPCs.
+//
+// Service authors attach switchback_rpc_metadata to google.protobuf.MethodOptions
+// so protobuf populate can emit GrpcMetadataMeta on ParameterRef nodes. See
+// ADR 0012 and glossary #grpc-call-metadata.
+
 // One gRPC call metadata key declared on an RPC.
 message RpcMetadataKey {
+  // Metadata key name.
   string name = 1;
+  // Whether the key is required on every call.
   bool required = 2;
 }
 
@@ -19,5 +27,6 @@ message RpcMetadataKeys {
 }
 
 extend google.protobuf.MethodOptions {
+  // Declares RPC call metadata keys for switchback populate (field 50100).
   RpcMetadataKeys switchback_rpc_metadata = 50100;
 }
