@@ -1,0 +1,10 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+title: InternalDefsExample
+type: object
+properties:
+  bar:
+    $ref: '#/$defs/Bar'
+$defs:
+  Bar:
+    type: string
+    description: An internal definition referenced by pointer.

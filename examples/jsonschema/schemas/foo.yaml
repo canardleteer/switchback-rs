@@ -1,0 +1,14 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://example.com/schemas/foo
+title: Foo
+description: Example schema with external and internal references.
+type: object
+properties:
+  name:
+    type: string
+  address:
+    $ref: ./common.yaml#/$defs/Address
+  count:
+    $ref: ./common.yaml#/$defs/PositiveInt
+required:
+  - name

@@ -1,21 +1,40 @@
 #![forbid(unsafe_code)]
+#![allow(missing_docs)]
 
-//! The shared JSON-Schema-document parser layer.
+//! JSON Schema document parser layer and standalone catalog loader.
 //!
-//! `switchback-jsonschema` is the off-the-shelf parts bin for any
-//! JSON-Schema-based contract family. It layers, on top of
-//! `switchback-traits`:
-//!
-//! - a document `Loader` and `$ref` resolver (internal JSON Pointer, external
-//!   file refs, cycle detection; URL refs behind a feature flag),
-//! - the shared API-description envelope (`info`/`servers`/`components`/
-//!   `security`/`tags`/`externalDocs`) shared by OpenAPI, AsyncAPI, and
-//!   OpenRPC,
-//! - a schema entity-body producer (fences, property listing, `$ref`
-//!   cross-links, examples) that populates the switchback rather than
-//!   rendering.
-//!
-//! `switchback-openapi`, `switchback-asyncapi`, and `switchback-openrpc` build
-//! on it. Renderers never see this crate; they consume the switchback. It also
-//! ships a standalone CLI that parses a directory of JSON Schema files into a
-//! switchback binary file.
+//! See the crate README for the public API surface.
+
+pub mod category;
+pub mod companion;
+pub mod contract;
+pub mod envelope;
+pub mod examples;
+pub mod family;
+pub mod link;
+pub mod load;
+pub mod loader;
+pub mod manual;
+pub mod paths;
+pub mod populate;
+pub mod resolver;
+pub mod schema;
+
+#[cfg(feature = "validate")]
+pub mod validate;
+
+#[cfg(feature = "url-refs")]
+pub mod url_refs;
+
+pub use category::JsonSchemaCategory;
+pub use contract::JsonSchemaContract;
+pub use envelope::{
+    Components, Envelope, ExternalDocs, Info, Reference as EnvelopeReference, Server, Tag,
+};
+pub use family::JsonSchemaFamily;
+pub use link::JsonSchemaLinkExtractor;
+pub use load::{load, resolve_inputs, LoadArgs};
+pub use loader::{Doc, Loader, Resolved};
+pub use manual::restore_sources;
+pub use resolver::{NodeRef, RefIndex, RefResolver};
+pub use schema::{populate_schema_body, Composite, JsonType, Schema, SchemaObject};

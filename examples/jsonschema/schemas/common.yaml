@@ -1,0 +1,19 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://example.com/schemas/common
+title: CommonTypes
+description: Shared schema definitions for the example catalog.
+$defs:
+  Address:
+    type: object
+    description: Postal address.
+    properties:
+      street:
+        type: string
+      city:
+        type: string
+    required:
+      - street
+      - city
+  PositiveInt:
+    type: integer
+    minimum: 1

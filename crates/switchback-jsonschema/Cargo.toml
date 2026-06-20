@@ -5,7 +5,7 @@ edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-description = "The shared JSON-Schema-document parser layer: loader, $ref resolver, shared API-description envelope, and schema renderer. Also a standalone parser that turns a JSON Schema catalog into a switchback."
+description = "Shared JSON-Schema-document parser layer: loader, $ref resolver, API-description envelope, and schema entity-body producer. Also a standalone catalog parser."
 
 [lib]
 path = "src/lib.rs"
@@ -14,6 +14,26 @@ path = "src/lib.rs"
 name = "switchback-jsonschema"
 path = "src/bin/switchback-jsonschema.rs"
 
+[features]
+default = []
+url-refs = ["dep:reqwest"]
+validate = ["dep:jsonschema"]
+
 [dependencies]
 switchback-traits.workspace = true
 switchback-codec-pb.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+serde-saphyr.workspace = true
+sha2.workspace = true
+walkdir.workspace = true
+anyhow.workspace = true
+reqwest = { workspace = true, optional = true }
+jsonschema = { workspace = true, optional = true }
+
+[dev-dependencies]
+switchback-codec-pb.workspace = true
+switchback-openapi.workspace = true
+switchback-openrpc.workspace = true
+switchback-asyncapi.workspace = true
+tempfile.workspace = true
