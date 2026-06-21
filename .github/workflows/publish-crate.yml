@@ -1,0 +1,82 @@
+name: publish-crate
+
+# Bootstrap-publish one switchback-* crate at a time to crates.io (see AGENTS.md).
+# Run from main only; pick the next crate in topo order. After every 5th new crate,
+# wait ~11 minutes before the next run (crates.io new-crate rate limit).
+
+on:
+  workflow_dispatch:
+    inputs:
+      crate:
+        description: Crate to publish (topo order)
+        required: true
+        type: choice
+        options:
+          - switchback-traits
+          - switchback-codec-pb
+          - switchback-protocols
+          - switchback-jsonschema
+          - switchback-openapi
+          - switchback-asyncapi
+          - switchback-openrpc
+          - switchback-protobuf
+          - switchback-mdbook
+          - switchback-assemble
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish ${{ inputs.crate }}
+    if: |
+      github.repository_owner == 'canardleteer' &&
+      github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: release
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: cargo
+          cache-bin: false
+
+      - name: Compute bootstrap version
+        id: version
+        run: |
+          set -euo pipefail
+          short_sha="$(git rev-parse --short HEAD)"
+          bootstrap_version="0.0.1-0.dev.0.${short_sha}"
+          echo "bootstrap_version=${bootstrap_version}" >> "$GITHUB_OUTPUT"
+          echo "Publishing ${{ inputs.crate }} at ${bootstrap_version}"
+
+      - name: Align workspace version for publish
+        run: |
+          set -euo pipefail
+          cargo xtask align-workspace-versions --version "${{ steps.version.outputs.bootstrap_version }}"
+
+      - name: Dry-run publish
+        run: |
+          set -euo pipefail
+          cargo publish -p "${{ inputs.crate }}" --dry-run --allow-dirty
+
+      - name: Publish to crates.io
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        run: |
+          set -euo pipefail
+          crate="${{ inputs.crate }}"
+          version="${{ steps.version.outputs.bootstrap_version }}"
+          if cargo publish -p "$crate" --allow-dirty --token "$CARGO_REGISTRY_TOKEN"; then
+            echo "Published ${crate} ${version}"
+          else
+            echo "::error::cargo publish failed for ${crate}"
+            exit 1
+          fi
+          echo "https://crates.io/crates/${crate}/${version}"

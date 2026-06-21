@@ -37,3 +37,13 @@ post-merge pushes to Release PRs when alignment changes (release-plz then align
 commit); release-plz and align logic must stay in sync with the workspace
 versioning invariant enforced in `linux-gate`. Binary artifacts are deferred;
 document the follow-up workflow in AGENTS.md when bins ship.
+
+First-time crates.io publish: ten new crate names cannot be uploaded in one
+`release-plz release` run because of
+[crates.io new-crate rate limits](https://crates.io/docs/rate-limits) (burst of
+five, then one every ten minutes). Until bootstrap completes, `release-plz.yml`
+stays disabled. Bootstrap uses `publish-crate.yml` (`workflow_dispatch` on
+`main`) to register each name at `0.0.1-0.dev.0.<short_sha>`; `main` keeps
+`0.0.1-0.dev.1` in git. After all names exist, re-enable release-plz so the
+first automated release publishes `0.0.1-0.dev.1` as version updates (within the
+existing-crate burst).
