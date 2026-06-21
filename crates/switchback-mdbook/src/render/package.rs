@@ -10,6 +10,7 @@ use crate::render::fence::{
     proto_file_name, push_markdown_doc, push_proto_fence_body, render_proto_fence,
 };
 use crate::render::openapi::{is_openapi_family, render_openapi_package_sections};
+use crate::render::openrpc::{is_openrpc_family, render_openrpc_package_sections};
 use crate::render::{md_heading, push_paragraph_break};
 
 const SECTION_LEVEL: usize = 2;
@@ -45,6 +46,11 @@ pub fn render_package_page(
 
     if is_asyncapi_family(family) {
         render_asyncapi_package_sections(&mut out, entities, package, &ctx, opts, formatter);
+        return (path, out);
+    }
+
+    if is_openrpc_family(family) {
+        render_openrpc_package_sections(&mut out, entities, package, &ctx, opts, formatter);
         return (path, out);
     }
 

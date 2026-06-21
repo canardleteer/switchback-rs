@@ -58,6 +58,18 @@ keep their existing layouts until then.
 | **Upstream** | `crates/switchback-asyncapi/tests/fixtures/upstream/` | `cargo xtask spec-vendor fetch-fixtures --family asyncapi`; locked in `example-fixtures.lock.toml` | **Do not hand-edit.** Refresh from upstream, update lock SHA-256, run `validate-fixtures`. See `tests/fixtures/upstream/FIXTURES.md`. |
 | **Micro** | `crates/switchback-asyncapi/tests/fixtures/micro/` | Hand-maintained in-repo | **Safe to edit.** Acme three-version corpus, minimal smoke fixture. Keep tiny. |
 
+| Tier | Path (`switchback-openrpc`) | Maintained how | Agent rule |
+| --- | --- | --- | --- |
+| **Upstream** | `crates/switchback-openrpc/tests/fixtures/upstream/` | `cargo xtask spec-vendor fetch-fixtures --family openrpc`; locked in `example-fixtures.lock.toml` | **Do not hand-edit.** Refresh from upstream, update lock SHA-256, run `validate-fixtures`. See `tests/fixtures/upstream/FIXTURES.md`. |
+| **Micro** | `crates/switchback-openrpc/tests/fixtures/micro/` | Hand-maintained in-repo | **Safe to edit.** Acme three-version corpus, tag-groups, companion, multifile `$ref`. Keep tiny. |
+
+**Related locks (`switchback-openrpc`):**
+
+- `meta-schemas/` + `meta-schemas.lock.toml` — OpenRPC document meta-schemas;
+  `spec-vendor fetch --family openrpc`.
+- `example-fixtures.lock.toml` — example API descriptions only;
+  `spec-vendor fetch-fixtures --family openrpc`.
+
 **Related locks (`switchback-asyncapi`):**
 
 - `meta-schemas/` + `meta-schemas.lock.toml` — AsyncAPI document meta-schemas;
@@ -257,8 +269,9 @@ only point at crates **earlier** in the publish order above. Fixed on `main` in
   smoke tests moved to `switchback-openapi` / `switchback-openrpc`).
 - Removed duplicate `switchback-codec-pb` dev-deps where it is already a runtime
   dependency.
-- Kept `switchback-mdbook` integration-test dev-deps on `openapi`, `protobuf`,
-  and `assemble`; **`assemble` must publish before `mdbook`**.
+- Kept `switchback-mdbook` integration-test dev-deps on `openapi`, `asyncapi`,
+  `openrpc`, `protobuf`, and `assemble`; **`assemble` must publish before
+  `mdbook`**.
 
 `cargo xtask publish-check` fails if any publishable crate dev-depends on a
 later crate in the order.

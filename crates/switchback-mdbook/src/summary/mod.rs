@@ -14,6 +14,7 @@ use crate::init::DEFAULT_BOOK_TITLE;
 use crate::render::output_file;
 use crate::summary::chapters::{
     build_asyncapi_summary, build_flat_summary, build_mixed_family_summary, build_openapi_summary,
+    build_openrpc_summary,
 };
 use crate::summary::nav_tree::{NavInput, PackageAtDir, build_summary, package_rel_dir};
 
@@ -32,6 +33,7 @@ pub fn render_summary(
     let packages = packages_nav_input(manual);
     let openapi_only = !packages.is_empty() && packages.iter().all(|p| p.family == "openapi");
     let asyncapi_only = !packages.is_empty() && packages.iter().all(|p| p.family == "asyncapi");
+    let openrpc_only = !packages.is_empty() && packages.iter().all(|p| p.family == "openrpc");
     let mixed_family = contract_families(manual).len() > 1;
 
     let summary = if mixed_family {
@@ -58,6 +60,15 @@ pub fn render_summary(
         )
     } else if asyncapi_only {
         build_asyncapi_summary(
+            &h1,
+            &packages,
+            opts.layout,
+            package_only,
+            links,
+            summary_from,
+        )
+    } else if openrpc_only {
+        build_openrpc_summary(
             &h1,
             &packages,
             opts.layout,
@@ -115,7 +126,10 @@ fn packages_nav_input(manual: &ReferenceManual) -> Vec<PackageAtDir<'_>> {
                 if package.is_empty() {
                     continue;
                 }
-                let rel_dir = if contract.family == "openapi" || contract.family == "asyncapi" {
+                let rel_dir = if contract.family == "openapi"
+                    || contract.family == "asyncapi"
+                    || contract.family == "openrpc"
+                {
                     PathBuf::from(&group.dir)
                 } else {
                     group

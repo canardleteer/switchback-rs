@@ -125,6 +125,10 @@ fn run_ci_post() -> Result<()> {
     run(
         "example-fixtures validate (asyncapi)",
         example_fixtures::validate_asyncapi,
+    )?;
+    run(
+        "example-fixtures validate (openrpc)",
+        example_fixtures::validate_openrpc,
     )
 }
 
@@ -176,12 +180,28 @@ fn main() -> Result<()> {
             SpecVendorCmd::ValidateFixtures { family } => match family.as_str() {
                 "openapi" => example_fixtures::validate_openapi(),
                 "asyncapi" => example_fixtures::validate_asyncapi(),
-                other => bail!("validate-fixtures --family {other}: use openapi or asyncapi"),
+                "openrpc" => example_fixtures::validate_openrpc(),
+                "all" => {
+                    example_fixtures::validate_openapi()?;
+                    example_fixtures::validate_asyncapi()?;
+                    example_fixtures::validate_openrpc()
+                }
+                other => bail!(
+                    "validate-fixtures --family {other}: use openapi, asyncapi, openrpc, or all"
+                ),
             },
             SpecVendorCmd::FetchFixtures { family, write_lock } => match family.as_str() {
                 "openapi" => example_fixtures::fetch_openapi(write_lock),
                 "asyncapi" => example_fixtures::fetch_asyncapi(write_lock),
-                other => bail!("fetch-fixtures --family {other}: use openapi or asyncapi"),
+                "openrpc" => example_fixtures::fetch_openrpc(write_lock),
+                "all" => {
+                    example_fixtures::fetch_openapi(write_lock)?;
+                    example_fixtures::fetch_asyncapi(write_lock)?;
+                    example_fixtures::fetch_openrpc(write_lock)
+                }
+                other => bail!(
+                    "fetch-fixtures --family {other}: use openapi, asyncapi, openrpc, or all"
+                ),
             },
         },
     }

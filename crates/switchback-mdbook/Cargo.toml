@@ -44,5 +44,6 @@ serde-saphyr.workspace = true
 switchback-assemble = { path = "../switchback-assemble" }
 switchback-asyncapi = { path = "../switchback-asyncapi" }
 switchback-openapi = { path = "../switchback-openapi" }
+switchback-openrpc = { path = "../switchback-openrpc" }
 switchback-protobuf = { path = "../switchback-protobuf", features = ["buf", "protoc"] }
 tempfile.workspace = true

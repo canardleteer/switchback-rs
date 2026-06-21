@@ -32,7 +32,8 @@ pub use category::AsyncApiCategory;
 pub use contract::AsyncApiContract;
 pub use examples::{
     EXAMPLE_ACME_INPUTS, EXAMPLE_FIXTURES, ExampleFixture, ExampleTier, MICRO_ACME_ROOT,
-    UPSTREAM_STREETLIGHTS, default_example_fixtures, example_fixture, fixtures_dir,
+    UPSTREAM_SIMPLE_3_1, UPSTREAM_STREETLIGHTS, UPSTREAM_STREETLIGHTS_KAFKA_3_1,
+    UPSTREAM_STREETLIGHTS_MQTT, default_example_fixtures, example_fixture, fixtures_dir,
     fixtures_for_tier, load_acme_example, load_example, load_fixture_relative,
 };
 pub use family::AsyncApiFamily;

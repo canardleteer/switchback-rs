@@ -1,5 +1,6 @@
-//! `ContractFamily` stub for OpenRPC (parser behavior deferred).
+//! `ContractFamily` for OpenRPC.
 
+use serde_json::Value;
 use switchback_traits::{
     CompanionDiscovery, CompanionStrategy, ContractFamily, RawDoc, SpecVersion, SupportedVersion,
     VersionStatus,
@@ -8,6 +9,7 @@ use switchback_traits::{
 use crate::category::OpenRpcCategory;
 use crate::link::OpenRpcLinkExtractor;
 use crate::meta_schemas;
+use crate::populate::parse_openrpc_version;
 
 #[derive(Clone, Copy, Debug, Default)]
 pub struct OpenRpcCompanion;
@@ -17,8 +19,8 @@ impl CompanionStrategy for OpenRpcCompanion {
         CompanionDiscovery::Beside
     }
 
-    fn output_name(&self, _source_dir: &[&str], stem: &str) -> String {
-        format!("{stem}.md")
+    fn output_name(&self, source_dir: &[&str], stem: &str) -> String {
+        switchback_traits::companion_output_name_from_segments(source_dir, stem)
     }
 
     fn companion_media_types(&self) -> &'static [&'static str] {
@@ -51,7 +53,7 @@ impl ContractFamily for OpenRpcFamily {
     }
 
     fn extensions(&self) -> &'static [&'static str] {
-        &[".json"]
+        &[".json", ".yaml", ".yml"]
     }
 
     fn companion_strategy(&self) -> &Self::CompanionStrategy {
@@ -62,8 +64,13 @@ impl ContractFamily for OpenRpcFamily {
         &["operation", "schema", "parameter"]
     }
 
-    fn detect_version(&self, _raw: &RawDoc) -> Option<SpecVersion> {
-        None
+    fn detect_version(&self, raw: &RawDoc) -> Option<SpecVersion> {
+        let value: Value = if raw.media_type.contains("yaml") {
+            serde_saphyr::from_slice(&raw.bytes).ok()?
+        } else {
+            serde_json::from_slice(&raw.bytes).ok()?
+        };
+        parse_openrpc_version(&value).ok()
     }
 
     fn supported_versions(&self) -> &'static [SupportedVersion] {

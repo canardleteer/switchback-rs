@@ -9,14 +9,18 @@ use crate::render::asyncapi::{
     asyncapi_entity_rel_path, is_asyncapi_family, render_asyncapi_entity_page,
     render_asyncapi_index_sections, renderable_asyncapi_entities,
 };
+use crate::render::openapi::{
+    is_openapi_family, openapi_entity_rel_path, render_openapi_entity_page,
+    render_openapi_index_sections, renderable_openapi_entities,
+};
 use crate::render::fence::{
     entity_module_group, link_structural_refs_in_prose, operation_signature_markdown,
     proto_file_name, push_proto_fence_body, render_proto_fence,
 };
 use crate::render::markdown_doc::format_markdown_doc;
-use crate::render::openapi::{
-    is_openapi_family, openapi_entity_rel_path, render_openapi_entity_page,
-    render_openapi_index_sections, renderable_openapi_entities,
+use crate::render::openrpc::{
+    is_openrpc_family, openrpc_entity_rel_path, render_openrpc_entity_page,
+    render_openrpc_index_sections, renderable_openrpc_entities,
 };
 use crate::render::{md_heading, push_paragraph_break};
 
@@ -34,6 +38,10 @@ pub fn render_entity_pages(
 
     if is_asyncapi_family(family) {
         return render_asyncapi_entity_pages(group, entities, links, opts, formatter);
+    }
+
+    if is_openrpc_family(family) {
+        return render_openrpc_entity_pages(group, entities, links, opts, formatter);
     }
 
     let package = group.id.as_str();
@@ -167,6 +175,49 @@ fn render_asyncapi_entity_pages(
         let mut ctx = links.clone();
         ctx.render_from = Some(std::path::PathBuf::from(rel));
         let page = render_asyncapi_entity_page(entity, &ctx, opts, formatter);
+        pages.push((path, page));
+    }
+
+    pages
+}
+
+fn render_openrpc_entity_pages(
+    group: &Group,
+    entities: &[StoredEntity],
+    links: &LinkContext,
+    opts: &Options,
+    formatter: &dyn LinkFormatter,
+) -> Vec<(String, String)> {
+    let mut pages = Vec::new();
+
+    {
+        let index_rel = links.package_index_rel(group.id.as_str());
+        let index_path = opts.output_path(index_rel.to_string_lossy().as_ref());
+        let mut index = md_heading(1, &group.title);
+        if group.overview.as_ref().is_some_and(|o| !o.is_empty()) {
+            index.push_str(&format_markdown_doc(
+                group.overview.as_deref().unwrap(),
+                opts.escape_tags,
+            ));
+            push_paragraph_break(&mut index);
+        }
+        render_openrpc_index_sections(
+            &mut index,
+            entities,
+            &group.dir,
+            &opts.markdown_root,
+            index_rel.as_path(),
+            links,
+        );
+        pages.push((index_path, index));
+    }
+
+    for entity in renderable_openrpc_entities(entities) {
+        let rel = openrpc_entity_rel_path(&opts.markdown_root, &group.dir, entity);
+        let path = opts.output_path(&rel);
+        let mut ctx = links.clone();
+        ctx.render_from = Some(std::path::PathBuf::from(rel));
+        let page = render_openrpc_entity_page(entity, &ctx, opts, formatter);
         pages.push((path, page));
     }
 

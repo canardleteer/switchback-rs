@@ -71,6 +71,7 @@ switchback-rs/
 │   ├── mdbook-protobuf/
 │   ├── mdbook-openapi/
 │   ├── mdbook-asyncapi/
+│   ├── mdbook-openrpc/
 │   └── reference-manual/
 └── xtask/                        workspace task runner (ci, parse, render, ...)
 ```

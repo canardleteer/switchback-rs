@@ -1,0 +1,44 @@
+{
+  "openrpc": "1.4.0",
+  "info": {
+    "title": "Tag Groups Example",
+    "version": "1.0.0"
+  },
+  "x-tagGroup": [
+    {
+      "name": "pets",
+      "tags": ["pets"],
+      "description": "Pet operations"
+    },
+    {
+      "name": "store",
+      "tags": ["store"],
+      "description": "Store operations"
+    }
+  ],
+  "methods": [
+    {
+      "name": "list_pets",
+      "tags": ["pets"],
+      "summary": "List pets",
+      "params": [],
+      "result": {
+        "name": "pets",
+        "schema": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "store_status",
+      "tags": ["store"],
+      "summary": "Store status",
+      "params": [],
+      "result": {
+        "name": "status",
+        "schema": { "type": "string" }
+      }
+    }
+  ]
+}

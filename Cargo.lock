@@ -1255,6 +1255,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "mdbook-openrpc-example"
+version = "0.0.1-0.dev.4"
+dependencies = [
+ "anyhow",
+ "clap",
+ "switchback-codec-pb",
+ "switchback-mdbook",
+ "switchback-openrpc",
+ "switchback-traits",
+]
+
+[[package]]
 name = "mdbook-preprocessor"
 version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1868,6 +1880,7 @@ dependencies = [
  "switchback-codec-pb",
  "switchback-mdbook",
  "switchback-openapi",
+ "switchback-openrpc",
  "switchback-protobuf",
  "switchback-traits",
 ]
@@ -2284,6 +2297,7 @@ version = "0.0.1-0.dev.4"
 dependencies = [
  "switchback-asyncapi",
  "switchback-openapi",
+ "switchback-openrpc",
  "switchback-protobuf",
  "switchback-traits",
 ]
@@ -2367,6 +2381,7 @@ dependencies = [
  "switchback-avro",
  "switchback-codec-pb",
  "switchback-openapi",
+ "switchback-openrpc",
  "switchback-protobuf",
  "switchback-protocols",
  "switchback-traits",
@@ -2398,11 +2413,15 @@ name = "switchback-openrpc"
 version = "0.0.1-0.dev.4"
 dependencies = [
  "serde",
+ "serde-saphyr",
+ "serde_json",
  "sha2 0.10.9",
  "switchback-codec-pb",
  "switchback-jsonschema",
  "switchback-traits",
+ "tempfile",
  "toml 0.8.23",
+ "walkdir",
 ]
 
 [[package]]

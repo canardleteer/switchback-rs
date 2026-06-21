@@ -8,6 +8,9 @@ pub const MICRO_ACME_ROOT: &str = "micro/acme";
 pub const MICRO_MINIMAL: &str = "micro/minimal/asyncapi.yaml";
 
 pub const UPSTREAM_STREETLIGHTS: &str = "upstream/streetlights-kafka/asyncapi.yaml";
+pub const UPSTREAM_STREETLIGHTS_MQTT: &str = "upstream/streetlights-mqtt/asyncapi.yaml";
+pub const UPSTREAM_SIMPLE_3_1: &str = "upstream/simple-3.1/asyncapi.yaml";
+pub const UPSTREAM_STREETLIGHTS_KAFKA_3_1: &str = "upstream/streetlights-kafka-3.1/asyncapi.yaml";
 
 pub const EXAMPLE_ACME_INPUTS: &[&str] = &[
     "v1/asyncapi.yaml",
@@ -45,12 +48,30 @@ impl ExampleTier {
     }
 }
 
-/// All example corpora (upstream streetlights + micro Acme + minimal).
+/// All example corpora (upstream 2×2 + micro Acme + minimal).
 pub const EXAMPLE_FIXTURES: &[ExampleFixture] = &[
     ExampleFixture {
         id: "streetlights-kafka",
         relative: UPSTREAM_STREETLIGHTS,
         label: "Streetlights Kafka (AsyncAPI 2.6)",
+        tier: ExampleTier::Upstream,
+    },
+    ExampleFixture {
+        id: "streetlights-mqtt",
+        relative: UPSTREAM_STREETLIGHTS_MQTT,
+        label: "Streetlights MQTT (AsyncAPI 2.6)",
+        tier: ExampleTier::Upstream,
+    },
+    ExampleFixture {
+        id: "simple-3.1",
+        relative: UPSTREAM_SIMPLE_3_1,
+        label: "Simple (AsyncAPI 3.1)",
+        tier: ExampleTier::Upstream,
+    },
+    ExampleFixture {
+        id: "streetlights-kafka-3.1",
+        relative: UPSTREAM_STREETLIGHTS_KAFKA_3_1,
+        label: "Streetlights Kafka (AsyncAPI 3.1)",
         tier: ExampleTier::Upstream,
     },
     ExampleFixture {

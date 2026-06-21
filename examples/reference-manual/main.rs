@@ -16,6 +16,7 @@ use switchback_asyncapi::load::LoadArgs as AsyncApiLoadArgs;
 use switchback_codec_pb::ProtobufCodec;
 use switchback_mdbook::{MdBookRenderer, write_output_files};
 use switchback_openapi::load::LoadArgs as OpenApiLoadArgs;
+use switchback_openrpc::load::LoadArgs as OpenRpcLoadArgs;
 use switchback_protobuf::Compiler;
 use switchback_protobuf::load::{LoadArgs as ProtobufLoadArgs, ensure_test_proto_deps};
 use switchback_traits::{Layout, Options, ReferenceManual, SyncRenderer, SyncSwitchbackCodec};
@@ -95,6 +96,7 @@ fn load_from_manifest(path: &Path) -> Result<ReferenceManual> {
     let mut openapi: Option<OpenApiLoadArgs> = None;
     let mut protobuf: Option<ProtobufLoadArgs> = None;
     let mut asyncapi: Option<AsyncApiLoadArgs> = None;
+    let mut openrpc: Option<OpenRpcLoadArgs> = None;
 
     for contract in &manifest.contracts {
         let module_root = resolve_path(manifest_dir, &contract.module_root);
@@ -130,6 +132,14 @@ fn load_from_manifest(path: &Path) -> Result<ReferenceManual> {
                     title: None,
                 });
             }
+            "openrpc" => {
+                openrpc = Some(OpenRpcLoadArgs {
+                    module_root: module_root.clone(),
+                    inputs,
+                    search_roots: vec![module_root],
+                    title: None,
+                });
+            }
             other => anyhow::bail!("unsupported contract family {other} in module.yaml"),
         }
     }
@@ -142,6 +152,7 @@ fn load_from_manifest(path: &Path) -> Result<ReferenceManual> {
         openapi,
         protobuf,
         asyncapi,
+        openrpc,
     })
     .map_err(|e| anyhow::anyhow!("{e}"))
 }

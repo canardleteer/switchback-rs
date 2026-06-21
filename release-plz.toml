@@ -95,6 +95,11 @@ release = false
 publish = false
 
 [[package]]
+name = "mdbook-openrpc-example"
+release = false
+publish = false
+
+[[package]]
 name = "reference-manual-example"
 release = false
 publish = false

@@ -1,0 +1,18 @@
+{
+  "openrpc": "1.4.0",
+  "info": {
+    "title": "Companion Example",
+    "version": "1.0.0"
+  },
+  "methods": [
+    {
+      "name": "health_check",
+      "summary": "Health check",
+      "params": [],
+      "result": {
+        "name": "ok",
+        "schema": { "type": "boolean" }
+      }
+    }
+  ]
+}
