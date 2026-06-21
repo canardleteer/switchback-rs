@@ -12,6 +12,7 @@ use switchback_traits::{
 
 use crate::family::AsyncApiFamily;
 use crate::populate::{PopulatedContract, PopulatedEntity, ResolvedInput};
+use crate::populate::protocol_attach;
 
 pub fn build_reference_manual(
     populated: PopulatedContract,
@@ -54,6 +55,12 @@ pub fn build_reference_manual(
         .unwrap_or_default();
 
     let companions = companion_files_to_stored(&populated.companions, "text/markdown");
+    let mut contract_protocols = Vec::new();
+    for entry_uri in &resolved.entry_uris {
+        if let Some(doc) = resolved.docs.iter().find(|d| &d.uri == entry_uri) {
+            contract_protocols.extend(protocol_attach::contract_attachments(&doc.value));
+        }
+    }
 
     Ok(ReferenceManual {
         switchback_version: WIRE_VERSION.to_string(),
@@ -68,7 +75,7 @@ pub fn build_reference_manual(
                 version: populated.version,
                 groups,
                 companions,
-                protocols: Vec::new(),
+                protocols: contract_protocols,
             }],
         }],
     })
