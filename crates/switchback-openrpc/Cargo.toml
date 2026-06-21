@@ -2,10 +2,12 @@
 name = "switchback-openrpc"
 version.workspace = true
 edition.workspace = true
-rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-description = "Parser that turns an OpenRPC document into a switchback. A thin behavior layer over JSON Schema content descriptors, built on switchback-traits and switchback-jsonschema."
+homepage.workspace = true
+description = "OpenRPC parser for the switchback framework."
+keywords = ["openrpc", "json-rpc", "rpc", "parser", "api"]
+categories = ["parser-implementations"]
 include = [
     "src/**/*",
     "meta-schemas/**/*",

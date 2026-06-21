@@ -4,8 +4,8 @@ use std::collections::BTreeSet;
 use std::path::Path;
 
 use switchback_traits::{
-    companion_output_name_from_path, title_from_markdown, CompanionFile, ContractFamily, Result,
-    SwitchbackError,
+    CompanionFile, ContractFamily, Result, SwitchbackError, companion_output_name_from_path,
+    title_from_markdown,
 };
 
 use crate::family::OpenApiFamily;

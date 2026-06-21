@@ -93,10 +93,10 @@ pub fn synthesize_method_options_body(method: &MethodDescriptorProto) -> Option<
     if opts.deprecated == Some(true) {
         lines.push("option deprecated = true;".to_string());
     }
-    if let Some(level) = opts.idempotency_level {
-        if let Some(name) = idempotency_level_name(level) {
-            lines.push(format!("option idempotency_level = {name};"));
-        }
+    if let Some(level) = opts.idempotency_level
+        && let Some(name) = idempotency_level_name(level)
+    {
+        lines.push(format!("option idempotency_level = {name};"));
     }
     for uo in &opts.uninterpreted_option {
         if let Some(line) = format_uninterpreted_option(uo) {

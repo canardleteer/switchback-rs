@@ -14,7 +14,7 @@ use crate::companion::discover_companions;
 use crate::envelope::Envelope;
 use crate::loader::Doc;
 use crate::resolver::{NodeRef, RefIndex};
-use crate::schema::{populate_schema_body, Schema};
+use crate::schema::{Schema, populate_schema_body};
 
 pub struct PopulatedEntity {
     pub entity: Entity<JsonSchemaCategory>,
@@ -187,10 +187,10 @@ fn entity_name_from_value(value: &Value, fallback: &str) -> String {
         {
             return title.to_string();
         }
-        if let Some(id) = obj.get("$id").and_then(|v| v.as_str()) {
-            if let Some(segment) = id.rsplit('/').next().filter(|s| !s.is_empty()) {
-                return segment.to_string();
-            }
+        if let Some(id) = obj.get("$id").and_then(|v| v.as_str())
+            && let Some(segment) = id.rsplit('/').next().filter(|s| !s.is_empty())
+        {
+            return segment.to_string();
         }
     }
     fallback.to_string()
@@ -273,12 +273,11 @@ fn collect_ref_strings(
 ) {
     match value {
         Value::Object(map) => {
-            if let Some(Value::String(ref_key)) = map.get("$ref") {
-                if let Some(reference) =
+            if let Some(Value::String(ref_key)) = map.get("$ref")
+                && let Some(reference) =
                     ref_to_reference(ref_key, doc_uri, group_id, module_id, uri_to_group, index)
-                {
-                    out.push(reference);
-                }
+            {
+                out.push(reference);
             }
             for v in map.values() {
                 collect_ref_strings(v, out, doc_uri, group_id, module_id, uri_to_group, index);
@@ -352,10 +351,10 @@ fn resolve_ref_target(
         .unwrap_or_else(|| default_group.to_string());
 
     let node = NodeRef::with_pointer(&target_doc_uri, pointer);
-    if let Some(resolved) = index.ref_targets.get(&node) {
-        if resolved.pointer.ends_with("#recursive") {
-            return Some((target_group, "recursive".into()));
-        }
+    if let Some(resolved) = index.ref_targets.get(&node)
+        && resolved.pointer.ends_with("#recursive")
+    {
+        return Some((target_group, "recursive".into()));
     }
 
     let name = if pointer.starts_with("$defs/") || pointer.starts_with("definitions/") {

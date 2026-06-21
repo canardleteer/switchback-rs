@@ -1,7 +1,7 @@
 //! `book.toml` preprocessor wiring for init and `mdbook-protobuf-highlight install`.
 
 use crate::highlight::markdown::HighlightConfig;
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use std::path::Path;
 use toml_edit::{DocumentMut, Item, Table, Value};
 

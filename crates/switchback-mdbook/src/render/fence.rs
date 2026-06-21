@@ -2,9 +2,9 @@
 
 use switchback_protocols::ProtocolRegistry;
 use switchback_traits::{
-    apply_intra_links, EntityRef, EscapeTags, IntraLink, LinkContext, LinkFormatter, OperationBody,
+    EntityRef, EscapeTags, IntraLink, LinkContext, LinkFormatter, OperationBody,
     OperationRequestBodyRef, ParameterRef, ProtocolAttachment, RefKind, Reference, ResponseRef,
-    StoredEntity,
+    StoredEntity, apply_intra_links,
 };
 
 use crate::highlight::split_message_cel_blocks;

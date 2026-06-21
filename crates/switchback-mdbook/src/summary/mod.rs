@@ -15,7 +15,7 @@ use crate::render::output_file;
 use crate::summary::chapters::{
     build_flat_summary, build_mixed_family_summary, build_openapi_summary,
 };
-use crate::summary::nav_tree::{build_summary, package_rel_dir, NavInput, PackageAtDir};
+use crate::summary::nav_tree::{NavInput, PackageAtDir, build_summary, package_rel_dir};
 
 pub fn render_summary(
     manual: &ReferenceManual,

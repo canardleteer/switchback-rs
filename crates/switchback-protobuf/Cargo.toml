@@ -2,10 +2,12 @@
 name = "switchback-protobuf"
 version.workspace = true
 edition.workspace = true
-rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-description = "Parser that turns .proto files into a switchback. The protobuf compile-to-descriptors strategy (buf build / protoc / descriptor-set), decomposed from protobuf-mdbook. Built on switchback-traits."
+homepage.workspace = true
+description = "Protobuf parser for the switchback framework."
+keywords = ["protobuf", "proto", "protoc", "parser", "grpc"]
+categories = ["parser-implementations", "development-tools::documentation-tools"]
 
 [lib]
 path = "src/lib.rs"

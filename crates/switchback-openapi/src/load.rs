@@ -6,7 +6,7 @@ use switchback_jsonschema::resolve_inputs;
 use switchback_traits::ReferenceManual;
 
 use crate::manual::build_reference_manual;
-use crate::populate::{populate, ResolvedInput};
+use crate::populate::{ResolvedInput, populate};
 
 /// Arguments for [`load`].
 #[derive(Clone, Debug)]

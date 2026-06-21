@@ -1,11 +1,11 @@
 mod common;
 
 use common::{
-    assert_sources_match_inputs, codec_roundtrip, count_entities, count_refs, fixtures_catalog_dir,
-    load_catalog, load_meta_schema_fixture, normalize, restore_sources_map, META_SCHEMA_FIXTURES,
+    META_SCHEMA_FIXTURES, assert_sources_match_inputs, codec_roundtrip, count_entities, count_refs,
+    fixtures_catalog_dir, load_catalog, load_meta_schema_fixture, normalize, restore_sources_map,
 };
 use switchback_jsonschema::examples::EXAMPLE_CATALOG_INPUTS;
-use switchback_jsonschema::{load, resolve_inputs, LoadArgs};
+use switchback_jsonschema::{LoadArgs, load, resolve_inputs};
 use switchback_traits::SyncSwitchbackCodec;
 use tempfile::tempdir;
 

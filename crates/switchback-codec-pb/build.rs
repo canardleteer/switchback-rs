@@ -2,7 +2,8 @@
 
 fn main() {
     let protoc = protoc_bin_vendored::protoc_bin_path().expect("vendored protoc");
-    std::env::set_var("PROTOC", protoc);
+    // FIXME: Audit that the environment access only happens in single-threaded code.
+    unsafe { std::env::set_var("PROTOC", protoc) };
 
     let manifest_dir = std::path::PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
     let proto_root = manifest_dir.join("proto");

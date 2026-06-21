@@ -217,7 +217,7 @@ updates `[workspace.package].version` and the align step syncs dependency pins.
 
 [`release-plz.toml`](release-plz.toml) sets `semver_check = false` while the
 workspace version carries a **pre-release label** (for example
-`0.0.1-alpha.1`). API stability is not promised during that phase.
+`0.0.1-0.dev.1`). API stability is not promised during that phase.
 
 **After the first stable release without pre-release metadata** (for example
 `1.0.0`, or `0.1.0` with no `-alpha`/`-beta` suffix), enable semver checking:
@@ -250,7 +250,7 @@ this command to keep dependency pins aligned.
 
 ```bash
 # Bump workspace semver
-cargo xtask align-workspace-versions --version 0.0.1-alpha.2
+cargo xtask align-workspace-versions --version 0.0.1-0.dev.2
 cargo generate-lockfile
 
 # CI invariant (linux-gate job)

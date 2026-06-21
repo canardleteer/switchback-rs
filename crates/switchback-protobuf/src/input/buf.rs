@@ -1,10 +1,10 @@
 //! Buf module compilation.
 
 use crate::descriptor::FileDescriptorProto;
-use crate::input::{compile_to_fds, tool_exists, ResolveArgs, ResolvedInput};
+use crate::input::{ResolveArgs, ResolvedInput, compile_to_fds, tool_exists};
 use crate::paths::{collect_module_proto_names, is_proto_file, proto_name_relative_to_module};
 use crate::proto_deps;
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use walkdir::WalkDir;

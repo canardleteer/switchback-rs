@@ -23,29 +23,31 @@ fn escape_htmlish_tags(input: &str, mode: EscapeTags) -> String {
             i += 1;
             continue;
         }
-        if c == '<' && !in_backticks && !preceded_by_entity_lt(&chars, i) {
-            if let Some(tag_len) = htmlish_tag_len(&chars, i) {
-                let tag: String = chars[i..i + tag_len].iter().collect();
-                match mode {
-                    EscapeTags::Backticks => {
-                        out.push('`');
-                        out.push_str(&tag);
-                        out.push('`');
-                    }
-                    EscapeTags::Entities => {
-                        for ch in tag.chars() {
-                            match ch {
-                                '<' => out.push_str("&lt;"),
-                                '>' => out.push_str("&gt;"),
-                                other => out.push(other),
-                            }
+        if c == '<'
+            && !in_backticks
+            && !preceded_by_entity_lt(&chars, i)
+            && let Some(tag_len) = htmlish_tag_len(&chars, i)
+        {
+            let tag: String = chars[i..i + tag_len].iter().collect();
+            match mode {
+                EscapeTags::Backticks => {
+                    out.push('`');
+                    out.push_str(&tag);
+                    out.push('`');
+                }
+                EscapeTags::Entities => {
+                    for ch in tag.chars() {
+                        match ch {
+                            '<' => out.push_str("&lt;"),
+                            '>' => out.push_str("&gt;"),
+                            other => out.push(other),
                         }
                     }
-                    EscapeTags::Off => unreachable!(),
                 }
-                i += tag_len;
-                continue;
+                EscapeTags::Off => unreachable!(),
             }
+            i += tag_len;
+            continue;
         }
         out.push(c);
         i += 1;

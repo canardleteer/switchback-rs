@@ -139,14 +139,14 @@ pub fn decode_markdown_link_path(path: &str) -> String {
     let bytes = path.as_bytes();
     let mut i = 0;
     while i < bytes.len() {
-        if bytes[i] == b'%' && i + 2 < bytes.len() {
-            if let Ok(s) = std::str::from_utf8(&bytes[i + 1..i + 3]) {
-                if let Ok(byte) = u8::from_str_radix(s, 16) {
-                    out.push(byte as char);
-                    i += 3;
-                    continue;
-                }
-            }
+        if bytes[i] == b'%'
+            && i + 2 < bytes.len()
+            && let Ok(s) = std::str::from_utf8(&bytes[i + 1..i + 3])
+            && let Ok(byte) = u8::from_str_radix(s, 16)
+        {
+            out.push(byte as char);
+            i += 3;
+            continue;
         }
         out.push(bytes[i] as char);
         i += 1;

@@ -6,7 +6,7 @@ use serde_json::Value;
 use switchback_jsonschema::envelope::Envelope;
 use switchback_traits::{Group, GroupId, Source};
 
-use crate::paths::{slugify, COMPONENTS_GROUP, UNTAGGED_GROUP};
+use crate::paths::{COMPONENTS_GROUP, UNTAGGED_GROUP, slugify};
 
 pub struct GroupPlan {
     pub groups: Vec<Group>,
@@ -73,10 +73,10 @@ fn ordered_tags(root: &Value, operation_tags: &BTreeSet<String>) -> Vec<String> 
                 .and_then(|v| v.as_array())
             {
                 for tag in tags {
-                    if let Some(name) = tag.as_str() {
-                        if seen.insert(name.to_string()) {
-                            order.push(name.to_string());
-                        }
+                    if let Some(name) = tag.as_str()
+                        && seen.insert(name.to_string())
+                    {
+                        order.push(name.to_string());
                     }
                 }
             }

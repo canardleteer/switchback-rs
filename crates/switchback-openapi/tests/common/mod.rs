@@ -7,7 +7,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use switchback_codec_pb::ProtobufCodec;
-use switchback_openapi::{load, LoadArgs};
+use switchback_openapi::{LoadArgs, load};
 use switchback_traits::{ReferenceManual, SyncSwitchbackCodec};
 
 #[derive(Debug, serde::Deserialize)]

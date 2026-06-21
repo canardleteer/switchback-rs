@@ -4,7 +4,7 @@ use std::path::{Path, PathBuf};
 
 use switchback_traits::ReferenceManual;
 
-use crate::input::{resolve_inputs, Compiler, ResolveArgs};
+use crate::input::{Compiler, ResolveArgs, resolve_inputs};
 use crate::manual::build_reference_manual;
 use crate::populate::populate;
 

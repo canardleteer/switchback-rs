@@ -1,6 +1,6 @@
 //! mdBook plugin option parsing (comma-separated protoc tokens).
 
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
 use std::path::PathBuf;
 use switchback_traits::{EscapeTags, Layout, OpenApiOperationSource, OpenApiSummaryLabel, Options};
 

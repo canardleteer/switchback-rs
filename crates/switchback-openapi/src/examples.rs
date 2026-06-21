@@ -2,7 +2,7 @@
 
 use std::path::{Path, PathBuf};
 
-use crate::load::{load, LoadArgs};
+use crate::load::{LoadArgs, load};
 
 pub const MICRO_TAG_GROUPS: &str = "micro/tag-groups/openapi.yaml";
 pub const MICRO_NULLABLE_3_0: &str = "micro/nullable-3.0/openapi.yaml";

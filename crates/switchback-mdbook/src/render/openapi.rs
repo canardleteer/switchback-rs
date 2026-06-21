@@ -1,9 +1,9 @@
 //! OpenAPI-specific mdBook rendering helpers.
 
 use switchback_traits::{
-    apply_intra_links, entity_category_dir, EntityBody, LinkContext, LinkFormatter,
-    OpenApiSummaryLabel, Options, ParameterBody, RequestBodyBody, ResponseBody, SchemaBody,
-    SecuritySchemeBody, StoredEntity,
+    EntityBody, LinkContext, LinkFormatter, OpenApiSummaryLabel, Options, ParameterBody,
+    RequestBodyBody, ResponseBody, SchemaBody, SecuritySchemeBody, StoredEntity, apply_intra_links,
+    entity_category_dir,
 };
 
 use crate::render::fence::{

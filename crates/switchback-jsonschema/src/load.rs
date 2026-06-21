@@ -6,7 +6,7 @@ use switchback_traits::ReferenceManual;
 
 use crate::loader::{Loader, Resolved};
 use crate::manual::build_reference_manual;
-use crate::populate::{populate, ResolvedInput};
+use crate::populate::{ResolvedInput, populate};
 use crate::resolver::RefResolver;
 
 /// Arguments for [`load`].

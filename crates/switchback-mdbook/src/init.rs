@@ -1,6 +1,6 @@
 //! mdBook init via `mdbook-driver::BookBuilder` in a temp directory.
 
-use crate::highlight::{configure_book_toml, theme_css_content, HighlightConfig, THEME_CSS_REL};
+use crate::highlight::{HighlightConfig, THEME_CSS_REL, configure_book_toml, theme_css_content};
 use crate::paths::join_book_root;
 use anyhow::{Context, Result};
 use mdbook_core::config::Config;
@@ -121,10 +121,13 @@ fn configure_init_highlighting(opts: &Options, book_root: &str, out: &mut HashMa
         }
         None => {
             let mut book = String::new();
-            if let Err(e) = configure_book_toml(&mut book, config) {
-                eprintln!("switchback-mdbook: warning: book.toml highlight config: {e:#}");
-            } else {
-                out.insert(book_key, book);
+            match configure_book_toml(&mut book, config) {
+                Err(e) => {
+                    eprintln!("switchback-mdbook: warning: book.toml highlight config: {e:#}");
+                }
+                _ => {
+                    out.insert(book_key, book);
+                }
             }
         }
     }
@@ -257,9 +260,11 @@ mod tests {
             .expect("book.toml");
         assert!(book.contains("[preprocessor.protobuf-highlight]"));
         assert!(book.contains("mdbook-protobuf-highlight"));
-        assert!(!pairs
-            .iter()
-            .any(|(p, _)| p.contains("highlight-protobuf.js")));
+        assert!(
+            !pairs
+                .iter()
+                .any(|(p, _)| p.contains("highlight-protobuf.js"))
+        );
     }
 
     #[test]

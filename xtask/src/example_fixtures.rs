@@ -1,6 +1,6 @@
 //! Vendored OpenAPI example API descriptions for integration tests.
 
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use sha2::{Digest, Sha256};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -12,13 +12,11 @@ const FIXTURES_PREFIX: &str = "tests/fixtures/upstream";
 
 const SPEC_REPO: &str = "https://github.com/OAI/OpenAPI-Specification";
 const SPEC_COMMIT: &str = "f8449d1a893cc6a811c6f3d87e88b05761dc5397";
-const SPEC_RAW: &str =
-    "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/f8449d1a893cc6a811c6f3d87e88b05761dc5397/examples";
+const SPEC_RAW: &str = "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/f8449d1a893cc6a811c6f3d87e88b05761dc5397/examples";
 
 const LEARN_REPO: &str = "https://github.com/OAI/learn.openapis.org";
 const LEARN_COMMIT: &str = "43756549c27cbf84107b190b82c65e0336f2f09f";
-const LEARN_RAW: &str =
-    "https://raw.githubusercontent.com/OAI/learn.openapis.org/43756549c27cbf84107b190b82c65e0336f2f09f/examples/v3.1";
+const LEARN_RAW: &str = "https://raw.githubusercontent.com/OAI/learn.openapis.org/43756549c27cbf84107b190b82c65e0336f2f09f/examples/v3.1";
 
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
 struct LockFile {

@@ -2,10 +2,11 @@
 name = "switchback-assemble"
 version.workspace = true
 edition.workspace = true
-rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-description = "Merge family-specific reference manuals into one multi-contract module."
+homepage.workspace = true
+description = "Multi-contract manual assembly for the switchback framework."
+categories = ["development-tools::documentation-tools"]
 
 [dependencies]
 switchback-traits.workspace = true

@@ -81,7 +81,7 @@ pub fn link_path_for_summary(summary_from: &Path, target: &Path) -> PathBuf {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use mdbook_summary::{parse_summary, SummaryItem};
+    use mdbook_summary::{SummaryItem, parse_summary};
 
     #[derive(Debug, PartialEq, Eq)]
     struct LinkShape {

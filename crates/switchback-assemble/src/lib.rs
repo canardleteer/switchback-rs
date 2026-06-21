@@ -244,11 +244,11 @@ fn rewrite_intra_link_group(link: &mut IntraLink, module: &str, old_group: &str,
 mod tests {
     use std::path::PathBuf;
 
-    use switchback_openapi::examples::{fixtures_dir, EXAMPLE_ACME_INPUTS, MICRO_ACME_ROOT};
-    use switchback_protobuf::examples::fixtures_proto_dir;
-    use switchback_protobuf::examples::EXAMPLE_PROTO_INPUTS;
-    use switchback_protobuf::load::{ensure_test_proto_deps, LoadArgs as ProtobufLoadArgs};
+    use switchback_openapi::examples::{EXAMPLE_ACME_INPUTS, MICRO_ACME_ROOT, fixtures_dir};
     use switchback_protobuf::Compiler;
+    use switchback_protobuf::examples::EXAMPLE_PROTO_INPUTS;
+    use switchback_protobuf::examples::fixtures_proto_dir;
+    use switchback_protobuf::load::{LoadArgs as ProtobufLoadArgs, ensure_test_proto_deps};
 
     use super::*;
 

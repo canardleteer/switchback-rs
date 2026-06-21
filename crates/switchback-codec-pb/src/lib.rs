@@ -63,5 +63,5 @@ pub(crate) mod pb {
     pub use crate::protobuf::generated::canardleteer::switchback::v1alpha1::*;
 }
 
-pub use codec::{ProtobufCodec, DEFAULT_SWITCHBACK_FILENAME};
+pub use codec::{DEFAULT_SWITCHBACK_FILENAME, ProtobufCodec};
 pub use convert::WIRE_VERSION;

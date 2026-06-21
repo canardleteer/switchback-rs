@@ -17,10 +17,10 @@ use std::path::PathBuf;
 use anyhow::{Context, Result};
 use clap::Parser;
 use switchback_codec_pb::ProtobufCodec;
-use switchback_mdbook::{write_output_files, MdBookRenderer};
-use switchback_protobuf::examples::{fixtures_proto_dir, EXAMPLE_PROTO_INPUTS};
-use switchback_protobuf::load::{ensure_test_proto_deps, load, LoadArgs};
+use switchback_mdbook::{MdBookRenderer, write_output_files};
 use switchback_protobuf::Compiler;
+use switchback_protobuf::examples::{EXAMPLE_PROTO_INPUTS, fixtures_proto_dir};
+use switchback_protobuf::load::{LoadArgs, ensure_test_proto_deps, load};
 use switchback_traits::{Layout, Options, ReferenceManual, SyncRenderer, SyncSwitchbackCodec};
 
 #[derive(Parser)]

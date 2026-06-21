@@ -9,9 +9,9 @@ use switchback_traits::{
 
 use crate::populate::http_attach;
 
+use crate::populate::PopulateCtx;
 use crate::populate::refs::schema_ref_from_value;
 use crate::populate::schema_type_label::{parameter_type_label, schema_type_label};
-use crate::populate::PopulateCtx;
 
 pub fn operation_name(method: &str, path: &str) -> String {
     format!("{} {path}", method.to_ascii_uppercase())
@@ -231,12 +231,11 @@ fn collect_response_refs(op_value: &Value, ctx: &PopulateCtx<'_>) -> Vec<Respons
 }
 
 fn dereference_value<'a>(value: &'a Value, ctx: &PopulateCtx<'a>) -> &'a Value {
-    if let Some(Value::String(ref_key)) = value.get("$ref") {
-        if let Some(pointer) = json_pointer_from_ref(ref_key) {
-            if let Some(resolved) = resolve_pointer(&ctx.doc.value, pointer) {
-                return resolved;
-            }
-        }
+    if let Some(Value::String(ref_key)) = value.get("$ref")
+        && let Some(pointer) = json_pointer_from_ref(ref_key)
+        && let Some(resolved) = resolve_pointer(&ctx.doc.value, pointer)
+    {
+        return resolved;
     }
     value
 }

@@ -1,8 +1,8 @@
 //! Per-entity pages (`layout=entity` and `layout=split`).
 
 use switchback_traits::{
-    apply_intra_links, EntityBody, Group, LinkContext, LinkFormatter, Options, ProtobufEntityKind,
-    StoredEntity,
+    EntityBody, Group, LinkContext, LinkFormatter, Options, ProtobufEntityKind, StoredEntity,
+    apply_intra_links,
 };
 
 use crate::render::fence::{

@@ -2,10 +2,12 @@
 name = "switchback-asyncapi"
 version.workspace = true
 edition.workspace = true
-rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-description = "Parser that turns an AsyncAPI document into a switchback. Handles 2.x and 3.x, preserving the contract's version. Built on switchback-traits and switchback-jsonschema."
+homepage.workspace = true
+description = "AsyncAPI parser for the switchback framework."
+keywords = ["asyncapi", "events", "messaging", "parser", "api"]
+categories = ["parser-implementations"]
 include = [
     "src/**/*",
     "meta-schemas/**/*",

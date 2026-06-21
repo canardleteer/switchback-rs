@@ -4,7 +4,7 @@ use std::path::PathBuf;
 
 use buffa::Message;
 use static_assertions::assert_impl_all;
-use switchback_codec_pb::{convert, ProtobufCodec, DEFAULT_SWITCHBACK_FILENAME, WIRE_VERSION};
+use switchback_codec_pb::{DEFAULT_SWITCHBACK_FILENAME, ProtobufCodec, WIRE_VERSION, convert};
 use switchback_traits::{
     Anchor, Companion, Document, EntityBody, EntityRef, ExtensionBody, ExternalUrl, Group, GroupId,
     GroupRef, IntraLink, LinkTarget, ManualContract, Module, ModuleId, OperationBody, ParameterRef,
@@ -252,20 +252,24 @@ fn deserialize_rejects_incompatible_version() {
 #[test]
 fn source_path_is_not_round_tripped() {
     let manual = fixture_manual();
-    assert!(!manual.modules[0].contracts[0].groups[0]
-        .source_path
-        .as_os_str()
-        .is_empty());
+    assert!(
+        !manual.modules[0].contracts[0].groups[0]
+            .source_path
+            .as_os_str()
+            .is_empty()
+    );
 
     let round_trip = SyncSwitchbackCodec::deserialize(
         &ProtobufCodec,
         &SyncSwitchbackCodec::serialize(&ProtobufCodec, &manual).unwrap(),
     )
     .unwrap();
-    assert!(round_trip.modules[0].contracts[0].groups[0]
-        .source_path
-        .as_os_str()
-        .is_empty());
+    assert!(
+        round_trip.modules[0].contracts[0].groups[0]
+            .source_path
+            .as_os_str()
+            .is_empty()
+    );
 }
 
 #[test]

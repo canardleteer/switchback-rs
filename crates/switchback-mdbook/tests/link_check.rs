@@ -103,10 +103,11 @@ fn custom_markdown_root_and_summary_path() {
 #[test]
 fn book_root_prefixes_all_output() {
     let out = render_examples(Layout::Package, "book_root=docs");
-    assert!(out
-        .path()
-        .join("docs/src/packages/acme.example.v1.md")
-        .is_file());
+    assert!(
+        out.path()
+            .join("docs/src/packages/acme.example.v1.md")
+            .is_file()
+    );
     assert!(!out.path().join("src/packages").exists());
 }
 
@@ -126,10 +127,12 @@ fn book_option_infers_paths_from_book_toml() {
     )))
     .expect("parse");
     let rendered = render_to_tempdir(&manual, &opts);
-    assert!(rendered
-        .path()
-        .join("content/packages/acme.example.v1.md")
-        .is_file());
+    assert!(
+        rendered
+            .path()
+            .join("content/packages/acme.example.v1.md")
+            .is_file()
+    );
     assert!(!rendered.path().join("src/packages").exists());
     assert!(rendered.path().join("content/SUMMARY.md").is_file());
     assert_tree(rendered.path()).unwrap_or_else(|e| panic!("book= links: {e}"));
@@ -151,10 +154,12 @@ fn book_option_explicit_markdown_root_overrides_inference() {
     )))
     .expect("parse");
     let rendered = render_to_tempdir(&manual, &opts);
-    assert!(rendered
-        .path()
-        .join("content/api/acme.example.v1.md")
-        .is_file());
+    assert!(
+        rendered
+            .path()
+            .join("content/api/acme.example.v1.md")
+            .is_file()
+    );
     assert!(!rendered.path().join("content/packages").exists());
 }
 

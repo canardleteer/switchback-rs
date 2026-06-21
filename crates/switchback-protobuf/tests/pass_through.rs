@@ -4,7 +4,7 @@ use common::{
     assert_sources_match_inputs, codec_roundtrip, load_examples, load_loose_fixture,
     mirrored_compilers, normalize, rebuild_buf_module, restore_sources_map, run_buf_lint_format,
 };
-use switchback_protobuf::examples::{fixtures_proto_dir, EXAMPLE_PROTO_INPUTS};
+use switchback_protobuf::examples::{EXAMPLE_PROTO_INPUTS, fixtures_proto_dir};
 use switchback_protocols::{DecodedAttachment, GrpcPayloadKind, ProtocolRegistry};
 use switchback_traits::EntityBody;
 use tempfile::tempdir;
@@ -183,10 +183,12 @@ fn grpc_metadata_parameters_from_method_options() {
     let EntityBody::Operation(relay_body) = &relay.body else {
         panic!("expected operation body");
     };
-    assert!(relay_body
-        .parameters
-        .iter()
-        .any(|p| p.name == "x-session-token" && p.location == "metadata" && p.required));
+    assert!(
+        relay_body
+            .parameters
+            .iter()
+            .any(|p| p.name == "x-session-token" && p.location == "metadata" && p.required)
+    );
 }
 
 #[test]

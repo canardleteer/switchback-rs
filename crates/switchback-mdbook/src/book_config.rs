@@ -1,6 +1,6 @@
 //! Load mdBook `book.toml` via `mdbook-core` to infer plugin output paths.
 
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use mdbook_core::config::Config;
 use std::path::{Path, PathBuf};
 use switchback_traits::Options;

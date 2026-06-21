@@ -18,7 +18,7 @@ use switchback_jsonschema::resolver::RefIndex;
 use switchback_traits::{Group, GroupId, SpecVersion};
 
 use crate::companion::{discover_companions, discover_companions_multi};
-use crate::paths::{module_id_from_title_or_stem, COMPONENTS_GROUP, UNTAGGED_GROUP};
+use crate::paths::{COMPONENTS_GROUP, UNTAGGED_GROUP, module_id_from_title_or_stem};
 use crate::populate::groups::build_groups;
 use crate::populate::paths::{collect_operation_tags, populate_path_operations};
 

@@ -68,11 +68,7 @@ pub(crate) fn opt_string(value: &Option<String>) -> String {
 }
 
 pub(crate) fn string_opt(value: String) -> Option<String> {
-    if value.is_empty() {
-        None
-    } else {
-        Some(value)
-    }
+    if value.is_empty() { None } else { Some(value) }
 }
 
 pub(crate) fn codec_err(message: impl Into<String>) -> SwitchbackError {

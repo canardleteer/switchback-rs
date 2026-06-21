@@ -5,7 +5,7 @@ use switchback_traits::{
 };
 
 use crate::book_config::apply_book_config;
-use crate::companion::{render_companions, CompanionNav};
+use crate::companion::{CompanionNav, render_companions};
 use crate::formatter::MdBookRelativeFormatter;
 use crate::init::{merge_init_files, scaffold_init_tree};
 use crate::render::entity::render_entity_pages;
