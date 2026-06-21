@@ -1,0 +1,30 @@
+[package]
+name = "switchback-avro"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Shared Avro schema layer for the switchback framework."
+keywords = ["avro", "schema", "parser", "asyncapi", "serialization"]
+categories = ["parser-implementations"]
+include = [
+    "src/**/*",
+    "meta-schemas/**/*",
+    "meta-schemas.lock.toml",
+    "Cargo.toml",
+    "README.md",
+    "LICENSE*",
+]
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+switchback-traits.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+sha2.workspace = true
+toml = "0.8"

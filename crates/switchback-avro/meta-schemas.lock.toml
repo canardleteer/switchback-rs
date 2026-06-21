@@ -1,0 +1,11 @@
+[[asset]]
+id = "avro-common-avroSchema-v1-json"
+path = "common/avroSchema_v1.json"
+url = "https://raw.githubusercontent.com/asyncapi/spec-json-schemas/master/common/avroSchema_v1.json"
+sha256 = "08d7115b95c457f16eff9fbdc4052dd63efb7ad03c9c9351253ea010177e196c"
+
+[[asset]]
+id = "avro-definitions-2-6-0-avroSchema-v1-json"
+path = "definitions/2.6.0/avroSchema_v1.json"
+url = "https://raw.githubusercontent.com/asyncapi/spec-json-schemas/master/definitions/2.6.0/avroSchema_v1.json"
+sha256 = "1e52b45864d50d89df76840ea4a327a858a7bd417bc1fae3f967a4f0305ac74f"

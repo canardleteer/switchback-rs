@@ -15,6 +15,7 @@ const PUBLISHABLE_CRATES: &[&str] = &[
     "switchback-codec-pb",
     "switchback-protocols",
     "switchback-jsonschema",
+    "switchback-avro",
     "switchback-asyncapi",
     "switchback-openrpc",
     "switchback-openapi",

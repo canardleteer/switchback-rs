@@ -15,6 +15,7 @@ pub enum Family {
     OpenApi,
     AsyncApi,
     OpenRpc,
+    Avro,
     All,
 }
 
@@ -24,14 +25,22 @@ impl Family {
             "openapi" => Ok(Self::OpenApi),
             "asyncapi" => Ok(Self::AsyncApi),
             "openrpc" => Ok(Self::OpenRpc),
+            "avro" => Ok(Self::Avro),
             "all" => Ok(Self::All),
-            _ => bail!("unknown family {value}; expected openapi|asyncapi|openrpc|all"),
+            _ => {
+                bail!("unknown family {value}; expected openapi|asyncapi|openrpc|avro|all")
+            }
         }
     }
 
     fn families(self) -> Vec<Family> {
         match self {
-            Self::All => vec![Self::OpenApi, Self::AsyncApi, Self::OpenRpc],
+            Self::All => vec![
+                Self::OpenApi,
+                Self::AsyncApi,
+                Self::OpenRpc,
+                Self::Avro,
+            ],
             other => vec![other],
         }
     }
@@ -59,6 +68,11 @@ fn family_config(family: Family) -> FamilyConfig {
             name: "openrpc",
             crate_dir: "crates/switchback-openrpc",
             raw_base: "https://raw.githubusercontent.com/open-rpc/spec/master",
+        },
+        Family::Avro => FamilyConfig {
+            name: "avro",
+            crate_dir: "crates/switchback-avro",
+            raw_base: "https://raw.githubusercontent.com/asyncapi/spec-json-schemas/master",
         },
         Family::All => unreachable!("Family::All has no config"),
     }
@@ -199,8 +213,16 @@ fn bootstrap_paths(family: Family) -> Result<Vec<String>> {
         Family::OpenApi => Ok(openapi_paths()),
         Family::AsyncApi => asyncapi_paths_from_github(),
         Family::OpenRpc => Ok(openrpc_paths()),
+        Family::Avro => Ok(avro_paths()),
         Family::All => unreachable!(),
     }
+}
+
+fn avro_paths() -> Vec<String> {
+    vec![
+        "common/avroSchema_v1.json".to_string(),
+        "definitions/2.6.0/avroSchema_v1.json".to_string(),
+    ]
 }
 
 fn openapi_paths() -> Vec<String> {
@@ -384,6 +406,10 @@ fn highlight_aliases(
         "switchback-openrpc" => &[
             ("SCHEMA_1_4", "spec/1.4/schema.json"),
             ("SCHEMA_1_3", "spec/1.3/schema.json"),
+        ],
+        "switchback-avro" => &[
+            ("AVRO_SCHEMA_V1_3_0", "common/avroSchema_v1.json"),
+            ("AVRO_SCHEMA_V1_2_6", "definitions/2.6.0/avroSchema_v1.json"),
         ],
         _ => &[],
     };
