@@ -23,16 +23,25 @@
 #![forbid(unsafe_code)]
 #![warn(missing_docs)]
 
+mod amqp;
 mod grpc;
 mod http;
+mod kafka;
+mod mqtt;
 mod registry;
 mod severity;
 mod traits;
 mod wire;
 
+pub use amqp::AmqpProtocol;
 pub use grpc::GrpcProtocol;
 pub use http::HttpProtocol;
-pub use registry::{DecodedAttachment, GrpcPayloadKind, HttpPayloadKind, ProtocolRegistry};
+pub use kafka::KafkaProtocol;
+pub use mqtt::MqttProtocol;
+pub use registry::{
+    AmqpPayloadKind, DecodedAttachment, GrpcPayloadKind, HttpPayloadKind, KafkaPayloadKind,
+    MqttPayloadKind, ProtocolRegistry,
+};
 pub use severity::{
     grpc_status_name_severity, grpc_status_severity, http_status_code_severity,
     http_status_severity,

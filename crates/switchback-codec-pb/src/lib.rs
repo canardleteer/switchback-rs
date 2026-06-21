@@ -22,6 +22,9 @@
 //! | `protocol/http/v1alpha1/http.proto` | [`canardleteer::switchback::protocol::http::v1alpha1`] |
 //! | `protocol/grpc/v1alpha1/grpc.proto` | [`canardleteer::switchback::protocol::grpc::v1alpha1`] |
 //! | `protocol/grpc/v1alpha1/metadata_options.proto` | same gRPC module (MethodOptions extension) |
+//! | `protocol/kafka/v1alpha1/kafka.proto` | [`canardleteer::switchback::protocol::kafka::v1alpha1`] |
+//! | `protocol/amqp/v1alpha1/amqp.proto` | [`canardleteer::switchback::protocol::amqp::v1alpha1`] |
+//! | `protocol/mqtt/v1alpha1/mqtt.proto` | [`canardleteer::switchback::protocol::mqtt::v1alpha1`] |
 //!
 //! Entity attachment matrix and decode steps: [ADR 0011](https://github.com/canardleteer/switchback-rs/blob/main/docs/adr/0011-protocol-layer-and-contract-family-binding.md).
 //! HTTP streaming and gRPC metadata authoring: [ADR 0012](https://github.com/canardleteer/switchback-rs/blob/main/docs/adr/0012-http-streaming-inference-and-grpc-metadata-from-protobuf-options.md).

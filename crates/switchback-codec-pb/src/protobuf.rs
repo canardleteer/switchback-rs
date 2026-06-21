@@ -40,6 +40,27 @@ pub mod canardleteer {
                     pub use crate::protobuf::generated::canardleteer::switchback::protocol::grpc::v1alpha1::*;
                 }
             }
+            /// Kafka protocol schema `canardleteer.switchback.protocol.kafka.v1alpha1`.
+            pub mod kafka {
+                /// Unstable Kafka protocol schema.
+                pub mod v1alpha1 {
+                    pub use crate::protobuf::generated::canardleteer::switchback::protocol::kafka::v1alpha1::*;
+                }
+            }
+            /// AMQP protocol schema `canardleteer.switchback.protocol.amqp.v1alpha1`.
+            pub mod amqp {
+                /// Unstable AMQP protocol schema.
+                pub mod v1alpha1 {
+                    pub use crate::protobuf::generated::canardleteer::switchback::protocol::amqp::v1alpha1::*;
+                }
+            }
+            /// MQTT protocol schema `canardleteer.switchback.protocol.mqtt.v1alpha1`.
+            pub mod mqtt {
+                /// Unstable MQTT protocol schema.
+                pub mod v1alpha1 {
+                    pub use crate::protobuf::generated::canardleteer::switchback::protocol::mqtt::v1alpha1::*;
+                }
+            }
         }
 
         /// Unstable schema `canardleteer.switchback.v1alpha1`.
