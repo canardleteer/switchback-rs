@@ -22,6 +22,10 @@ on:
           - switchback-protobuf
           - switchback-mdbook
           - switchback-assemble
+      version_suffix:
+        description: Lockstep bootstrap SHA suffix (default current HEAD short SHA)
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -51,8 +55,11 @@ jobs:
         id: version
         run: |
           set -euo pipefail
-          short_sha="$(git rev-parse --short HEAD)"
-          bootstrap_version="0.0.1-0.dev.0.${short_sha}"
+          suffix="${{ inputs.version_suffix }}"
+          if [ -z "$suffix" ]; then
+            suffix="$(git rev-parse --short HEAD)"
+          fi
+          bootstrap_version="0.0.1-0.dev.0.${suffix}"
           echo "bootstrap_version=${bootstrap_version}" >> "$GITHUB_OUTPUT"
           echo "Publishing ${{ inputs.crate }} at ${bootstrap_version}"
 
