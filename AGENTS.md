@@ -128,7 +128,7 @@ your changed paths).
 | `rust-tests.yml` matrix (linux / macOS) | After gate; `check`/`clippy` then `ci-post` on macOS only | `cargo xtask check`, `clippy`, `ci-post` (or full `cargo xtask ci`) |
 | [`rumdl.yml`](.github/workflows/rumdl.yml) | Every PR to `main`; push to `main` when `**/*.md` or `.rumdl.toml` change | `cargo xtask rumdl-check` |
 | [`yaml-lint.yml`](.github/workflows/yaml-lint.yml) | Every PR to `main`; push to `main` when in-repo YAML under `crates/`, `examples/`, `proto/` changes | `cargo xtask ryl` |
-| [`release-plz.yml`](.github/workflows/release-plz.yml) | Disabled until publishable dev-deps fixed; push to `main` when re-enabled | N/A |
+| [`release-plz.yml`](.github/workflows/release-plz.yml) | Push to `main`, `workflow_dispatch` | N/A |
 | [`publish-crate.yml`](.github/workflows/publish-crate.yml) | Manual `workflow_dispatch` on `main` only | N/A — emergency republish one crate at a time |
 
 GHA uses
@@ -232,13 +232,12 @@ After every **fifth** new crate, wait **eleven minutes** before the next run
 gh workflow run publish-crate.yml -f crate=switchback-traits -f version_suffix=ffcda32 --ref main
 ```
 
-### Publishable dev-dependencies (required before release-plz)
+### Publishable dev-dependencies (completed)
 
 `cargo publish` resolves `[dev-dependencies]` against crates.io even though they
 are not shipped. Workspace `switchback-*` dev-deps must not form cycles and must
-only point at crates **earlier** in the publish order above.
-
-Changes made for `release-plz` readiness:
+only point at crates **earlier** in the publish order above. Fixed on `main` in
+[#11](https://github.com/canardleteer/switchback-rs/pull/11):
 
 - Removed the `switchback-codec-pb` ↔ `switchback-protocols` dev-dep cycle
   (protocol round-trip test moved to `switchback-protocols`).
@@ -250,15 +249,13 @@ Changes made for `release-plz` readiness:
   and `assemble`; **`assemble` must publish before `mdbook`**.
 
 `cargo xtask publish-check` fails if any publishable crate dev-depends on a
-later crate in the order. Re-enable release-plz only after that check passes on
-`main`.
+later crate in the order.
 
-### Steady-state release-plz (after dev-deps fix)
+### Steady-state release-plz
 
-[release-plz](https://release-plz.dev/) is **disabled** in
-[`.github/workflows/release-plz.yml`](.github/workflows/release-plz.yml) until
-publishable dev-dependencies are fixed on `main`. Remove `false &&` from both
-jobs to re-enable (keep `publish-crate.yml` for emergency manual republish).
+[release-plz](https://release-plz.dev/) is enabled in
+[`.github/workflows/release-plz.yml`](.github/workflows/release-plz.yml).
+Keep `publish-crate.yml` for emergency manual republish of one crate at a time.
 
 Flow:
 
