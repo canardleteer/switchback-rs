@@ -111,8 +111,13 @@ fn run_ci_post() -> Result<()> {
     run("render mdbook", render::render_mdbook)?;
     run("link-check", link_check::link_check)?;
     run("check-highlight-rust", highlight::check_highlight_rust)?;
-    run("spec-vendor validate", || spec_vendor::validate(spec_vendor::Family::All))?;
-    run("example-fixtures validate", example_fixtures::validate_openapi)
+    run("spec-vendor validate", || {
+        spec_vendor::validate(spec_vendor::Family::All)
+    })?;
+    run(
+        "example-fixtures validate",
+        example_fixtures::validate_openapi,
+    )
 }
 
 fn main() -> Result<()> {
