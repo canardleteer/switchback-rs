@@ -15,6 +15,7 @@ members = [
     "examples/mdbook-protobuf",
     "examples/mdbook-openapi",
     "examples/mdbook-asyncapi",
+    "examples/mdbook-openrpc",
     "examples/reference-manual",
     "xtask",
 ]

@@ -12,6 +12,8 @@ include = [
     "src/**/*",
     "meta-schemas/**/*",
     "meta-schemas.lock.toml",
+    "example-fixtures.lock.toml",
+    "tests/fixtures/**/*",
     "Cargo.toml",
     "README.md",
     "LICENSE*",
@@ -28,8 +30,14 @@ path = "src/bin/switchback-openrpc.rs"
 switchback-traits.workspace = true
 switchback-codec-pb.workspace = true
 switchback-jsonschema.workspace = true
+serde_json.workspace = true
+serde-saphyr.workspace = true
+sha2.workspace = true
+walkdir.workspace = true
 
 [dev-dependencies]
 serde = { version = "1", features = ["derive"] }
 sha2 = "0.10"
 toml = "0.8"
+tempfile.workspace = true
+switchback-codec-pb.workspace = true

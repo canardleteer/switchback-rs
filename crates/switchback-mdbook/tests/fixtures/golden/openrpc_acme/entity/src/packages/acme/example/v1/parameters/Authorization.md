@@ -1,0 +1,8 @@
+# Authorization
+
+```json
+{
+  "type": "string"
+}
+```
+

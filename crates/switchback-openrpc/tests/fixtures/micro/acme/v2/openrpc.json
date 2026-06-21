@@ -1,0 +1,210 @@
+{
+  "openrpc": "1.3.0",
+  "info": {
+    "title": "Acme Example API v2",
+    "version": "2.0.0",
+    "description": "Catalog, inventory, and platform services for the Acme fixture."
+  },
+  "servers": [
+    {
+      "url": "https://api.acme.example/v2",
+      "description": "Live v2 base URL (concurrent with v1 and v3alpha1)"
+    }
+  ],
+  "methods": [
+    {
+      "name": "listProducts",
+      "summary": "List catalog products",
+      "params": [
+        {
+          "name": "page_size",
+          "schema": { "type": "integer", "minimum": 1, "maximum": 100, "default": 20 }
+        },
+        {
+          "name": "page_token",
+          "schema": { "type": "string" }
+        }
+      ],
+      "result": {
+        "name": "page",
+        "schema": { "$ref": "#/components/schemas/ListProductsResponse" }
+      }
+    },
+    {
+      "name": "createProduct",
+      "summary": "Create a catalog product",
+      "params": [
+        {
+          "name": "product",
+          "required": true,
+          "schema": { "$ref": "#/components/schemas/Product" }
+        }
+      ],
+      "result": {
+        "name": "product",
+        "schema": { "$ref": "#/components/schemas/Product" }
+      }
+    },
+    {
+      "name": "getProduct",
+      "summary": "Get one product",
+      "params": [
+        {
+          "name": "product_id",
+          "required": true,
+          "schema": { "type": "string" }
+        }
+      ],
+      "result": {
+        "name": "product",
+        "schema": { "$ref": "#/components/schemas/Product" }
+      }
+    },
+    {
+      "name": "updateProduct",
+      "summary": "Replace a product",
+      "params": [
+        {
+          "name": "product_id",
+          "required": true,
+          "schema": { "type": "string" }
+        },
+        {
+          "name": "product",
+          "required": true,
+          "schema": { "$ref": "#/components/schemas/Product" }
+        }
+      ],
+      "result": {
+        "name": "product",
+        "schema": { "$ref": "#/components/schemas/Product" }
+      }
+    },
+    {
+      "name": "deleteProduct",
+      "summary": "Delete a product",
+      "params": [
+        {
+          "name": "product_id",
+          "required": true,
+          "schema": { "type": "string" }
+        }
+      ],
+      "result": {
+        "name": "deleted",
+        "schema": { "type": "boolean" }
+      }
+    },
+    {
+      "name": "watchInventory",
+      "summary": "Watch inventory changes",
+      "params": [
+        {
+          "name": "sku",
+          "required": true,
+          "schema": { "type": "string" }
+        }
+      ],
+      "result": {
+        "name": "event",
+        "schema": { "$ref": "#/components/schemas/InventoryEvent" }
+      }
+    },
+    {
+      "name": "uploadDrafts",
+      "summary": "Upload draft product payloads",
+      "params": [
+        {
+          "name": "drafts",
+          "required": true,
+          "schema": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ProductDraft" }
+          }
+        }
+      ],
+      "result": {
+        "name": "accepted",
+        "schema": { "type": "integer" }
+      }
+    },
+    {
+      "name": "exportAuditBatch",
+      "summary": "Export an audit batch",
+      "params": [
+        {
+          "name": "since",
+          "schema": { "type": "string", "format": "date-time" }
+        }
+      ],
+      "result": {
+        "name": "batch",
+        "schema": { "$ref": "#/components/schemas/AuditBatch" }
+      }
+    }
+  ],
+  "components": {
+    "schemas": {
+      "Product": {
+        "type": "object",
+        "required": ["display_name"],
+        "properties": {
+          "product_id": { "type": "string" },
+          "display_name": { "type": "string" },
+          "skus": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Sku" }
+          }
+        }
+      },
+      "Sku": {
+        "type": "object",
+        "properties": {
+          "sku_id": { "type": "string" },
+          "quantity": { "type": "integer" }
+        }
+      },
+      "ListProductsResponse": {
+        "type": "object",
+        "properties": {
+          "products": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Product" }
+          },
+          "page": {
+            "type": "object",
+            "properties": {
+              "next_page_token": { "type": "string" }
+            }
+          }
+        }
+      },
+      "InventoryEvent": {
+        "type": "object",
+        "properties": {
+          "sku_id": { "type": "string" },
+          "delta": { "type": "integer" },
+          "observed_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ProductDraft": {
+        "type": "object",
+        "properties": {
+          "display_name": { "type": "string" }
+        }
+      },
+      "AuditBatch": {
+        "type": "object",
+        "properties": {
+          "entries": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "Problem": {
+        "$ref": "../shared/schemas.json#/Problem"
+      }
+    }
+  }
+}

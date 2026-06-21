@@ -4,6 +4,7 @@
 
 use switchback_asyncapi::load::LoadArgs as AsyncApiLoadArgs;
 use switchback_openapi::load::LoadArgs as OpenApiLoadArgs;
+use switchback_openrpc::load::LoadArgs as OpenRpcLoadArgs;
 use switchback_protobuf::load::LoadArgs as ProtobufLoadArgs;
 use switchback_traits::{
     EntityBody, EntityRef, GroupId, IntraLink, LinkTarget, ManualContract, Module, ModuleId,
@@ -30,6 +31,7 @@ pub struct AssembleArgs {
     pub openapi: Option<OpenApiLoadArgs>,
     pub protobuf: Option<ProtobufLoadArgs>,
     pub asyncapi: Option<AsyncApiLoadArgs>,
+    pub openrpc: Option<OpenRpcLoadArgs>,
 }
 
 /// Load each configured family and merge into one reference manual.
@@ -73,6 +75,20 @@ pub fn assemble_module(args: &AssembleArgs) -> switchback_traits::Result<Referen
             modules,
             ..
         } = switchback_asyncapi::load(asyncapi)?;
+        if switchback_version.is_empty() {
+            switchback_version = sv;
+        }
+        sources.extend(manual_sources);
+        contracts.extend(modules.into_iter().flat_map(|m| m.contracts));
+    }
+
+    if let Some(openrpc) = &args.openrpc {
+        let ReferenceManual {
+            switchback_version: sv,
+            sources: manual_sources,
+            modules,
+            ..
+        } = switchback_openrpc::load(openrpc)?;
         if switchback_version.is_empty() {
             switchback_version = sv;
         }
@@ -264,6 +280,10 @@ mod tests {
         EXAMPLE_ACME_INPUTS as ASYNCAPI_ACME_INPUTS, MICRO_ACME_ROOT as ASYNCAPI_ACME_ROOT,
         fixtures_dir as asyncapi_fixtures_dir,
     };
+    use switchback_openrpc::examples::{
+        EXAMPLE_ACME_INPUTS as OPENRPC_ACME_INPUTS, MICRO_ACME_ROOT as OPENRPC_ACME_ROOT,
+        fixtures_dir as openrpc_fixtures_dir,
+    };
     use switchback_openapi::examples::{EXAMPLE_ACME_INPUTS, MICRO_ACME_ROOT, fixtures_dir};
     use switchback_protobuf::Compiler;
     use switchback_protobuf::examples::EXAMPLE_PROTO_INPUTS;
@@ -273,16 +293,17 @@ mod tests {
     use super::*;
 
     #[test]
-    fn assembles_acme_openapi_protobuf_and_asyncapi() {
+    fn assembles_acme_openapi_protobuf_asyncapi_and_openrpc() {
         let openapi_root = fixtures_dir().join(MICRO_ACME_ROOT);
         let asyncapi_root = asyncapi_fixtures_dir().join(ASYNCAPI_ACME_ROOT);
+        let openrpc_root = openrpc_fixtures_dir().join(OPENRPC_ACME_ROOT);
         let proto_root = fixtures_proto_dir();
         let export = ensure_test_proto_deps(&proto_root, None).expect("proto deps");
 
         let manual = assemble_module(&AssembleArgs {
             module_id: "acme".into(),
             title: "Acme APIs".into(),
-            overview: "Acme HTTP + gRPC + events".into(),
+            overview: "Acme HTTP + gRPC + events + JSON-RPC".into(),
             group_prefix: GroupPrefixPolicy::ContractFamily,
             openapi: Some(OpenApiLoadArgs {
                 module_root: openapi_root.clone(),
@@ -306,11 +327,17 @@ mod tests {
                 search_roots: vec![asyncapi_root],
                 title: None,
             }),
+            openrpc: Some(OpenRpcLoadArgs {
+                module_root: openrpc_root.clone(),
+                inputs: OPENRPC_ACME_INPUTS.iter().map(PathBuf::from).collect(),
+                search_roots: vec![openrpc_root],
+                title: None,
+            }),
         })
         .expect("assemble");
 
         assert_eq!(manual.modules.len(), 1);
-        assert_eq!(manual.modules[0].contracts.len(), 3);
+        assert_eq!(manual.modules[0].contracts.len(), 4);
         let families: Vec<_> = manual.modules[0]
             .contracts
             .iter()
@@ -319,6 +346,7 @@ mod tests {
         assert!(families.contains(&"openapi"));
         assert!(families.contains(&"protobuf"));
         assert!(families.contains(&"asyncapi"));
+        assert!(families.contains(&"openrpc"));
 
         let group_ids: Vec<_> = manual.modules[0]
             .contracts
@@ -343,6 +371,12 @@ mod tests {
                     .iter()
                     .any(|id| id == &format!("asyncapi.acme.example.{suffix}")),
                 "missing asyncapi.acme.example.{suffix} in {group_ids:?}"
+            );
+            assert!(
+                group_ids
+                    .iter()
+                    .any(|id| id == &format!("openrpc.acme.example.{suffix}")),
+                "missing openrpc.acme.example.{suffix} in {group_ids:?}"
             );
         }
 

@@ -140,3 +140,29 @@ fn wire_policy_encode_succeeds() {
     let codec = switchback_codec_pb::ProtobufCodec;
     SyncSwitchbackCodec::serialize(&codec, &manual).expect("serialize");
 }
+
+#[test]
+fn upstream_streetlights_mqtt_loads() {
+    let manual = switchback_asyncapi::load_fixture_relative(
+        switchback_asyncapi::UPSTREAM_STREETLIGHTS_MQTT,
+    )
+    .expect("load streetlights mqtt");
+    assert!(count_entities(&manual) > 5);
+}
+
+#[test]
+fn upstream_simple_3_1_loads() {
+    let manual =
+        switchback_asyncapi::load_fixture_relative(switchback_asyncapi::UPSTREAM_SIMPLE_3_1)
+            .expect("load simple 3.1");
+    assert!(count_entities(&manual) > 0);
+}
+
+#[test]
+fn upstream_streetlights_kafka_3_1_loads() {
+    let manual = switchback_asyncapi::load_fixture_relative(
+        switchback_asyncapi::UPSTREAM_STREETLIGHTS_KAFKA_3_1,
+    )
+    .expect("load streetlights kafka 3.1");
+    assert!(count_entities(&manual) > 5);
+}

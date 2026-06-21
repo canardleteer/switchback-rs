@@ -19,8 +19,16 @@ const LEARN_COMMIT: &str = "43756549c27cbf84107b190b82c65e0336f2f09f";
 const LEARN_RAW: &str = "https://raw.githubusercontent.com/OAI/learn.openapis.org/43756549c27cbf84107b190b82c65e0336f2f09f/examples/v3.1";
 
 const ASYNCAPI_SPEC_REPO: &str = "https://github.com/asyncapi/spec";
-const ASYNCAPI_SPEC_COMMIT: &str = "v2.6.0";
-const ASYNCAPI_SPEC_RAW: &str = "https://raw.githubusercontent.com/asyncapi/spec/v2.6.0/examples";
+const ASYNCAPI_V26_COMMIT: &str = "v2.6.0";
+const ASYNCAPI_V26_RAW: &str =
+    "https://raw.githubusercontent.com/asyncapi/spec/v2.6.0/examples";
+const ASYNCAPI_V31_COMMIT: &str = "v3.1.0";
+const ASYNCAPI_V31_RAW: &str =
+    "https://raw.githubusercontent.com/asyncapi/spec/v3.1.0/examples";
+
+const OPENRPC_EXAMPLES_REPO: &str = "https://github.com/open-rpc/examples";
+const OPENRPC_EXAMPLES_COMMIT: &str = "dce69463ba9a3ca2232506b734606fa97f25dd45";
+const OPENRPC_EXAMPLES_RAW: &str = "https://raw.githubusercontent.com/open-rpc/examples/dce69463ba9a3ca2232506b734606fa97f25dd45/service-descriptions";
 
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
 struct LockFile {
@@ -46,12 +54,32 @@ pub fn validate_asyncapi() -> Result<()> {
     validate_family(asyncapi_crate_root())
 }
 
+pub fn validate_openrpc() -> Result<()> {
+    validate_family(openrpc_crate_root())
+}
+
 pub fn fetch_openapi(write_lock: bool) -> Result<()> {
     fetch_family(openapi_crate_root(), bootstrap_openapi_lock, write_lock)
 }
 
 pub fn fetch_asyncapi(write_lock: bool) -> Result<()> {
     fetch_family(asyncapi_crate_root(), bootstrap_asyncapi_lock, write_lock)
+}
+
+pub fn fetch_openrpc(write_lock: bool) -> Result<()> {
+    fetch_family(openrpc_crate_root(), bootstrap_openrpc_lock, write_lock)?;
+    normalize_openrpc_version_bumps(&openrpc_crate_root())?;
+    if write_lock || !openrpc_crate_root().join(LOCK_FILE).exists() {
+        let lock = read_lock(&openrpc_crate_root())?;
+        let mut updated = lock;
+        for asset in &mut updated.asset {
+            let path = openrpc_crate_root().join(&asset.path);
+            let bytes = fs::read(&path).with_context(|| format!("read {}", path.display()))?;
+            asset.sha256 = hex_sha256(&bytes);
+        }
+        write_lock_file(&openrpc_crate_root(), &updated)?;
+    }
+    Ok(())
 }
 
 fn validate_family(root: PathBuf) -> Result<()> {
@@ -105,6 +133,10 @@ fn asyncapi_crate_root() -> PathBuf {
     PathBuf::from(WORKSPACE_ROOT).join("crates/switchback-asyncapi")
 }
 
+fn openrpc_crate_root() -> PathBuf {
+    PathBuf::from(WORKSPACE_ROOT).join("crates/switchback-openrpc")
+}
+
 fn bootstrap_openapi_lock() -> Result<LockFile> {
     Ok(LockFile {
         asset: vec![
@@ -142,13 +174,64 @@ fn bootstrap_openapi_lock() -> Result<LockFile> {
 
 fn bootstrap_asyncapi_lock() -> Result<LockFile> {
     Ok(LockFile {
-        asset: vec![asset_entry(
-            "streetlights-kafka",
-            "streetlights-kafka/asyncapi.yaml",
-            &format!("{ASYNCAPI_SPEC_RAW}/streetlights-kafka.yml"),
-            ASYNCAPI_SPEC_REPO,
-            ASYNCAPI_SPEC_COMMIT,
-        )],
+        asset: vec![
+            asset_entry(
+                "streetlights-kafka",
+                "streetlights-kafka/asyncapi.yaml",
+                &format!("{ASYNCAPI_V26_RAW}/streetlights-kafka.yml"),
+                ASYNCAPI_SPEC_REPO,
+                ASYNCAPI_V26_COMMIT,
+            ),
+            asset_entry(
+                "streetlights-mqtt",
+                "streetlights-mqtt/asyncapi.yaml",
+                &format!("{ASYNCAPI_V26_RAW}/streetlights-mqtt.yml"),
+                ASYNCAPI_SPEC_REPO,
+                ASYNCAPI_V26_COMMIT,
+            ),
+            asset_entry(
+                "simple-3.1",
+                "simple-3.1/asyncapi.yaml",
+                &format!("{ASYNCAPI_V31_RAW}/simple-asyncapi.yml"),
+                ASYNCAPI_SPEC_REPO,
+                ASYNCAPI_V31_COMMIT,
+            ),
+            asset_entry(
+                "streetlights-kafka-3.1",
+                "streetlights-kafka-3.1/asyncapi.yaml",
+                &format!("{ASYNCAPI_V31_RAW}/streetlights-kafka-asyncapi.yml"),
+                ASYNCAPI_SPEC_REPO,
+                ASYNCAPI_V31_COMMIT,
+            ),
+        ],
+    })
+}
+
+fn bootstrap_openrpc_lock() -> Result<LockFile> {
+    Ok(LockFile {
+        asset: vec![
+            asset_entry(
+                "metrics-1.3",
+                "metrics-1.3/openrpc.json",
+                &format!("{OPENRPC_EXAMPLES_RAW}/metrics-openrpc.json"),
+                OPENRPC_EXAMPLES_REPO,
+                OPENRPC_EXAMPLES_COMMIT,
+            ),
+            asset_entry(
+                "petstore-expanded-1.4",
+                "petstore-expanded-1.4/openrpc.json",
+                &format!("{OPENRPC_EXAMPLES_RAW}/petstore-expanded-openrpc.json"),
+                OPENRPC_EXAMPLES_REPO,
+                OPENRPC_EXAMPLES_COMMIT,
+            ),
+            asset_entry(
+                "link-example-1.4",
+                "link-example-1.4/openrpc.json",
+                &format!("{OPENRPC_EXAMPLES_RAW}/link-example-openrpc.json"),
+                OPENRPC_EXAMPLES_REPO,
+                OPENRPC_EXAMPLES_COMMIT,
+            ),
+        ],
     })
 }
 
@@ -230,4 +313,21 @@ fn fetch_asset(root: &Path, asset: &LockAsset) -> Result<()> {
 fn hex_sha256(bytes: &[u8]) -> String {
     let digest = Sha256::digest(bytes);
     digest.iter().map(|b| format!("{b:02x}")).collect()
+}
+
+/// Upstream [open-rpc/examples](https://github.com/open-rpc/examples) still ships
+/// `1.0.0-rc1` on several documents; bump to `1.4.0` so parser fixtures match ADR 0019.
+fn normalize_openrpc_version_bumps(root: &Path) -> Result<()> {
+    for rel in [
+        "tests/fixtures/upstream/petstore-expanded-1.4/openrpc.json",
+        "tests/fixtures/upstream/link-example-1.4/openrpc.json",
+    ] {
+        let path = root.join(rel);
+        let text = fs::read_to_string(&path).with_context(|| format!("read {}", path.display()))?;
+        if text.contains("\"openrpc\": \"1.0.0-rc1\"") {
+            let updated = text.replace("\"openrpc\": \"1.0.0-rc1\"", "\"openrpc\": \"1.4.0\"");
+            fs::write(&path, updated).with_context(|| format!("write {}", path.display()))?;
+        }
+    }
+    Ok(())
 }

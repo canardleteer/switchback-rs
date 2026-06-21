@@ -1,0 +1,183 @@
+{
+  "openrpc": "1.4.0",
+  "info": {
+    "title": "Acme Example API v3alpha1",
+    "version": "3.0.0-alpha.1",
+    "description": "Feature flags, experiments, and pipeline preview for the Acme fixture."
+  },
+  "servers": [
+    {
+      "url": "https://api.acme.example/v3alpha1",
+      "description": "Preview v3alpha1 base URL"
+    }
+  ],
+  "methods": [
+    {
+      "name": "listFeatureFlags",
+      "summary": "List feature flags",
+      "params": [
+        {
+          "name": "namespace",
+          "schema": { "type": "string" }
+        }
+      ],
+      "result": {
+        "name": "flags",
+        "schema": {
+          "type": "array",
+          "items": { "$ref": "#/components/schemas/FeatureFlag" }
+        }
+      }
+    },
+    {
+      "name": "upsertFlagOverride",
+      "summary": "Upsert a flag override",
+      "params": [
+        {
+          "name": "override",
+          "required": true,
+          "schema": { "$ref": "#/components/schemas/FlagOverride" }
+        }
+      ],
+      "result": {
+        "name": "override",
+        "schema": { "$ref": "#/components/schemas/FlagOverride" }
+      }
+    },
+    {
+      "name": "assignExperiment",
+      "summary": "Assign an experiment cohort",
+      "params": [
+        {
+          "name": "subject_id",
+          "required": true,
+          "schema": { "type": "string" }
+        },
+        {
+          "name": "experiment_id",
+          "required": true,
+          "schema": { "type": "string" }
+        }
+      ],
+      "result": {
+        "name": "assignment",
+        "schema": { "$ref": "#/components/schemas/ExperimentAssignment" }
+      }
+    },
+    {
+      "name": "streamAssignments",
+      "summary": "Stream assignment updates",
+      "params": [
+        {
+          "name": "experiment_id",
+          "required": true,
+          "schema": { "type": "string" }
+        }
+      ],
+      "result": {
+        "name": "assignment",
+        "schema": { "$ref": "#/components/schemas/ExperimentAssignment" }
+      }
+    },
+    {
+      "name": "startPipeline",
+      "summary": "Start a pipeline run",
+      "params": [
+        {
+          "name": "pipeline",
+          "required": true,
+          "schema": { "$ref": "#/components/schemas/PipelineSpec" }
+        }
+      ],
+      "result": {
+        "name": "run",
+        "schema": { "$ref": "#/components/schemas/PipelineRun" }
+      }
+    },
+    {
+      "name": "getPipelineRun",
+      "summary": "Get pipeline run status",
+      "params": [
+        {
+          "name": "run_id",
+          "required": true,
+          "schema": { "type": "string" }
+        }
+      ],
+      "result": {
+        "name": "run",
+        "schema": { "$ref": "#/components/schemas/PipelineRun" }
+      }
+    },
+    {
+      "name": "watchPipeline",
+      "summary": "Watch pipeline events",
+      "params": [
+        {
+          "name": "run_id",
+          "required": true,
+          "schema": { "type": "string" }
+        }
+      ],
+      "result": {
+        "name": "event",
+        "schema": { "$ref": "#/components/schemas/PipelineEvent" }
+      }
+    }
+  ],
+  "components": {
+    "schemas": {
+      "FeatureFlag": {
+        "type": "object",
+        "properties": {
+          "key": { "type": "string" },
+          "enabled": { "type": "boolean" }
+        }
+      },
+      "FlagOverride": {
+        "type": "object",
+        "properties": {
+          "key": { "type": "string" },
+          "value": { "type": "boolean" },
+          "subject_id": { "type": "string" }
+        }
+      },
+      "ExperimentAssignment": {
+        "type": "object",
+        "properties": {
+          "experiment_id": { "type": "string" },
+          "cohort": { "type": "string" },
+          "subject_id": { "type": "string" }
+        }
+      },
+      "PipelineSpec": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "steps": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "PipelineRun": {
+        "type": "object",
+        "properties": {
+          "run_id": { "type": "string" },
+          "status": { "type": "string" }
+        }
+      },
+      "PipelineEvent": {
+        "type": "object",
+        "properties": {
+          "run_id": { "type": "string" },
+          "step": { "type": "string" },
+          "state": { "type": "string" }
+        }
+      },
+      "Problem": {
+        "$ref": "../shared/schemas.json#/Problem"
+      }
+    }
+  }
+}

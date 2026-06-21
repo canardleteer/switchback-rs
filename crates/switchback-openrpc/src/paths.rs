@@ -1,0 +1,33 @@
+//! OpenRPC-specific path and slug helpers.
+
+use std::path::Path;
+
+/// Slug for a tag group name or group id (lowercase, spaces → hyphens).
+pub fn slugify(name: &str) -> String {
+    name.trim()
+        .to_lowercase()
+        .chars()
+        .map(|c| if c.is_ascii_alphanumeric() { c } else { '-' })
+        .collect::<String>()
+        .split('-')
+        .filter(|s| !s.is_empty())
+        .collect::<Vec<_>>()
+        .join("-")
+}
+
+/// Module id from info title or file stem.
+pub fn module_id_from_title_or_stem(title: Option<&str>, entry_uri: &str) -> String {
+    title
+        .filter(|s| !s.is_empty())
+        .map(slugify)
+        .unwrap_or_else(|| {
+            Path::new(entry_uri)
+                .file_stem()
+                .and_then(|s| s.to_str())
+                .unwrap_or("openrpc")
+                .to_string()
+        })
+}
+
+pub const COMPONENTS_GROUP: &str = "components";
+pub const DEFAULT_GROUP: &str = "default";

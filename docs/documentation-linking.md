@@ -251,46 +251,53 @@ components:
 
 ---
 
-## openrpc *(synthetic — parser not implemented)*
+## openrpc
 
-**Planned default extractor:** `OpenRpcLinkExtractor` (stub today, name
-`"openrpc-stub"`).
+**Default extractor:** `OpenRpcLinkExtractor` (name `"openrpc"`). Intra-link
+extraction is deferred; populate still records structural `refs`.
 
 ### Structural reference (`refs`)
 
-From method `params` / `result` JSON Schema refs.
+From method `params` / `result` JSON Schema refs and component schemas.
 
 ```json
 {
   "methods": [
     {
-      "name": "getDocument",
+      "name": "echoUnary",
       "params": [
         {
-          "name": "id",
-          "schema": { "$ref": "#/components/schemas/DocumentId" }
+          "name": "request",
+          "schema": { "$ref": "#/components/schemas/EchoUnaryRequest" }
         }
       ],
-      "result": { "$ref": "#/components/schemas/Document" }
+      "result": { "$ref": "#/components/schemas/EchoUnaryResponse" }
     }
   ]
 }
 ```
 
-- Populate: method entity `refs` → `DocumentId`, `Document` schema entities.
+- Populate: method entity `refs` → `EchoUnaryRequest`, `EchoUnaryResponse`
+  schema entities in the same group (or resolved cross-file target group).
 
 ### Intra-link (`intra_links`)
 
-From method-level `description` / `summary`.
+Deferred in the first behavior parser. Method `summary` / `description` prose
+does not yet populate `intra_links`.
 
-```json
-{
-  "name": "getDocument",
-  "description": "Fetches a Document by id. See #/components/schemas/Document."
-}
-```
+### Entity naming
 
-- Extractor (planned): JSON Pointer and component-name patterns in prose.
+| OpenRPC source | Entity category | `StoredEntity.name` |
+| --- | --- | --- |
+| `methods[].name` | `operation` | method name (e.g. `echoUnary`) |
+| `components.schemas.*` | `schema` | schema key |
+| `components.contentDescriptors.*` | `parameter` | descriptor key |
+
+### Grouping
+
+- **Single-entry:** `x-tagGroup` sections plus `default` and `components` groups.
+- **Multi-entry Acme:** one group per entry via `info.x-switchback-group` or
+  `vN/openrpc.json` path convention → `acme.example.vN`.
 
 ---
 

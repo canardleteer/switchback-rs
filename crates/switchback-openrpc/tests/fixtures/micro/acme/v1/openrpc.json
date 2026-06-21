@@ -1,0 +1,222 @@
+{
+  "openrpc": "1.4.0",
+  "info": {
+    "title": "Acme APIs",
+    "version": "1.0.0",
+    "description": "Echo, streaming, and gateway entry for the Acme documentation fixture."
+  },
+  "servers": [
+    {
+      "url": "https://api.acme.example/v1",
+      "description": "Live v1 base URL (concurrent with v2 and v3alpha1)"
+    }
+  ],
+  "methods": [
+    {
+      "name": "echoUnary",
+      "summary": "Echo a message (unary)",
+      "description": "Round-trips a JSON payload for latency and auth testing.",
+      "params": [
+        {
+          "name": "request",
+          "required": true,
+          "schema": { "$ref": "#/components/schemas/EchoUnaryRequest" }
+        },
+        {
+          "$ref": "#/components/contentDescriptors/XRequestId"
+        },
+        {
+          "$ref": "#/components/contentDescriptors/Authorization"
+        }
+      ],
+      "result": {
+        "name": "response",
+        "schema": { "$ref": "#/components/schemas/EchoUnaryResponse" }
+      }
+    },
+    {
+      "name": "echoServerStream",
+      "summary": "Stream echo chunks (SSE)",
+      "params": [
+        { "$ref": "#/components/contentDescriptors/XRequestId" },
+        {
+          "name": "message",
+          "required": true,
+          "schema": { "type": "string" }
+        },
+        {
+          "name": "chunk_count",
+          "schema": { "type": "integer", "minimum": 1, "default": 3 }
+        }
+      ],
+      "result": {
+        "name": "chunk",
+        "schema": { "$ref": "#/components/schemas/EchoStreamChunk" }
+      }
+    },
+    {
+      "name": "echoClientStream",
+      "summary": "Upload echo parts (octet-stream)",
+      "params": [
+        { "$ref": "#/components/contentDescriptors/XRequestId" },
+        {
+          "name": "parts",
+          "required": true,
+          "schema": { "type": "string", "contentMediaType": "application/octet-stream" }
+        }
+      ],
+      "result": {
+        "name": "response",
+        "schema": { "$ref": "#/components/schemas/EchoUploadResponse" }
+      }
+    },
+    {
+      "name": "watchEcho",
+      "summary": "Watch echo events (NDJSON)",
+      "params": [
+        { "$ref": "#/components/contentDescriptors/XRequestId" },
+        {
+          "name": "topic",
+          "required": true,
+          "schema": { "type": "string" }
+        }
+      ],
+      "result": {
+        "name": "event",
+        "schema": { "$ref": "#/components/schemas/WatchEchoEvent" }
+      }
+    },
+    {
+      "name": "relayConnect",
+      "summary": "Open relay session (server SSE + client POST frames)",
+      "params": [
+        { "$ref": "#/components/contentDescriptors/XRequestId" },
+        {
+          "name": "session_token",
+          "required": true,
+          "schema": { "type": "string" }
+        },
+        {
+          "name": "open",
+          "required": true,
+          "schema": { "$ref": "#/components/schemas/RelayOpen" }
+        }
+      ],
+      "result": {
+        "name": "frame",
+        "schema": { "$ref": "#/components/schemas/RelayFrame" }
+      }
+    },
+    {
+      "name": "relaySendFrame",
+      "summary": "Send one inbound relay frame",
+      "params": [
+        { "$ref": "#/components/contentDescriptors/XRequestId" },
+        {
+          "name": "session_token",
+          "required": true,
+          "schema": { "type": "string" }
+        },
+        {
+          "name": "frame",
+          "required": true,
+          "schema": { "$ref": "#/components/schemas/RelayFrame" }
+        }
+      ],
+      "result": {
+        "name": "accepted",
+        "schema": { "type": "boolean" }
+      }
+    },
+    {
+      "name": "listCatalogProducts",
+      "summary": "Proxy list products (v2 catalog types)",
+      "description": "Gateway proxy to the v2 catalog list operation.",
+      "params": [
+        { "$ref": "#/components/contentDescriptors/XRequestId" },
+        { "$ref": "#/components/contentDescriptors/Authorization" },
+        {
+          "name": "page_size",
+          "schema": { "type": "integer", "minimum": 1, "maximum": 100, "default": 20 }
+        }
+      ],
+      "result": {
+        "name": "page",
+        "schema": { "$ref": "../v2/openrpc.json#/components/schemas/ListProductsResponse" }
+      }
+    }
+  ],
+  "components": {
+    "contentDescriptors": {
+      "XRequestId": {
+        "name": "x_request_id",
+        "required": true,
+        "description": "Caller correlation id echoed in logs and problem details.",
+        "schema": { "type": "string", "minLength": 1 }
+      },
+      "Authorization": {
+        "name": "authorization",
+        "schema": { "type": "string" }
+      }
+    },
+    "schemas": {
+      "EchoUnaryRequest": {
+        "type": "object",
+        "required": ["message"],
+        "properties": {
+          "message": { "type": "string" },
+          "locale": { "type": "string" },
+          "tags": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "EchoUnaryResponse": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string" },
+          "echoed_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "EchoStreamChunk": {
+        "type": "object",
+        "properties": {
+          "sequence": { "type": "integer" },
+          "payload": { "type": "string" }
+        }
+      },
+      "EchoUploadResponse": {
+        "type": "object",
+        "properties": {
+          "joined_message": { "type": "string" },
+          "parts_received": { "type": "integer" },
+          "completed_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "WatchEchoEvent": {
+        "type": "object",
+        "properties": {
+          "event_id": { "type": "string" },
+          "payload": { "$ref": "#/components/schemas/EchoUnaryResponse" },
+          "observed_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "RelayOpen": {
+        "type": "object",
+        "required": ["session_name"],
+        "properties": {
+          "session_name": { "type": "string" }
+        }
+      },
+      "RelayFrame": {
+        "type": "object",
+        "properties": {
+          "sequence": { "type": "integer", "format": "int64" },
+          "payload": { "type": "string", "contentEncoding": "base64" },
+          "fin": { "type": "boolean" }
+        }
+      },
+      "Problem": {
+        "$ref": "../shared/schemas.json#/Problem"
+      }
+    }
+  }
+}

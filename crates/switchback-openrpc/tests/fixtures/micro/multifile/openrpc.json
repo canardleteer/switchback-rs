@@ -1,0 +1,26 @@
+{
+  "openrpc": "1.4.0",
+  "info": {
+    "title": "Multifile Example",
+    "version": "1.0.0"
+  },
+  "methods": [
+    {
+      "name": "list_pets",
+      "summary": "List pets",
+      "params": [],
+      "result": {
+        "name": "pets",
+        "schema": {
+          "type": "array",
+          "items": { "$ref": "shared/schemas.json#/Pet" }
+        }
+      }
+    }
+  ],
+  "components": {
+    "schemas": {
+      "Pet": { "$ref": "shared/schemas.json#/Pet" }
+    }
+  }
+}

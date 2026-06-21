@@ -72,6 +72,10 @@ pub fn load_asyncapi_acme() -> ReferenceManual {
     switchback_asyncapi::load_acme_example().expect("load acme events")
 }
 
+pub fn load_openrpc_acme() -> ReferenceManual {
+    switchback_openrpc::load_acme_example().expect("load acme json-rpc")
+}
+
 pub fn load_asyncapi_streetlights() -> ReferenceManual {
     use switchback_asyncapi::examples::{example_fixture, load_example};
 
@@ -98,6 +102,17 @@ pub fn render_asyncapi(layout: Layout, extra: &str) -> tempfile::TempDir {
 
 pub fn render_asyncapi_acme(layout: Layout, extra: &str) -> tempfile::TempDir {
     let manual = load_asyncapi_acme();
+    let mut param = format!("layout={}", layout_name(layout));
+    if !extra.is_empty() {
+        param.push(',');
+        param.push_str(extra);
+    }
+    let opts = parse_parameter(&Some(param)).expect("parse options");
+    render_to_tempdir(&manual, &opts)
+}
+
+pub fn render_openrpc_acme(layout: Layout, extra: &str) -> tempfile::TempDir {
+    let manual = load_openrpc_acme();
     let mut param = format!("layout={}", layout_name(layout));
     if !extra.is_empty() {
         param.push(',');
@@ -147,6 +162,7 @@ pub fn load_reference_manual_acme_v1() -> ReferenceManual {
             title: None,
         }),
         asyncapi: None,
+        openrpc: None,
     })
     .expect("assemble acme reference manual")
 }

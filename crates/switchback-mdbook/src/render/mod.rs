@@ -5,6 +5,7 @@ pub mod entity;
 pub mod fence;
 pub mod markdown_doc;
 pub mod openapi;
+pub mod openrpc;
 pub mod operation_fence;
 pub mod package;
 

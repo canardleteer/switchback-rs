@@ -20,5 +20,6 @@ switchback-asyncapi.workspace = true
 switchback-codec-pb.workspace = true
 switchback-mdbook.workspace = true
 switchback-openapi.workspace = true
+switchback-openrpc.workspace = true
 switchback-protobuf = { workspace = true, features = ["buf", "protoc"] }
 switchback-traits.workspace = true

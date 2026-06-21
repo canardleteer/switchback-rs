@@ -11,7 +11,7 @@ impl LinkExtractor for OpenRpcLinkExtractor {
     type Family = OpenRpcFamily;
 
     fn name(&self) -> &'static str {
-        "openrpc-stub"
+        "openrpc"
     }
 
     fn extract<C: EntityCategory>(

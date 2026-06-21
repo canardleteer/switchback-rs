@@ -6,3 +6,30 @@ sha256 = "71eff9ffa9b2fb0550fbd90544f669818281546606a6528d92866aba645f2a99"
 license = "Apache-2.0"
 upstream_repo = "https://github.com/asyncapi/spec"
 upstream_commit = "v2.6.0"
+
+[[asset]]
+id = "streetlights-mqtt"
+path = "tests/fixtures/upstream/streetlights-mqtt/asyncapi.yaml"
+url = "https://raw.githubusercontent.com/asyncapi/spec/v2.6.0/examples/streetlights-mqtt.yml"
+sha256 = "7e17c9b465437a5a12decd93be49e37ca7ecfc48ff6f10e830d8290e9865d3af"
+license = "Apache-2.0"
+upstream_repo = "https://github.com/asyncapi/spec"
+upstream_commit = "v2.6.0"
+
+[[asset]]
+id = "simple-3.1"
+path = "tests/fixtures/upstream/simple-3.1/asyncapi.yaml"
+url = "https://raw.githubusercontent.com/asyncapi/spec/v3.1.0/examples/simple-asyncapi.yml"
+sha256 = "8fcbe903a4630d4c8ed7a73726dd603d56c2a98d109498bea1574f0d819d5a92"
+license = "Apache-2.0"
+upstream_repo = "https://github.com/asyncapi/spec"
+upstream_commit = "v3.1.0"
+
+[[asset]]
+id = "streetlights-kafka-3.1"
+path = "tests/fixtures/upstream/streetlights-kafka-3.1/asyncapi.yaml"
+url = "https://raw.githubusercontent.com/asyncapi/spec/v3.1.0/examples/streetlights-kafka-asyncapi.yml"
+sha256 = "916c6d5a3c16ce9d2837f24ffc27509044de4fe8c2685de50917438b0d5b2076"
+license = "Apache-2.0"
+upstream_repo = "https://github.com/asyncapi/spec"
+upstream_commit = "v3.1.0"
