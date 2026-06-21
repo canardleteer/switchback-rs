@@ -2,7 +2,7 @@
 
 //! Workspace task runner for `switchback-rs`.
 //!
-//! Commands: `ci`, `fmt`, `fmt-check`, `clippy`, `test`, `align-workspace-versions`,
+//! Commands: `ci`, `ci-post`, `fmt`, `fmt-check`, `clippy`, `test`, `align-workspace-versions`,
 //! `spec-vendor`, `parse` (`--parser <family>`), `render` (`--renderer <target>`), `link-check`,
 //! `check-highlight-rust`, `update-highlight-golden`, `update-golden`, and `check-toolchain`.
 
@@ -32,6 +32,9 @@ enum Cmd {
     /// Rust/parser gate: toolchain, fmt-check, check, clippy, test, render,
     /// link-check, check-highlight-rust, spec-vendor, example-fixtures.
     Ci,
+    /// CI matrix integration: test, render, link-check, check-highlight-rust,
+    /// spec-vendor, example-fixtures (no check/clippy).
+    CiPost,
     /// `cargo fmt --all` plus `rumdl fmt` and `ryl --fix`.
     Fmt,
     /// `cargo fmt --all --check` plus wire-schema `buf lint` / `buf format --diff`.
@@ -103,6 +106,15 @@ enum SpecVendorCmd {
     },
 }
 
+fn run_ci_post() -> Result<()> {
+    run("test", ci::test)?;
+    run("render mdbook", render::render_mdbook)?;
+    run("link-check", link_check::link_check)?;
+    run("check-highlight-rust", highlight::check_highlight_rust)?;
+    run("spec-vendor validate", || spec_vendor::validate(spec_vendor::Family::All))?;
+    run("example-fixtures validate", example_fixtures::validate_openapi)
+}
+
 fn main() -> Result<()> {
     let cli = Cli::parse();
     match cli.cmd {
@@ -111,18 +123,9 @@ fn main() -> Result<()> {
             run("fmt-check", ci::fmt_check)?;
             run("check", ci::check)?;
             run("clippy", ci::clippy)?;
-            run("test", ci::test)?;
-            run("render mdbook", render::render_mdbook)?;
-            run("link-check", link_check::link_check)?;
-            run("check-highlight-rust", highlight::check_highlight_rust)?;
-            run("spec-vendor validate", || {
-                spec_vendor::validate(spec_vendor::Family::All)
-            })?;
-            run("example-fixtures validate", || {
-                example_fixtures::validate_openapi()
-            })?;
-            Ok(())
+            run_ci_post()
         }
+        Cmd::CiPost => run_ci_post(),
         Cmd::Fmt => {
             ci::fmt()?;
             ci::ryl_fix()
