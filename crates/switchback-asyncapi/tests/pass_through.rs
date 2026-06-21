@@ -66,8 +66,7 @@ fn micro_acme_v3alpha1_avro_schema_outbreak() {
         "message should reference nested PipelineStatus schema"
     );
     assert!(
-        !v3
-            .entities
+        !v3.entities
             .iter()
             .any(|e| e.name == "PipelineStepCompleted" && e.category.as_str() == "schema"),
         "root Avro record should not duplicate as a schema entity when it matches the message name"
@@ -84,7 +83,9 @@ fn micro_acme_v2_inline_payload_outbreak() {
         .find(|g| g.id.as_str() == "acme.example.v2")
         .expect("v2 group");
     assert!(
-        v2.entities.iter().any(|e| e.name == "ProductDeletedPayload"),
+        v2.entities
+            .iter()
+            .any(|e| e.name == "ProductDeletedPayload"),
         "inline JSON payload should outbreak to a schema entity"
     );
 }

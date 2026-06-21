@@ -293,9 +293,7 @@ fn render_asyncapi_message_fence(
     let payload_refs: Vec<&Reference> = entity
         .refs
         .iter()
-        .filter(|r| {
-            r.target.category == "schema" && r.target.name != entity.name
-        })
+        .filter(|r| r.target.category == "schema" && r.target.name != entity.name)
         .collect();
     out.push_str(&render_ref_list_section("Payload", &payload_refs, ctx));
     out.push_str(&render_message_payload_properties(entity, body, ctx));
@@ -317,12 +315,8 @@ fn render_message_payload_properties(
         if module.is_empty() || group.is_empty() {
             return String::new();
         }
-        let schema_body = switchback_avro::populate_avro_schema_body(
-            schema_val,
-            module,
-            group,
-            Some(format),
-        );
+        let schema_body =
+            switchback_avro::populate_avro_schema_body(schema_val, module, group, Some(format));
         return render_schema_properties_table(&schema_body.properties, ctx);
     }
     String::new()
@@ -384,10 +378,7 @@ fn render_ref_list_section(title: &str, refs: &[&Reference], ctx: &LinkContext) 
     out
 }
 
-fn render_schema_properties_table(
-    properties: &[Property],
-    ctx: &LinkContext,
-) -> String {
+fn render_schema_properties_table(properties: &[Property], ctx: &LinkContext) -> String {
     if properties.is_empty() {
         return String::new();
     }
