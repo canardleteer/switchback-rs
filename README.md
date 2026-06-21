@@ -16,6 +16,8 @@ manuals: a versioned, parsed snapshot of a service contract that parsers emit
 and renderers read. Renderers decide output format and presentation separately
 from parsing — mdBook today, other targets later.
 
+- The [Glossary](./docs/GLOSSARY.md) is a good place to start.
+
 A three-layer toolchain for turning API **contracts** into rendered **reference
 manuals**. A contract is one family's description of a service: a set of
 `.proto` files, an `openapi.yaml` (and the files it `$ref`s), an
