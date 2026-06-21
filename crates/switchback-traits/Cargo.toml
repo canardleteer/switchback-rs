@@ -7,7 +7,7 @@ repository.workspace = true
 homepage.workspace = true
 description = "Core traits of the switchback framework."
 keywords = ["api", "documentation", "reference-manual", "traits", "ir"]
-categories = ["development-tools::documentation-tools"]
+categories = ["development-tools"]
 
 [lib]
 path = "src/lib.rs"

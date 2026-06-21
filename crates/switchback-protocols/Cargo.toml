@@ -7,7 +7,7 @@ repository.workspace = true
 homepage.workspace = true
 description = "HTTP and gRPC protocol attachments for the switchback framework."
 keywords = ["http", "grpc", "protocol", "rpc", "api"]
-categories = ["development-tools::documentation-tools"]
+categories = ["development-tools"]
 include = [
     "src/**/*",
     "Cargo.toml",
