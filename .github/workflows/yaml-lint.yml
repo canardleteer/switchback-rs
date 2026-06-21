@@ -15,6 +15,7 @@ on:
       - "**/*.yml"
       - ".yamllint"
       - ".github/workflows/yaml-lint.yml"
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
