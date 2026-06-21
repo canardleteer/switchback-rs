@@ -1,0 +1,113 @@
+name: release-plz
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  release-plz-pr:
+    name: Release-plz PR
+    if: github.repository_owner == 'canardleteer'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    concurrency:
+      group: release-plz-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: cargo
+          cache-bin: false
+
+      - name: Generate GitHub App token
+        uses: actions/create-github-app-token@v2
+        id: release-plz-token
+        with:
+          app-id: ${{ secrets.RELEASE_PLZ_APP_ID }}
+          private-key: ${{ secrets.RELEASE_PLZ_APP_PRIVATE_KEY }}
+
+      - name: Run release-plz release-pr
+        id: release-plz
+        uses: release-plz/action@1528104d2ca23787631a1c1f022abb64b34c1e11 # v0.5.128
+        with:
+          command: release-pr
+        env:
+          GITHUB_TOKEN: ${{ steps.release-plz-token.outputs.token }}
+
+      - name: Align workspace dependency versions on release PR
+        if: steps.release-plz.outputs.pr != ''
+        env:
+          GH_TOKEN: ${{ steps.release-plz-token.outputs.token }}
+          GITHUB_TOKEN: ${{ steps.release-plz-token.outputs.token }}
+          PR: ${{ steps.release-plz.outputs.pr }}
+        run: |
+          set -euo pipefail
+          pr_number="$(echo "$PR" | jq -r '.number')"
+          if [[ -z "$pr_number" || "$pr_number" == "null" ]]; then
+            echo "No release PR to update."
+            exit 0
+          fi
+          gh pr checkout "$pr_number"
+          git config user.name "switchback-rs-release-plz-app[bot]"
+          git config user.email "switchback-rs-release-plz-app[bot]@users.noreply.github.com"
+          cargo xtask align-workspace-versions
+          cargo generate-lockfile
+          git add Cargo.toml Cargo.lock
+          if git diff --cached --quiet; then
+            echo "Workspace versions already aligned."
+            exit 0
+          fi
+          git commit -m "chore: align workspace dependency versions"
+          git push
+
+  release-plz-release:
+    name: Release-plz release
+    if: github.repository_owner == 'canardleteer'
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: write
+      pull-requests: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: cargo
+          cache-bin: false
+
+      - name: Generate GitHub App token
+        uses: actions/create-github-app-token@v2
+        id: release-plz-token
+        with:
+          app-id: ${{ secrets.RELEASE_PLZ_APP_ID }}
+          private-key: ${{ secrets.RELEASE_PLZ_APP_PRIVATE_KEY }}
+
+      - name: Run release-plz release
+        uses: release-plz/action@1528104d2ca23787631a1c1f022abb64b34c1e11 # v0.5.128
+        with:
+          command: release
+        env:
+          GITHUB_TOKEN: ${{ steps.release-plz-token.outputs.token }}
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
