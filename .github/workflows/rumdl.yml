@@ -7,12 +7,10 @@ on:
       - "**/*.md"
       - ".rumdl.toml"
       - ".github/workflows/rumdl.yml"
+  # Required on every PR to main (ruleset); do not path-filter pull_request —
+  # path filters apply per push event, not the full MR diff vs base.
   pull_request:
     branches: [main]
-    paths:
-      - "**/*.md"
-      - ".rumdl.toml"
-      - ".github/workflows/rumdl.yml"
   workflow_dispatch:
 
 concurrency:
