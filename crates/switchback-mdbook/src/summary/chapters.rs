@@ -125,9 +125,7 @@ fn asyncapi_entity_summary_items(
     renderable.sort_by(|a, b| {
         asyncapi_category_rank(&a.category)
             .cmp(&asyncapi_category_rank(&b.category))
-            .then_with(|| {
-                asyncapi_summary_sort_key(a).cmp(&asyncapi_summary_sort_key(b))
-            })
+            .then_with(|| asyncapi_summary_sort_key(a).cmp(&asyncapi_summary_sort_key(b)))
     });
 
     let mut out = Vec::new();
@@ -307,46 +305,52 @@ pub fn build_mixed_family_summary(
         }
 
         let nested = match family {
-            "openapi" => build_openapi_summary(
-                "",
-                &family_packages,
-                layout,
-                package_only,
-                links,
-                summary_from,
-                openapi_summary_label,
-            )
-            .numbered_chapters,
-            "asyncapi" => build_asyncapi_summary(
-                "",
-                &family_packages,
-                layout,
-                package_only,
-                links,
-                summary_from,
-            )
-            .numbered_chapters,
-            _ => {
-            let family_companions: Vec<CompanionNav> = manual
-                .modules
-                .iter()
-                .flat_map(|module| &module.contracts)
-                .filter(|contract| contract.family == family)
-                .flat_map(|contract| contract.companions.iter().map(CompanionNav::from_companion))
-                .collect();
-            build_summary(
-                "",
-                NavInput {
-                    companions: &family_companions,
-                    packages: family_packages,
-                    summary_from,
+            "openapi" => {
+                build_openapi_summary(
+                    "",
+                    &family_packages,
+                    layout,
+                    package_only,
                     links,
+                    summary_from,
                     openapi_summary_label,
-                },
-                layout,
-                package_only,
-            )
-            .numbered_chapters
+                )
+                .numbered_chapters
+            }
+            "asyncapi" => {
+                build_asyncapi_summary(
+                    "",
+                    &family_packages,
+                    layout,
+                    package_only,
+                    links,
+                    summary_from,
+                )
+                .numbered_chapters
+            }
+            _ => {
+                let family_companions: Vec<CompanionNav> = manual
+                    .modules
+                    .iter()
+                    .flat_map(|module| &module.contracts)
+                    .filter(|contract| contract.family == family)
+                    .flat_map(|contract| {
+                        contract.companions.iter().map(CompanionNav::from_companion)
+                    })
+                    .collect();
+                build_summary(
+                    "",
+                    NavInput {
+                        companions: &family_companions,
+                        packages: family_packages,
+                        summary_from,
+                        links,
+                        openapi_summary_label,
+                    },
+                    layout,
+                    package_only,
+                )
+                .numbered_chapters
             }
         };
 

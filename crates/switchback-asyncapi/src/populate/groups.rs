@@ -141,11 +141,9 @@ pub fn collect_entity_tags(root: &Value, is_v3: bool) -> (BTreeSet<String>, bool
     let mut tags = BTreeSet::new();
     let mut has_untagged = false;
 
-    if is_v3 {
-        if let Some(ops) = root.get("operations").and_then(|v| v.as_object()) {
-            for op in ops.values() {
-                scan_tags(op, &mut tags, &mut has_untagged);
-            }
+    if is_v3 && let Some(ops) = root.get("operations").and_then(|v| v.as_object()) {
+        for op in ops.values() {
+            scan_tags(op, &mut tags, &mut has_untagged);
         }
     }
 

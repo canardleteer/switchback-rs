@@ -1,11 +1,7 @@
 //! Basic Mermaid sequence diagrams for AsyncAPI operations.
 
 /// Build a Mermaid sequence diagram block for one operation on a channel.
-pub fn operation_sequence_diagram(
-    channel: &str,
-    action: &str,
-    operation_id: &str,
-) -> String {
+pub fn operation_sequence_diagram(channel: &str, action: &str, operation_id: &str) -> String {
     format!(
         "```mermaid\nsequenceDiagram\n  participant Client\n  participant Broker as {channel}\n  Client->>Broker: {action} ({operation_id})\n```"
     )

@@ -31,7 +31,9 @@ pub mod populate;
 pub use category::AsyncApiCategory;
 pub use contract::AsyncApiContract;
 pub use examples::{
-    EXAMPLE_ACME_INPUTS, MICRO_ACME_ROOT, fixtures_dir, load_acme_example, load_fixture_relative,
+    EXAMPLE_ACME_INPUTS, EXAMPLE_FIXTURES, ExampleFixture, ExampleTier, MICRO_ACME_ROOT,
+    UPSTREAM_STREETLIGHTS, default_example_fixtures, example_fixture, fixtures_dir,
+    fixtures_for_tier, load_acme_example, load_example, load_fixture_relative,
 };
 pub use family::AsyncApiFamily;
 pub use link::AsyncApiLinkExtractor;

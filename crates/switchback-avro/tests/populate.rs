@@ -1,5 +1,5 @@
 use serde_json::json;
-use switchback_avro::{populate_avro_schema_body, AvroSchema};
+use switchback_avro::{AvroSchema, populate_avro_schema_body};
 
 #[test]
 fn avro_record_ir_and_populate() {
@@ -25,7 +25,10 @@ fn avro_record_ir_and_populate() {
     assert_eq!(body.fence_language, "json");
     assert_eq!(body.properties.len(), 1);
     assert_eq!(body.properties[0].name, "profile");
-    assert_eq!(body.properties[0].schema_ref.target.name, "acme.events.Profile");
+    assert_eq!(
+        body.properties[0].schema_ref.target.name,
+        "acme.events.Profile"
+    );
 }
 
 #[test]

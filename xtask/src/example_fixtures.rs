@@ -1,4 +1,4 @@
-//! Vendored OpenAPI example API descriptions for integration tests.
+//! Vendored example API descriptions for integration tests.
 
 use anyhow::{Context, Result, bail};
 use sha2::{Digest, Sha256};
@@ -18,6 +18,10 @@ const LEARN_REPO: &str = "https://github.com/OAI/learn.openapis.org";
 const LEARN_COMMIT: &str = "43756549c27cbf84107b190b82c65e0336f2f09f";
 const LEARN_RAW: &str = "https://raw.githubusercontent.com/OAI/learn.openapis.org/43756549c27cbf84107b190b82c65e0336f2f09f/examples/v3.1";
 
+const ASYNCAPI_SPEC_REPO: &str = "https://github.com/asyncapi/spec";
+const ASYNCAPI_SPEC_COMMIT: &str = "v2.6.0";
+const ASYNCAPI_SPEC_RAW: &str = "https://raw.githubusercontent.com/asyncapi/spec/v2.6.0/examples";
+
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
 struct LockFile {
     asset: Vec<LockAsset>,
@@ -35,7 +39,22 @@ struct LockAsset {
 }
 
 pub fn validate_openapi() -> Result<()> {
-    let root = openapi_crate_root();
+    validate_family(openapi_crate_root())
+}
+
+pub fn validate_asyncapi() -> Result<()> {
+    validate_family(asyncapi_crate_root())
+}
+
+pub fn fetch_openapi(write_lock: bool) -> Result<()> {
+    fetch_family(openapi_crate_root(), bootstrap_openapi_lock, write_lock)
+}
+
+pub fn fetch_asyncapi(write_lock: bool) -> Result<()> {
+    fetch_family(asyncapi_crate_root(), bootstrap_asyncapi_lock, write_lock)
+}
+
+fn validate_family(root: PathBuf) -> Result<()> {
     let lock = read_lock(&root)?;
     let mut errors = Vec::new();
     for asset in &lock.asset {
@@ -50,10 +69,13 @@ pub fn validate_openapi() -> Result<()> {
     }
 }
 
-pub fn fetch_openapi(write_lock: bool) -> Result<()> {
-    let root = openapi_crate_root();
+fn fetch_family(
+    root: PathBuf,
+    bootstrap: fn() -> Result<LockFile>,
+    write_lock: bool,
+) -> Result<()> {
     let lock = if write_lock || !root.join(LOCK_FILE).exists() {
-        let lock = bootstrap_lock()?;
+        let lock = bootstrap()?;
         write_lock_file(&root, &lock)?;
         lock
     } else {
@@ -79,7 +101,11 @@ fn openapi_crate_root() -> PathBuf {
     PathBuf::from(WORKSPACE_ROOT).join("crates/switchback-openapi")
 }
 
-fn bootstrap_lock() -> Result<LockFile> {
+fn asyncapi_crate_root() -> PathBuf {
+    PathBuf::from(WORKSPACE_ROOT).join("crates/switchback-asyncapi")
+}
+
+fn bootstrap_openapi_lock() -> Result<LockFile> {
     Ok(LockFile {
         asset: vec![
             asset_entry(
@@ -111,6 +137,18 @@ fn bootstrap_lock() -> Result<LockFile> {
                 LEARN_COMMIT,
             ),
         ],
+    })
+}
+
+fn bootstrap_asyncapi_lock() -> Result<LockFile> {
+    Ok(LockFile {
+        asset: vec![asset_entry(
+            "streetlights-kafka",
+            "streetlights-kafka/asyncapi.yaml",
+            &format!("{ASYNCAPI_SPEC_RAW}/streetlights-kafka.yml"),
+            ASYNCAPI_SPEC_REPO,
+            ASYNCAPI_SPEC_COMMIT,
+        )],
     })
 }
 

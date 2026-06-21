@@ -70,7 +70,11 @@ fn micro_acme_v2_tagged_catalog_entities() {
         .iter()
         .find(|g| g.id.as_str() == "acme.example.v2")
         .expect("v2 group");
-    assert!(v2.entities.iter().any(|e| e.name == "publishProductCreated"));
+    assert!(
+        v2.entities
+            .iter()
+            .any(|e| e.name == "publishProductCreated")
+    );
     assert!(count_refs(&manual) > 0);
 }
 

@@ -1158,6 +1158,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "mdbook-asyncapi-example"
+version = "0.0.1-0.dev.1"
+dependencies = [
+ "anyhow",
+ "clap",
+ "switchback-asyncapi",
+ "switchback-codec-pb",
+ "switchback-mdbook",
+ "switchback-traits",
+]
+
+[[package]]
 name = "mdbook-core"
 version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1852,6 +1864,7 @@ dependencies = [
  "serde",
  "serde_yaml",
  "switchback-assemble",
+ "switchback-asyncapi",
  "switchback-codec-pb",
  "switchback-mdbook",
  "switchback-openapi",
@@ -2269,6 +2282,7 @@ checksum = "13c2bddecc57b384dee18652358fb23172facb8a2c51ccc10d74c157bdea3292"
 name = "switchback-assemble"
 version = "0.0.1-0.dev.1"
 dependencies = [
+ "switchback-asyncapi",
  "switchback-openapi",
  "switchback-protobuf",
  "switchback-traits",
@@ -2349,6 +2363,7 @@ dependencies = [
  "serde-saphyr",
  "serde_json",
  "switchback-assemble",
+ "switchback-asyncapi",
  "switchback-codec-pb",
  "switchback-openapi",
  "switchback-protobuf",

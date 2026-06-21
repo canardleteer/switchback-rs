@@ -26,7 +26,11 @@ pub fn generic_binding_fence(bindings: &Value, fence_language: &str) -> Option<S
 }
 
 /// Append binding YAML to a fence body when generic bindings exist.
-pub fn append_generic_bindings(existing: &str, bindings: Option<&Value>, fence_language: &str) -> String {
+pub fn append_generic_bindings(
+    existing: &str,
+    bindings: Option<&Value>,
+    fence_language: &str,
+) -> String {
     let Some(bindings) = bindings else {
         return existing.to_string();
     };

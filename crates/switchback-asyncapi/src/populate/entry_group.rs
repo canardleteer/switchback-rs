@@ -22,7 +22,10 @@ pub fn entry_group_scope(entry_uri: &str, root: &Value) -> Option<String> {
 
     let path = Path::new(entry_uri);
     let file_name = path.file_name().and_then(|s| s.to_str()).unwrap_or("");
-    if !matches!(file_name, "asyncapi.yaml" | "asyncapi.yml" | "asyncapi.json") {
+    if !matches!(
+        file_name,
+        "asyncapi.yaml" | "asyncapi.yml" | "asyncapi.json"
+    ) {
         return None;
     }
     let segment = path
@@ -65,9 +68,6 @@ mod tests {
     #[test]
     fn path_convention_maps_version_segment() {
         let root = json!({ "info": { "title": "Acme v1" } });
-        assert_eq!(
-            entry_group_id("v1/asyncapi.yaml", &root),
-            "acme.example.v1"
-        );
+        assert_eq!(entry_group_id("v1/asyncapi.yaml", &root), "acme.example.v1");
     }
 }

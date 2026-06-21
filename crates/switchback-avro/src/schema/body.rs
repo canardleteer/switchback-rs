@@ -28,11 +28,7 @@ pub fn populate_avro_schema_body(
     }
 }
 
-fn avro_properties(
-    schema: &AvroSchema,
-    module_id: &str,
-    group_id: &str,
-) -> Vec<Property> {
+fn avro_properties(schema: &AvroSchema, module_id: &str, group_id: &str) -> Vec<Property> {
     match schema {
         AvroSchema::Record(record) => record
             .fields

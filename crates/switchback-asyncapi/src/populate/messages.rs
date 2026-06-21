@@ -40,11 +40,8 @@ pub fn push_message_entity(
 ) {
     let group = entity_group(ctx);
     let mut fence_body = serialize_fence(value, ctx.doc.fence_language());
-    fence_body = append_generic_bindings(
-        &fence_body,
-        value.get("bindings"),
-        ctx.doc.fence_language(),
-    );
+    fence_body =
+        append_generic_bindings(&fence_body, value.get("bindings"), ctx.doc.fence_language());
     let doc_text = value
         .get("description")
         .or_else(|| value.get("summary"))
@@ -86,6 +83,7 @@ fn serialize_fence(value: &Value, fence_language: &str) -> String {
     }
 }
 
+#[allow(dead_code)]
 fn description(value: &Value) -> Option<String> {
     value
         .get("description")

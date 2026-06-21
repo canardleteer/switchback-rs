@@ -5,3 +5,4 @@ ignore: |
   .github/**
   crates/switchback-protobuf/tests/fixtures/**
   crates/switchback-openapi/tests/fixtures/upstream/**
+  crates/switchback-asyncapi/tests/fixtures/upstream/**

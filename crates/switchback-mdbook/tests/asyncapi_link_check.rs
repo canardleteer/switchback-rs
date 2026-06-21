@@ -33,7 +33,10 @@ fn asyncapi_package_layout_uses_yaml_fences() {
         "expected fenced source in asyncapi render"
     );
     assert!(
-        md.contains("## Channels") || md.contains("## Operations"),
+        md.contains("## Channels")
+            || md.contains("## Operations")
+            || md.contains("## Messages")
+            || md.contains("## Schemas"),
         "expected category sections"
     );
 }

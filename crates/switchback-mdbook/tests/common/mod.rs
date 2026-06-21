@@ -73,30 +73,14 @@ pub fn load_asyncapi_acme() -> ReferenceManual {
 }
 
 pub fn load_asyncapi_streetlights() -> ReferenceManual {
-    use switchback_asyncapi::{LoadArgs, fixtures_dir, load};
+    use switchback_asyncapi::examples::{example_fixture, load_example};
 
-    let upstream = fixtures_dir().join("upstream/streetlights-kafka/asyncapi.yaml");
-    if upstream.is_file() {
-        let module_root = upstream.parent().expect("parent").to_path_buf();
-        return load(&LoadArgs {
-            module_root: module_root.clone(),
-            inputs: vec![PathBuf::from("asyncapi.yaml")],
-            search_roots: vec![module_root],
-            title: None,
-        })
-        .expect("load streetlights upstream");
-    }
-
-    let module_root = fixtures_dir().join("micro/acme");
-    load(&LoadArgs {
-        module_root: module_root.clone(),
-        inputs: vec![PathBuf::from("v1/asyncapi.yaml")],
-        search_roots: vec![module_root],
-        title: None,
-    })
-    .unwrap_or_else(|e| {
+    let fixture = example_fixture("streetlights-kafka").unwrap_or_else(|| {
+        panic!("streetlights-kafka fixture not registered in switchback-asyncapi")
+    });
+    load_example(fixture).unwrap_or_else(|e| {
         panic!(
-            "load streetlights fallback: {e} (run cargo xtask spec-vendor fetch-fixtures --family asyncapi)"
+            "load streetlights-kafka: {e} (run cargo xtask spec-vendor fetch-fixtures --family asyncapi)"
         )
     })
 }

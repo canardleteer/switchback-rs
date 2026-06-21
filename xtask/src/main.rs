@@ -119,8 +119,12 @@ fn run_ci_post() -> Result<()> {
         spec_vendor::validate(spec_vendor::Family::All)
     })?;
     run(
-        "example-fixtures validate",
+        "example-fixtures validate (openapi)",
         example_fixtures::validate_openapi,
+    )?;
+    run(
+        "example-fixtures validate (asyncapi)",
+        example_fixtures::validate_asyncapi,
     )
 }
 
@@ -171,11 +175,13 @@ fn main() -> Result<()> {
             }
             SpecVendorCmd::ValidateFixtures { family } => match family.as_str() {
                 "openapi" => example_fixtures::validate_openapi(),
-                other => bail!("validate-fixtures --family {other}: only openapi supported"),
+                "asyncapi" => example_fixtures::validate_asyncapi(),
+                other => bail!("validate-fixtures --family {other}: use openapi or asyncapi"),
             },
             SpecVendorCmd::FetchFixtures { family, write_lock } => match family.as_str() {
                 "openapi" => example_fixtures::fetch_openapi(write_lock),
-                other => bail!("fetch-fixtures --family {other}: only openapi supported"),
+                "asyncapi" => example_fixtures::fetch_asyncapi(write_lock),
+                other => bail!("fetch-fixtures --family {other}: use openapi or asyncapi"),
             },
         },
     }

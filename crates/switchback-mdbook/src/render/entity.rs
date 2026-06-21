@@ -5,15 +5,15 @@ use switchback_traits::{
     apply_intra_links,
 };
 
+use crate::render::asyncapi::{
+    asyncapi_entity_rel_path, is_asyncapi_family, render_asyncapi_entity_page,
+    render_asyncapi_index_sections, renderable_asyncapi_entities,
+};
 use crate::render::fence::{
     entity_module_group, link_structural_refs_in_prose, operation_signature_markdown,
     proto_file_name, push_proto_fence_body, render_proto_fence,
 };
 use crate::render::markdown_doc::format_markdown_doc;
-use crate::render::asyncapi::{
-    asyncapi_entity_rel_path, is_asyncapi_family, render_asyncapi_entity_page,
-    render_asyncapi_index_sections, renderable_asyncapi_entities,
-};
 use crate::render::openapi::{
     is_openapi_family, openapi_entity_rel_path, render_openapi_entity_page,
     render_openapi_index_sections, renderable_openapi_entities,

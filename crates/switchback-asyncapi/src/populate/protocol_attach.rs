@@ -108,7 +108,11 @@ fn collect_server_urls(servers: &Value) -> Option<Vec<String>> {
 fn kafka_channel(binding: &Value) -> Vec<ProtocolAttachment> {
     let topic = binding
         .get("topic")
-        .or_else(|| binding.get("channels").and_then(|c| c.as_object()?.values().next()))
+        .or_else(|| {
+            binding
+                .get("channels")
+                .and_then(|c| c.as_object()?.values().next())
+        })
         .and_then(|v| v.as_str())
         .unwrap_or("")
         .to_string();
@@ -116,18 +120,20 @@ fn kafka_channel(binding: &Value) -> Vec<ProtocolAttachment> {
         return Vec::new();
     }
     let kafka = KafkaProtocol;
-    vec![kafka.attach_channel(&KafkaChannelMeta {
-        topic,
-        partitions: binding
-            .get("partitions")
-            .and_then(|v| v.as_u64())
-            .unwrap_or(0) as u32,
-        replicas: binding
-            .get("replicas")
-            .and_then(|v| v.as_u64())
-            .unwrap_or(0) as u32,
-        ..Default::default()
-    })]
+    vec![
+        kafka.attach_channel(&KafkaChannelMeta {
+            topic,
+            partitions: binding
+                .get("partitions")
+                .and_then(|v| v.as_u64())
+                .unwrap_or(0) as u32,
+            replicas: binding
+                .get("replicas")
+                .and_then(|v| v.as_u64())
+                .unwrap_or(0) as u32,
+            ..Default::default()
+        }),
+    ]
 }
 
 fn kafka_operation(binding: &Value) -> Vec<ProtocolAttachment> {
@@ -162,20 +168,22 @@ fn kafka_message(binding: &Value) -> Vec<ProtocolAttachment> {
         return Vec::new();
     }
     let kafka = KafkaProtocol;
-    vec![kafka.attach_message(&KafkaMessageMeta {
-        schema_id_location,
-        schema_id_payload_encoding: binding
-            .get("schemaIdPayloadEncoding")
-            .and_then(|v| v.as_str())
-            .unwrap_or("")
-            .to_string(),
-        schema_lookup_strategy: binding
-            .get("schemaLookupStrategy")
-            .and_then(|v| v.as_str())
-            .unwrap_or("")
-            .to_string(),
-        ..Default::default()
-    })]
+    vec![
+        kafka.attach_message(&KafkaMessageMeta {
+            schema_id_location,
+            schema_id_payload_encoding: binding
+                .get("schemaIdPayloadEncoding")
+                .and_then(|v| v.as_str())
+                .unwrap_or("")
+                .to_string(),
+            schema_lookup_strategy: binding
+                .get("schemaLookupStrategy")
+                .and_then(|v| v.as_str())
+                .unwrap_or("")
+                .to_string(),
+            ..Default::default()
+        }),
+    ]
 }
 
 fn amqp_channel(binding: &Value) -> Vec<ProtocolAttachment> {
@@ -184,38 +192,37 @@ fn amqp_channel(binding: &Value) -> Vec<ProtocolAttachment> {
         .and_then(|v| v.as_str())
         .unwrap_or("")
         .to_string();
-    if is.is_empty()
-        && binding.get("exchange").is_none()
-        && binding.get("queue").is_none()
-    {
+    if is.is_empty() && binding.get("exchange").is_none() && binding.get("queue").is_none() {
         return Vec::new();
     }
     let amqp = AmqpProtocol;
     let exchange = binding.get("exchange");
-    vec![amqp.attach_channel(&AmqpChannelMeta {
-        channel_kind: is,
-        exchange_name: exchange
-            .and_then(|e| e.get("name"))
-            .and_then(|v| v.as_str())
-            .unwrap_or("")
-            .to_string(),
-        exchange_type: exchange
-            .and_then(|e| e.get("type"))
-            .and_then(|v| v.as_str())
-            .unwrap_or("")
-            .to_string(),
-        exchange_durable: exchange
-            .and_then(|e| e.get("durable"))
-            .and_then(|v| v.as_bool())
-            .unwrap_or(false),
-        queue_name: binding
-            .get("queue")
-            .and_then(|q| q.get("name"))
-            .and_then(|v| v.as_str())
-            .unwrap_or("")
-            .to_string(),
-        ..Default::default()
-    })]
+    vec![
+        amqp.attach_channel(&AmqpChannelMeta {
+            channel_kind: is,
+            exchange_name: exchange
+                .and_then(|e| e.get("name"))
+                .and_then(|v| v.as_str())
+                .unwrap_or("")
+                .to_string(),
+            exchange_type: exchange
+                .and_then(|e| e.get("type"))
+                .and_then(|v| v.as_str())
+                .unwrap_or("")
+                .to_string(),
+            exchange_durable: exchange
+                .and_then(|e| e.get("durable"))
+                .and_then(|v| v.as_bool())
+                .unwrap_or(false),
+            queue_name: binding
+                .get("queue")
+                .and_then(|q| q.get("name"))
+                .and_then(|v| v.as_str())
+                .unwrap_or("")
+                .to_string(),
+            ..Default::default()
+        }),
+    ]
 }
 
 fn amqp_operation(binding: &Value) -> Vec<ProtocolAttachment> {
@@ -281,15 +288,17 @@ fn mqtt_operation(binding: &Value) -> Vec<ProtocolAttachment> {
         return Vec::new();
     }
     let mqtt = MqttProtocol;
-    vec![mqtt.attach_operation(&MqttOperationMeta {
-        qos,
-        retain,
-        message_expiry_interval: binding
-            .get("messageExpiryInterval")
-            .and_then(|v| v.as_u64())
-            .unwrap_or(0),
-        ..Default::default()
-    })]
+    vec![
+        mqtt.attach_operation(&MqttOperationMeta {
+            qos,
+            retain,
+            message_expiry_interval: binding
+                .get("messageExpiryInterval")
+                .and_then(|v| v.as_u64())
+                .unwrap_or(0),
+            ..Default::default()
+        }),
+    ]
 }
 
 fn mqtt_message(binding: &Value) -> Vec<ProtocolAttachment> {
@@ -307,13 +316,15 @@ fn mqtt_message(binding: &Value) -> Vec<ProtocolAttachment> {
         return Vec::new();
     }
     let mqtt = MqttProtocol;
-    vec![mqtt.attach_message(&MqttMessageMeta {
-        content_type,
-        response_topic,
-        payload_format_indicator: binding
-            .get("payloadFormatIndicator")
-            .and_then(|v| v.as_u64())
-            .unwrap_or(0) as u32,
-        ..Default::default()
-    })]
+    vec![
+        mqtt.attach_message(&MqttMessageMeta {
+            content_type,
+            response_topic,
+            payload_format_indicator: binding
+                .get("payloadFormatIndicator")
+                .and_then(|v| v.as_u64())
+                .unwrap_or(0) as u32,
+            ..Default::default()
+        }),
+    ]
 }
