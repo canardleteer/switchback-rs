@@ -10,6 +10,11 @@
 > A lot of this is clanker driven, so vetting a good human read through pass
 > hasn't been completed yet.
 
+**Switchback** is an intermediate representation (**IR**) for RPC API reference
+manuals: a versioned, parsed snapshot of a service contract that parsers emit
+and renderers read. Renderers decide output format and presentation separately
+from parsing — mdBook today, other targets later.
+
 A three-layer toolchain for turning API **contracts** into rendered **reference
 manuals**. A contract is one family's description of a service: a set of
 `.proto` files, an `openapi.yaml` (and the files it `$ref`s), an
