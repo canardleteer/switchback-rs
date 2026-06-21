@@ -7,7 +7,7 @@ repository.workspace = true
 homepage.workspace = true
 description = "OpenAPI parser for the switchback framework."
 keywords = ["openapi", "openapi3", "swagger", "api", "parser"]
-categories = ["parser-implementations", "development-tools::documentation-tools"]
+categories = ["parser-implementations", "development-tools"]
 include = [
     "src/**/*",
     "meta-schemas/**/*",

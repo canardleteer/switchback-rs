@@ -7,7 +7,7 @@ repository.workspace = true
 homepage.workspace = true
 description = "mdBook renderer for the switchback framework."
 keywords = ["mdbook", "documentation", "renderer", "reference-manual", "api"]
-categories = ["development-tools::documentation-tools"]
+categories = ["development-tools"]
 
 [lib]
 path = "src/lib.rs"

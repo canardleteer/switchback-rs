@@ -7,7 +7,7 @@ repository.workspace = true
 homepage.workspace = true
 description = "Protobuf parser for the switchback framework."
 keywords = ["protobuf", "proto", "protoc", "parser", "grpc"]
-categories = ["parser-implementations", "development-tools::documentation-tools"]
+categories = ["parser-implementations", "development-tools"]
 
 [lib]
 path = "src/lib.rs"
