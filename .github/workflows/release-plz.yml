@@ -8,8 +8,7 @@ on:
 jobs:
   release-plz-pr:
     name: Release-plz PR
-    # Disabled until publishable dev-dependencies are fixed; see AGENTS.md.
-    if: false && github.repository_owner == 'canardleteer'
+    if: github.repository_owner == 'canardleteer'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -76,8 +75,7 @@ jobs:
 
   release-plz-release:
     name: Release-plz release
-    # Disabled until publishable dev-dependencies are fixed; see AGENTS.md.
-    if: false && github.repository_owner == 'canardleteer'
+    if: github.repository_owner == 'canardleteer'
     runs-on: ubuntu-latest
     environment: release
     permissions:
