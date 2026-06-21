@@ -24,6 +24,7 @@ path = "src/bin/mdbook-protobuf-highlight.rs"
 switchback-traits.workspace = true
 switchback-codec-pb.workspace = true
 switchback-protocols.workspace = true
+switchback-avro.workspace = true
 anyhow.workspace = true
 mdbook-core.workspace = true
 mdbook-driver.workspace = true

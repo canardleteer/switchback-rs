@@ -9,6 +9,10 @@ sequenceDiagram
   Client->>Broker: subscribe (subscribeEchoUnary)
 ```
 
+#### Messages
+
+- [EchoUnaryResponse](../message/EchoUnaryResponse.md)
+
 ```yaml
 message:
   $ref: "#/components/messages/EchoUnaryResponse"

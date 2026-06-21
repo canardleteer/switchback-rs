@@ -9,6 +9,10 @@ sequenceDiagram
   Client->>Broker: subscribe (subscribeEchoStream)
 ```
 
+#### Messages
+
+- [EchoStreamChunk](../message/EchoStreamChunk.md)
+
 ```yaml
 message:
   $ref: "#/components/messages/EchoStreamChunk"

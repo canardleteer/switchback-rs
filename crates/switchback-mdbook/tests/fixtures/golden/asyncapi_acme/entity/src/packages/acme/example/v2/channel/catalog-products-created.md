@@ -2,6 +2,10 @@
 
 **channel** `catalog/products/created`
 
+#### Messages
+
+- [ProductCreated](../message/ProductCreated.md)
+
 ```yaml
 bindings:
   kafka:

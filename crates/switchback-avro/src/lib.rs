@@ -10,5 +10,5 @@ pub mod schema;
 
 pub use schema::{
     AvroArray, AvroEnum, AvroFixed, AvroMap, AvroPrimitive, AvroRecord, AvroSchema, AvroUnion,
-    populate_avro_schema_body,
+    collect_named_avro_schemas, populate_avro_schema_body,
 };

@@ -4,6 +4,11 @@
 
 Pipeline run lifecycle events.
 
+#### Messages
+
+- [PipelineStarted](../message/PipelineStarted.md)
+- [PipelineStepCompleted](../message/PipelineStepCompleted.md)
+
 ```yaml
 address: pipelines/runs
 bindings:

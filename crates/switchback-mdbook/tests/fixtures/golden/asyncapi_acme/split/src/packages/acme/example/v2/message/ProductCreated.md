@@ -1,5 +1,9 @@
 # ProductCreated
 
+#### Payload
+
+- [Product](../schemas/Product.md)
+
 ```yaml
 name: ProductCreated
 payload:

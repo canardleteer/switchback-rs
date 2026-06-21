@@ -10,6 +10,10 @@ Alpha pipeline and experiment event operations.
 
 **channel** `experiments/assignments`
 
+#### Messages
+
+- [AssignmentCreated](#assignmentcreated)
+
 ```yaml
 address: experiments/assignments
 messages:
@@ -22,6 +26,11 @@ messages:
 **channel** `pipelines/runs`
 
 Pipeline run lifecycle events.
+
+#### Messages
+
+- [PipelineStarted](#pipelinestarted)
+- [PipelineStepCompleted](#pipelinestepcompleted)
 
 ```yaml
 address: pipelines/runs
@@ -112,6 +121,10 @@ summary: Watch pipeline step completions
 
 ### AssignmentCreated
 
+#### Payload
+
+- [AssignmentCreatedPayload](#assignmentcreatedpayload)
+
 ```yaml
 name: AssignmentCreated
 payload:
@@ -148,6 +161,16 @@ title: Pipeline started (Avro)
 
 ### PipelineStepCompleted
 
+#### Payload
+
+- [PipelineStatus](#pipelinestatus)
+
+#### Properties
+
+| Field | Type |
+| --- | --- |
+| `status` | [PipelineStatus](#pipelinestatus) |
+
 ```yaml
 name: PipelineStepCompleted
 payload:
@@ -172,5 +195,37 @@ payload:
     type: record
   schemaFormat: application/vnd.apache.avro+json
 title: Pipeline step completed (Avro)
+```
+
+## Schemas
+
+### AssignmentCreatedPayload
+
+```yaml
+properties:
+  arm:
+    type: string
+  experiment_id:
+    format: uuid
+    type: string
+  subject_id:
+    type: string
+type: object
+```
+
+### PipelineStatus
+
+```json
+{
+  "name": "PipelineStatus",
+  "symbols": [
+    "queued",
+    "running",
+    "succeeded",
+    "failed",
+    "cancelled"
+  ],
+  "type": "enum"
+}
 ```
 

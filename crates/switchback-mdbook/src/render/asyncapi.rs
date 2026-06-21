@@ -5,17 +5,20 @@ use switchback_protocols::{
 };
 use switchback_traits::{
     ChannelBody, EntityBody, LinkContext, LinkFormatter, MessageBody, OperationBody, Options,
-    SchemaBody, StoredEntity, apply_intra_links, entity_category_dir, entity_rel_path,
+    Property, Reference, SchemaBody, StoredEntity, apply_intra_links, entity_category_dir,
+    entity_rel_path,
 };
 
 use crate::render::fence::{
-    link_structural_refs_in_prose, proto_file_name, push_fence_body, render_schema_fence,
+    entity_module_group, link_ref, link_structural_refs_in_prose, proto_file_name, push_fence_body,
+    render_schema_fence,
 };
 use crate::render::markdown_doc::format_markdown_doc;
 use crate::render::{md_heading, push_paragraph_break};
 
 const SECTION_LEVEL: usize = 2;
 const ENTITY_LEVEL: usize = 3;
+const SUBSECTION_LEVEL: usize = 4;
 
 pub fn is_asyncapi_family(family: &str) -> bool {
     family == "asyncapi"
@@ -242,6 +245,7 @@ fn render_asyncapi_channel_markdown(
 ) -> String {
     let mut out = format_channel_signature_line(&body.signature);
     push_entity_doc(&mut out, entity, group, ctx, opts, formatter);
+    out.push_str(&render_message_ref_section(entity, ctx));
     push_fence_body(&mut out, &body.fence_language, &body.fence_body);
     out
 }
@@ -256,8 +260,18 @@ fn render_asyncapi_operation_markdown(
 ) -> String {
     let mut out = format_asyncapi_operation_line(&body.signature, &body.protocols);
     push_entity_doc(&mut out, entity, group, ctx, opts, formatter);
+    out.push_str(&render_message_ref_section(entity, ctx));
     push_fence_body(&mut out, &body.fence_language, &body.fence_body);
     out
+}
+
+fn render_message_ref_section(entity: &StoredEntity, ctx: &LinkContext) -> String {
+    let refs: Vec<&Reference> = entity
+        .refs
+        .iter()
+        .filter(|r| r.target.category == "message")
+        .collect();
+    render_ref_list_section("Messages", &refs, ctx)
 }
 
 fn render_asyncapi_message_fence(
@@ -276,7 +290,122 @@ fn render_asyncapi_message_fence(
         opts,
         formatter,
     );
+    let payload_refs: Vec<&Reference> = entity
+        .refs
+        .iter()
+        .filter(|r| {
+            r.target.category == "schema" && r.target.name != entity.name
+        })
+        .collect();
+    out.push_str(&render_ref_list_section("Payload", &payload_refs, ctx));
+    out.push_str(&render_message_payload_properties(entity, body, ctx));
     push_fence_body(&mut out, &body.fence_language, &body.fence_body);
+    out
+}
+
+fn render_message_payload_properties(
+    entity: &StoredEntity,
+    body: &MessageBody,
+    ctx: &LinkContext,
+) -> String {
+    let msg_val = parse_message_fence_value(body, &body.fence_language);
+    let payload = message_payload_value(&msg_val);
+    let format = message_schema_format(&msg_val, payload);
+    if let Some(format) = format.as_deref().filter(|f| is_avro_schema_format(f)) {
+        let schema_val = payload.get("schema").unwrap_or(payload);
+        let (module, group) = entity_module_group(entity);
+        if module.is_empty() || group.is_empty() {
+            return String::new();
+        }
+        let schema_body = switchback_avro::populate_avro_schema_body(
+            schema_val,
+            module,
+            group,
+            Some(format),
+        );
+        return render_schema_properties_table(&schema_body.properties, ctx);
+    }
+    String::new()
+}
+
+fn parse_message_fence_value(body: &MessageBody, fence_language: &str) -> serde_json::Value {
+    if fence_language == "yaml" {
+        serde_saphyr::from_str(&body.fence_body).unwrap_or(serde_json::Value::Null)
+    } else {
+        serde_json::from_str(&body.fence_body).unwrap_or(serde_json::Value::Null)
+    }
+}
+
+fn message_payload_value(msg_val: &serde_json::Value) -> &serde_json::Value {
+    if msg_val.get("payload").is_some() {
+        msg_val.get("payload").unwrap_or(msg_val)
+    } else {
+        msg_val
+    }
+}
+
+fn message_schema_format(
+    msg_val: &serde_json::Value,
+    payload: &serde_json::Value,
+) -> Option<String> {
+    msg_val
+        .get("schemaFormat")
+        .and_then(|v| v.as_str())
+        .map(str::to_string)
+        .or_else(|| {
+            payload
+                .get("schemaFormat")
+                .and_then(|v| v.as_str())
+                .map(str::to_string)
+        })
+}
+
+fn is_avro_schema_format(format: &str) -> bool {
+    format == "application/vnd.apache.avro+json"
+        || format == "application/vnd.apache.avro+yaml"
+        || format.contains("avro")
+}
+
+fn render_ref_list_section(title: &str, refs: &[&Reference], ctx: &LinkContext) -> String {
+    if refs.is_empty() {
+        return String::new();
+    }
+    let from = ctx
+        .render_from
+        .as_deref()
+        .unwrap_or_else(|| std::path::Path::new(&ctx.markdown_root));
+    let mut out = md_heading(SUBSECTION_LEVEL, title);
+    for reference in refs {
+        out.push_str("- ");
+        out.push_str(&link_ref(reference, ctx, from));
+        out.push('\n');
+    }
+    out.push('\n');
+    out
+}
+
+fn render_schema_properties_table(
+    properties: &[Property],
+    ctx: &LinkContext,
+) -> String {
+    if properties.is_empty() {
+        return String::new();
+    }
+    let from = ctx
+        .render_from
+        .as_deref()
+        .unwrap_or_else(|| std::path::Path::new(&ctx.markdown_root));
+    let mut out = md_heading(SUBSECTION_LEVEL, "Properties");
+    out.push_str("| Field | Type |\n");
+    out.push_str("| --- | --- |\n");
+    for property in properties {
+        out.push_str("| `");
+        out.push_str(&property.name);
+        out.push_str("` | ");
+        out.push_str(&link_ref(&property.schema_ref, ctx, from));
+        out.push_str(" |\n");
+    }
+    out.push('\n');
     out
 }
 
@@ -287,7 +416,8 @@ fn render_asyncapi_schema_fence(
     opts: &Options,
     formatter: &dyn LinkFormatter,
 ) -> String {
-    render_schema_fence(
+    let mut out = render_schema_properties_table(&body.properties, ctx);
+    out.push_str(&render_schema_fence(
         &body.fence_language,
         &proto_file_name(entity),
         entity.doc.as_deref(),
@@ -296,7 +426,8 @@ fn render_asyncapi_schema_fence(
         &entity.intra_links,
         formatter,
         ctx,
-    )
+    ));
+    out
 }
 
 fn format_channel_signature_line(signature: &str) -> String {

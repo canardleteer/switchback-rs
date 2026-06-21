@@ -1,5 +1,9 @@
 # InventoryAdjustmentEvent
 
+#### Payload
+
+- [InventoryAdjustment](../schemas/InventoryAdjustment.md)
+
 ```yaml
 name: InventoryAdjustmentEvent
 payload:

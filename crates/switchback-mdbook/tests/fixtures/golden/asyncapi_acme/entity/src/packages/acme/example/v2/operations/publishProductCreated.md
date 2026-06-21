@@ -9,6 +9,10 @@ sequenceDiagram
   Client->>Broker: publish (publishProductCreated)
 ```
 
+#### Messages
+
+- [ProductCreated](../message/ProductCreated.md)
+
 ```yaml
 message:
   $ref: "#/components/messages/ProductCreated"

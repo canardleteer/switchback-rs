@@ -11,6 +11,7 @@ mod operations;
 pub mod protocol_attach;
 mod refs;
 mod schema_dispatch;
+mod schema_outbreak;
 mod version;
 
 use std::collections::BTreeMap;

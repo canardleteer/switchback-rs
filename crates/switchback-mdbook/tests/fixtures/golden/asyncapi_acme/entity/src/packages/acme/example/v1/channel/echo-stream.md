@@ -4,6 +4,10 @@
 
 Server-sent echo chunks as an event stream.
 
+#### Messages
+
+- [EchoStreamChunk](../message/EchoStreamChunk.md)
+
 ```yaml
 bindings:
   kafka:

@@ -1,5 +1,9 @@
 # ProductDeleted
 
+#### Payload
+
+- [ProductDeletedPayload](../schemas/ProductDeletedPayload.md)
+
 ```yaml
 name: ProductDeleted
 payload:

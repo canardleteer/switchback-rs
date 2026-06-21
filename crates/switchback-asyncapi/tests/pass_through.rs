@@ -42,6 +42,54 @@ fn micro_acme_v1_kafka_operation_attachment() {
 }
 
 #[test]
+fn micro_acme_v3alpha1_avro_schema_outbreak() {
+    let manual = load_acme_example().expect("load acme events");
+    let contract = &manual.modules[0].contracts[0];
+    let v3 = contract
+        .groups
+        .iter()
+        .find(|g| g.id.as_str() == "acme.example.v3alpha1")
+        .expect("v3alpha1 group");
+    assert!(
+        v3.entities.iter().any(|e| e.name == "PipelineStatus"),
+        "inline Avro enum should outbreak to a schema entity"
+    );
+    let msg = v3
+        .entities
+        .iter()
+        .find(|e| e.name == "PipelineStepCompleted" && e.category.as_str() == "message")
+        .expect("PipelineStepCompleted message entity");
+    assert!(
+        msg.refs
+            .iter()
+            .any(|r| r.target.category == "schema" && r.target.name == "PipelineStatus"),
+        "message should reference nested PipelineStatus schema"
+    );
+    assert!(
+        !v3
+            .entities
+            .iter()
+            .any(|e| e.name == "PipelineStepCompleted" && e.category.as_str() == "schema"),
+        "root Avro record should not duplicate as a schema entity when it matches the message name"
+    );
+}
+
+#[test]
+fn micro_acme_v2_inline_payload_outbreak() {
+    let manual = load_acme_example().expect("load acme events");
+    let contract = &manual.modules[0].contracts[0];
+    let v2 = contract
+        .groups
+        .iter()
+        .find(|g| g.id.as_str() == "acme.example.v2")
+        .expect("v2 group");
+    assert!(
+        v2.entities.iter().any(|e| e.name == "ProductDeletedPayload"),
+        "inline JSON payload should outbreak to a schema entity"
+    );
+}
+
+#[test]
 fn micro_acme_v3alpha1_avro_schema_payload() {
     let manual = load_acme_example().expect("load acme events");
     let contract = &manual.modules[0].contracts[0];
