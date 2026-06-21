@@ -21,10 +21,7 @@ fn main() {
         grpc_proto,
         grpc_metadata_options_proto,
     ] {
-        println!(
-            "cargo:rerun-if-changed={}",
-            proto_root.join(path).display()
-        );
+        println!("cargo:rerun-if-changed={}", proto_root.join(path).display());
     }
     println!(
         "cargo:rerun-if-changed={}",
