@@ -8,8 +8,8 @@ use switchback_codec_pb::{DEFAULT_SWITCHBACK_FILENAME, ProtobufCodec, WIRE_VERSI
 use switchback_traits::{
     Anchor, Companion, Document, EntityBody, EntityRef, ExtensionBody, ExternalUrl, Group, GroupId,
     GroupRef, IntraLink, LinkTarget, ManualContract, Module, ModuleId, OperationBody, ParameterRef,
-    ProtocolAttachment, RefKind, Reference, ReferenceManual, ResponseRef, SchemaBody, Source,
-    SourceRef, SpecVersion, StoredEntity, SwitchbackCodec, SyncSwitchbackCodec,
+    RefKind, Reference, ReferenceManual, ResponseRef, SchemaBody, Source, SourceRef, SpecVersion,
+    StoredEntity, SwitchbackCodec, SyncSwitchbackCodec,
 };
 
 fn fixture_manual() -> ReferenceManual {
