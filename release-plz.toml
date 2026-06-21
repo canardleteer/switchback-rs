@@ -40,16 +40,6 @@ version_group = "switchback"
 changelog_update = false
 
 [[package]]
-name = "switchback-mdbook"
-version_group = "switchback"
-changelog_update = false
-
-[[package]]
-name = "switchback-protobuf"
-version_group = "switchback"
-changelog_update = false
-
-[[package]]
 name = "switchback-jsonschema"
 version_group = "switchback"
 changelog_update = false
@@ -60,12 +50,17 @@ version_group = "switchback"
 changelog_update = false
 
 [[package]]
+name = "switchback-openrpc"
+version_group = "switchback"
+changelog_update = false
+
+[[package]]
 name = "switchback-openapi"
 version_group = "switchback"
 changelog_update = false
 
 [[package]]
-name = "switchback-assemble"
+name = "switchback-protobuf"
 version_group = "switchback"
 changelog_update = false
 
@@ -75,7 +70,12 @@ version_group = "switchback"
 changelog_update = false
 
 [[package]]
-name = "switchback-openrpc"
+name = "switchback-assemble"
+version_group = "switchback"
+changelog_update = false
+
+[[package]]
+name = "switchback-mdbook"
 version_group = "switchback"
 changelog_update = false
 
