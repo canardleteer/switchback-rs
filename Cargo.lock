@@ -2287,6 +2287,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "switchback-avro"
+version = "0.0.1-0.dev.1"
+dependencies = [
+ "serde",
+ "serde_json",
+ "sha2 0.10.9",
+ "switchback-traits",
+ "toml 0.8.23",
+]
+
+[[package]]
 name = "switchback-codec-pb"
 version = "0.0.1-0.dev.1"
 dependencies = [
