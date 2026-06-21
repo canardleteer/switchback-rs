@@ -12,6 +12,7 @@ use anyhow::{Context, Result};
 use clap::Parser;
 use serde::Deserialize;
 use switchback_assemble::{AssembleArgs, GroupPrefixPolicy, assemble_module};
+use switchback_asyncapi::load::LoadArgs as AsyncApiLoadArgs;
 use switchback_codec_pb::ProtobufCodec;
 use switchback_mdbook::{MdBookRenderer, write_output_files};
 use switchback_openapi::load::LoadArgs as OpenApiLoadArgs;
@@ -93,6 +94,7 @@ fn load_from_manifest(path: &Path) -> Result<ReferenceManual> {
 
     let mut openapi: Option<OpenApiLoadArgs> = None;
     let mut protobuf: Option<ProtobufLoadArgs> = None;
+    let mut asyncapi: Option<AsyncApiLoadArgs> = None;
 
     for contract in &manifest.contracts {
         let module_root = resolve_path(manifest_dir, &contract.module_root);
@@ -120,6 +122,14 @@ fn load_from_manifest(path: &Path) -> Result<ReferenceManual> {
                     title: None,
                 });
             }
+            "asyncapi" => {
+                asyncapi = Some(AsyncApiLoadArgs {
+                    module_root: module_root.clone(),
+                    inputs,
+                    search_roots: vec![module_root],
+                    title: None,
+                });
+            }
             other => anyhow::bail!("unsupported contract family {other} in module.yaml"),
         }
     }
@@ -131,6 +141,7 @@ fn load_from_manifest(path: &Path) -> Result<ReferenceManual> {
         group_prefix: GroupPrefixPolicy::ContractFamily,
         openapi,
         protobuf,
+        asyncapi,
     })
     .map_err(|e| anyhow::anyhow!("{e}"))
 }
