@@ -1,5 +1,6 @@
-//! `ContractFamily` stub for AsyncAPI (parser behavior deferred).
+//! `ContractFamily` for AsyncAPI.
 
+use serde_json::Value;
 use switchback_traits::{
     CompanionDiscovery, CompanionStrategy, ContractFamily, RawDoc, SpecVersion, SupportedVersion,
     VersionStatus,
@@ -8,6 +9,7 @@ use switchback_traits::{
 use crate::category::AsyncApiCategory;
 use crate::link::AsyncApiLinkExtractor;
 use crate::meta_schemas;
+use crate::populate::parse_asyncapi_version;
 
 #[derive(Clone, Copy, Debug, Default)]
 pub struct AsyncApiCompanion;
@@ -17,8 +19,8 @@ impl CompanionStrategy for AsyncApiCompanion {
         CompanionDiscovery::Beside
     }
 
-    fn output_name(&self, _source_dir: &[&str], stem: &str) -> String {
-        format!("{stem}.md")
+    fn output_name(&self, source_dir: &[&str], stem: &str) -> String {
+        switchback_traits::companion_output_name_from_segments(source_dir, stem)
     }
 
     fn companion_media_types(&self) -> &'static [&'static str] {
@@ -69,8 +71,13 @@ impl ContractFamily for AsyncApiFamily {
         ]
     }
 
-    fn detect_version(&self, _raw: &RawDoc) -> Option<SpecVersion> {
-        None
+    fn detect_version(&self, raw: &RawDoc) -> Option<SpecVersion> {
+        let value: Value = if raw.media_type.contains("yaml") {
+            serde_saphyr::from_slice(&raw.bytes).ok()?
+        } else {
+            serde_json::from_slice(&raw.bytes).ok()?
+        };
+        parse_asyncapi_version(&value).ok()
     }
 
     fn supported_versions(&self) -> &'static [SupportedVersion] {
@@ -92,5 +99,13 @@ impl ContractFamily for AsyncApiFamily {
 
     fn link_extractor(&self) -> &Self::LinkExtractor {
         &AsyncApiLinkExtractor
+    }
+
+    fn supported_protocols(&self) -> &'static [&'static str] {
+        &["kafka", "amqp", "mqtt", "http", "websockets"]
+    }
+
+    fn default_protocol(&self) -> &'static str {
+        "kafka"
     }
 }
