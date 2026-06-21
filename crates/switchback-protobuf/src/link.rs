@@ -1,7 +1,7 @@
 //! Protobuf FQN intra-link extraction from entity prose.
 
 use switchback_traits::{
-    anchor, Entity, EntityCategory, EntityRef, IntraLink, LinkExtractor, LinkTarget, ResolvedManual,
+    Entity, EntityCategory, EntityRef, IntraLink, LinkExtractor, LinkTarget, ResolvedManual, anchor,
 };
 
 use crate::category::ProtobufCategory;
@@ -88,10 +88,10 @@ fn resolve_fqn(
         format!(".{fqn}")
     };
     let (pkg, name) = split_proto_type_name(&dotted)?;
-    if entity.id.group.as_str() == pkg {
-        if let Some(found) = find_in_group(manual, pkg, name) {
-            return Some(found);
-        }
+    if entity.id.group.as_str() == pkg
+        && let Some(found) = find_in_group(manual, pkg, name)
+    {
+        return Some(found);
     }
     find_anywhere(manual, pkg, name)
 }

@@ -10,10 +10,10 @@ use switchback_traits::{
 
 use crate::category::OpenApiCategory;
 use crate::paths::COMPONENTS_GROUP;
-use crate::populate::http_attach;
-use crate::populate::refs::structural_refs;
 use crate::populate::PopulateCtx;
 use crate::populate::PopulatedEntity;
+use crate::populate::http_attach;
+use crate::populate::refs::structural_refs;
 
 fn entity_group<'a>(ctx: &'a PopulateCtx<'a>) -> &'a str {
     ctx.entry_group.unwrap_or(COMPONENTS_GROUP)

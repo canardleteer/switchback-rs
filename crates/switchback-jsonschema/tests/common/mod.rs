@@ -6,9 +6,9 @@ use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use switchback_codec_pb::{ProtobufCodec, DEFAULT_SWITCHBACK_FILENAME};
+use switchback_codec_pb::{DEFAULT_SWITCHBACK_FILENAME, ProtobufCodec};
 use switchback_jsonschema::examples::EXAMPLE_CATALOG_INPUTS;
-use switchback_jsonschema::{load, restore_sources, LoadArgs};
+use switchback_jsonschema::{LoadArgs, load, restore_sources};
 use switchback_openapi::meta_schemas as openapi_meta;
 use switchback_openrpc::meta_schemas as openrpc_meta;
 use switchback_traits::{ReferenceManual, SyncSwitchbackCodec};

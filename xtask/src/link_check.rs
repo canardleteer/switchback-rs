@@ -1,7 +1,7 @@
 //! Markdown link check gate for switchback-mdbook renderer output.
 
 use crate::workspace::WORKSPACE_ROOT;
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use std::process::Command;
 
 pub fn link_check() -> Result<()> {

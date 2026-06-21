@@ -5,7 +5,7 @@ mod doc;
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::path::{Path, PathBuf};
 
-use anyhow::{anyhow, Context};
+use anyhow::{Context, anyhow};
 use serde_json::Value;
 use walkdir::WalkDir;
 
@@ -167,14 +167,12 @@ fn collect_external_ref_targets(
 ) {
     match value {
         Value::Object(map) => {
-            if let Some(Value::String(ref_key)) = map.get("$ref") {
-                if let Some(file_part) = external_file_part(ref_key) {
-                    if let Some(resolved) =
-                        resolve_external_path(base_path, module_root, search_roots, file_part)
-                    {
-                        queue.push_back(resolved);
-                    }
-                }
+            if let Some(Value::String(ref_key)) = map.get("$ref")
+                && let Some(file_part) = external_file_part(ref_key)
+                && let Some(resolved) =
+                    resolve_external_path(base_path, module_root, search_roots, file_part)
+            {
+                queue.push_back(resolved);
             }
             for v in map.values() {
                 collect_external_ref_targets(v, base_path, module_root, search_roots, queue);

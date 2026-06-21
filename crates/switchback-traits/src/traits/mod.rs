@@ -10,7 +10,7 @@ mod renderer;
 
 pub use codec::{SwitchbackCodec, SyncSwitchbackCodec};
 pub use companion::{AsyncCompanionStrategy, CompanionDiscovery, CompanionStrategy};
-pub use contract::{companion_files_to_stored, Contract, Entity};
+pub use contract::{Contract, Entity, companion_files_to_stored};
 pub use contract_family::{
     AsyncContractLoader, ContractFamily, RawDoc, SupportedVersion, VersionStatus,
 };

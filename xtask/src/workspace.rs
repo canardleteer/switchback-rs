@@ -1,6 +1,6 @@
 //! Shared workspace paths and subprocess helpers.
 
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use std::io::ErrorKind;
 use std::process::Command;
 

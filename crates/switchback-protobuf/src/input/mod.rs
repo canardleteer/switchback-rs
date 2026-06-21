@@ -8,7 +8,7 @@ mod merge;
 mod protoc;
 
 use crate::descriptor::FileDescriptorProto;
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use std::path::{Path, PathBuf};
 
 #[cfg(feature = "buf")]

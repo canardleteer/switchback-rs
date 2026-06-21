@@ -3,8 +3,8 @@
 use std::path::{Component, Path, PathBuf};
 
 use switchback_traits::{
-    discover_ancestors_companions, normalize_rel_dir, CompanionDiscovery, CompanionStrategy,
-    ContractFamily,
+    CompanionDiscovery, CompanionStrategy, ContractFamily, discover_ancestors_companions,
+    normalize_rel_dir,
 };
 
 use crate::descriptor::FileDescriptorProto;

@@ -14,7 +14,7 @@ use crate::render::openapi::{
     openapi_category_rank, openapi_summary_link_text, openapi_summary_sort_key,
     renderable_openapi_entities,
 };
-use crate::summary::nav_tree::{build_summary, NavInput};
+use crate::summary::nav_tree::{NavInput, build_summary};
 use crate::summary::render_md;
 
 /// Target markdown path for a package page under the current layout.

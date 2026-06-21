@@ -9,7 +9,7 @@ use std::io;
 use std::path::PathBuf;
 use std::process;
 use switchback_mdbook::highlight::{
-    config_from_mdbook, install_book_toml, transform_chapter, HighlightConfig, PREPROCESSOR_COMMAND,
+    HighlightConfig, PREPROCESSOR_COMMAND, config_from_mdbook, install_book_toml, transform_chapter,
 };
 
 struct ProtobufHighlight;
@@ -70,9 +70,11 @@ fn main() {
             eprintln!("{e:#}");
             process::exit(1);
         }
-    } else if let Err(e) = handle_preprocessing() {
-        eprintln!("{e:#}");
-        process::exit(1);
+    } else {
+        if let Err(e) = handle_preprocessing() {
+            eprintln!("{e:#}");
+            process::exit(1);
+        }
     }
 }
 

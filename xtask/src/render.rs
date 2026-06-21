@@ -1,7 +1,7 @@
 //! Renderer golden gates for `switchback-mdbook`.
 
 use crate::workspace::WORKSPACE_ROOT;
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use std::process::Command;
 
 /// Run mdBook renderer golden regression (`switchback-mdbook` output_regression).

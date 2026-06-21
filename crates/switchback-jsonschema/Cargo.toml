@@ -2,10 +2,12 @@
 name = "switchback-jsonschema"
 version.workspace = true
 edition.workspace = true
-rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-description = "Shared JSON-Schema-document parser layer: loader, $ref resolver, API-description envelope, and schema entity-body producer. Also a standalone catalog parser."
+homepage.workspace = true
+description = "Shared JSON Schema layer for the switchback framework."
+keywords = ["json-schema", "schema", "parser", "ref-resolution", "catalog"]
+categories = ["parser-implementations"]
 
 [lib]
 path = "src/lib.rs"

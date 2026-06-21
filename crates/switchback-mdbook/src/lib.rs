@@ -18,9 +18,9 @@ mod renderer;
 mod summary;
 
 pub use formatter::MdBookRelativeFormatter;
-pub use link_check::{assert_tree, check_tree, LinkError};
+pub use link_check::{LinkError, assert_tree, check_tree};
 pub use options::parse_parameter;
-pub use renderer::{write_output_files, MdBookRenderer};
+pub use renderer::{MdBookRenderer, write_output_files};
 
 pub fn mdbook_version() -> &'static str {
     mdbook_preprocessor::MDBOOK_VERSION

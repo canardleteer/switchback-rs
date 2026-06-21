@@ -20,10 +20,14 @@ fn meta_schema_integrity() {
 
 #[test]
 fn highlight_assets_present() {
-    assert!(!meta_schemas::read(&meta_schemas::SCHEMA_1_4)
-        .expect("read")
-        .is_empty());
-    assert!(!meta_schemas::read(&meta_schemas::SCHEMA_1_3)
-        .expect("read")
-        .is_empty());
+    assert!(
+        !meta_schemas::read(&meta_schemas::SCHEMA_1_4)
+            .expect("read")
+            .is_empty()
+    );
+    assert!(
+        !meta_schemas::read(&meta_schemas::SCHEMA_1_3)
+            .expect("read")
+            .is_empty()
+    );
 }

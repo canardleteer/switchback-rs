@@ -1,6 +1,6 @@
 //! Shared path helpers.
 
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
 
 pub fn normalize_rel_path(path: &str, default: &str) -> Result<String> {
     let path = path.trim().trim_matches('/');

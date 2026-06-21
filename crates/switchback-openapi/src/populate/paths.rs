@@ -7,11 +7,11 @@ use switchback_traits::{Entity, EntityBody, EntityCategory, EntityId};
 
 use crate::category::OpenApiCategory;
 use crate::paths::{HTTP_METHODS, UNTAGGED_GROUP};
+use crate::populate::PopulateCtx;
+use crate::populate::PopulatedEntity;
 use crate::populate::groups::merge_operation_tags;
 use crate::populate::operation::build_operation_body;
 use crate::populate::refs::structural_refs;
-use crate::populate::PopulateCtx;
-use crate::populate::PopulatedEntity;
 
 pub fn collect_operation_tags(root: &Value) -> (BTreeSet<String>, bool) {
     let mut tags = BTreeSet::new();

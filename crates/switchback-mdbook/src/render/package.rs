@@ -1,7 +1,7 @@
 //! Package-rollup markdown (`layout=package`).
 
 use switchback_traits::{
-    apply_intra_links, EntityBody, Group, LinkContext, LinkFormatter, Options, StoredEntity,
+    EntityBody, Group, LinkContext, LinkFormatter, Options, StoredEntity, apply_intra_links,
 };
 
 use crate::render::fence::{

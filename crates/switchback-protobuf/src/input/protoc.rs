@@ -1,9 +1,9 @@
 //! protoc compilation and include-path resolution.
 
-use crate::input::{compile_to_fds, tool_exists, ResolveArgs, ResolvedInput};
+use crate::input::{ResolveArgs, ResolvedInput, compile_to_fds, tool_exists};
 use crate::paths::collect_proto_inputs;
 use crate::proto_deps;
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use std::path::{Component, Path, PathBuf};
 use std::process::Command;
 

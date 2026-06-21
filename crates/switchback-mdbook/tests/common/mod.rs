@@ -5,10 +5,10 @@
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 
-use switchback_mdbook::{parse_parameter, write_output_files, MdBookRenderer};
-use switchback_protobuf::examples::{fixtures_proto_dir, EXAMPLE_PROTO_INPUTS};
-use switchback_protobuf::load::{ensure_test_proto_deps, load, LoadArgs};
+use switchback_mdbook::{MdBookRenderer, parse_parameter, write_output_files};
 use switchback_protobuf::Compiler;
+use switchback_protobuf::examples::{EXAMPLE_PROTO_INPUTS, fixtures_proto_dir};
+use switchback_protobuf::load::{LoadArgs, ensure_test_proto_deps, load};
 use switchback_traits::{Layout, Options, ReferenceManual, SyncRenderer};
 
 pub fn manifest_dir() -> PathBuf {
@@ -57,7 +57,7 @@ pub fn load_fixture(name: &str) -> ReferenceManual {
 }
 
 pub fn load_openapi_tictactoe() -> ReferenceManual {
-    use switchback_openapi::examples::{example_fixture, load_example, UPSTREAM_LOW_3_1};
+    use switchback_openapi::examples::{UPSTREAM_LOW_3_1, example_fixture, load_example};
 
     load_example(example_fixture("tictactoe-3.1").expect("tictactoe fixture")).unwrap_or_else(
         |e| panic!("load {UPSTREAM_LOW_3_1}: {e} (run cargo xtask spec-vendor fetch-fixtures --family openapi)"),
@@ -71,8 +71,8 @@ pub fn load_openapi_acme() -> ReferenceManual {
 pub fn load_reference_manual_acme_v1() -> ReferenceManual {
     use std::path::PathBuf;
 
-    use switchback_assemble::{assemble_module, AssembleArgs, GroupPrefixPolicy};
-    use switchback_openapi::examples::{fixtures_dir, EXAMPLE_ACME_INPUTS, MICRO_ACME_ROOT};
+    use switchback_assemble::{AssembleArgs, GroupPrefixPolicy, assemble_module};
+    use switchback_openapi::examples::{EXAMPLE_ACME_INPUTS, MICRO_ACME_ROOT, fixtures_dir};
     use switchback_openapi::load::LoadArgs as OpenApiLoadArgs;
     use switchback_protobuf::examples::EXAMPLE_PROTO_INPUTS;
     use switchback_protobuf::load::LoadArgs as ProtobufLoadArgs;

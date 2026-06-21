@@ -2,10 +2,12 @@
 name = "switchback-traits"
 version.workspace = true
 edition.workspace = true
-rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-description = "Core seam crate: ContractFamily, Contract, Renderer, LinkExtractor, LinkFormatter, SwitchbackCodec traits and the in-memory ReferenceManual model."
+homepage.workspace = true
+description = "Core traits of the switchback framework."
+keywords = ["api", "documentation", "reference-manual", "traits", "ir"]
+categories = ["development-tools::documentation-tools"]
 
 [lib]
 path = "src/lib.rs"

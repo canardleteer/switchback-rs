@@ -8,10 +8,10 @@ use std::io;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-use switchback_codec_pb::{ProtobufCodec, DEFAULT_SWITCHBACK_FILENAME};
-use switchback_protobuf::examples::{fixtures_proto_dir, EXAMPLE_PROTO_INPUTS};
-use switchback_protobuf::input::{resolve_buf_path, Compiler};
-use switchback_protobuf::load::{ensure_test_proto_deps, load, LoadArgs};
+use switchback_codec_pb::{DEFAULT_SWITCHBACK_FILENAME, ProtobufCodec};
+use switchback_protobuf::examples::{EXAMPLE_PROTO_INPUTS, fixtures_proto_dir};
+use switchback_protobuf::input::{Compiler, resolve_buf_path};
+use switchback_protobuf::load::{LoadArgs, ensure_test_proto_deps, load};
 use switchback_protobuf::restore_sources;
 use switchback_traits::{ReferenceManual, SyncSwitchbackCodec};
 

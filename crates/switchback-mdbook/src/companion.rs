@@ -3,7 +3,7 @@
 use std::path::PathBuf;
 
 use switchback_traits::{
-    module_path_from_output, source_dir_from_output, title_from_markdown, Companion,
+    Companion, module_path_from_output, source_dir_from_output, title_from_markdown,
 };
 
 /// Companion navigation metadata for SUMMARY generation.

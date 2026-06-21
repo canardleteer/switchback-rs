@@ -21,10 +21,14 @@ fn meta_schema_integrity() {
 #[test]
 fn highlight_assets_present() {
     assert!(meta_schemas::asset_by_path("schemas/3.1.0.json").is_some());
-    assert!(!meta_schemas::read(&meta_schemas::SCHEMAS_3_1_0)
-        .expect("read")
-        .is_empty());
-    assert!(!meta_schemas::read(&meta_schemas::ALL_SCHEMA_STORE)
-        .expect("read")
-        .is_empty());
+    assert!(
+        !meta_schemas::read(&meta_schemas::SCHEMAS_3_1_0)
+            .expect("read")
+            .is_empty()
+    );
+    assert!(
+        !meta_schemas::read(&meta_schemas::ALL_SCHEMA_STORE)
+            .expect("read")
+            .is_empty()
+    );
 }

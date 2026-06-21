@@ -33,8 +33,8 @@ pub use envelope::{
 };
 pub use family::JsonSchemaFamily;
 pub use link::JsonSchemaLinkExtractor;
-pub use load::{load, resolve_inputs, LoadArgs};
+pub use load::{LoadArgs, load, resolve_inputs};
 pub use loader::{Doc, Loader, Resolved};
 pub use manual::restore_sources;
 pub use resolver::{NodeRef, RefIndex, RefResolver};
-pub use schema::{populate_schema_body, Composite, JsonType, Schema, SchemaObject};
+pub use schema::{Composite, JsonType, Schema, SchemaObject, populate_schema_body};

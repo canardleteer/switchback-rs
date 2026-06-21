@@ -3,13 +3,13 @@
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
+use crate::EntityRef;
 use crate::layout_paths::{
-    heading_slug, layout_entity_rel_path, package_index_rel, package_page_rel,
-    relative_path_from_dir, LayoutEntityKey, ProtobufEntityKind,
+    LayoutEntityKey, ProtobufEntityKind, heading_slug, layout_entity_rel_path, package_index_rel,
+    package_page_rel, relative_path_from_dir,
 };
 use crate::options::{Layout, Options};
 use crate::paths::{entity_category_dir, entity_rel_path};
-use crate::EntityRef;
 use crate::{EntityBody, ReferenceManual, StoredEntity};
 
 /// Entity output path index used by [`LinkFormatter`](crate::traits::LinkFormatter).

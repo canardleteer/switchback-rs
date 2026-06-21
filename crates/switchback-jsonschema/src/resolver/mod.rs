@@ -4,7 +4,7 @@ mod pointer;
 
 use std::collections::{BTreeMap, BTreeSet};
 
-use anyhow::{anyhow, Context};
+use anyhow::{Context, anyhow};
 use serde_json::Value;
 
 pub use pointer::{escape_token, resolve_pointer};
@@ -77,15 +77,15 @@ fn walk_value(
         pointer: pointer.clone(),
     };
 
-    if let Value::Object(map) = value {
-        if let Some(Value::String(ref_key)) = map.get("$ref") {
-            let target = resolve_ref(ref_key, doc_uri, docs, stack)?;
-            index.ref_targets.insert(here.clone(), target.clone());
-            if let Some(target_value) = index.nodes.get(&target) {
-                index.nodes.insert(here.clone(), target_value.clone());
-            }
-            return Ok(());
+    if let Value::Object(map) = value
+        && let Some(Value::String(ref_key)) = map.get("$ref")
+    {
+        let target = resolve_ref(ref_key, doc_uri, docs, stack)?;
+        index.ref_targets.insert(here.clone(), target.clone());
+        if let Some(target_value) = index.nodes.get(&target) {
+            index.nodes.insert(here.clone(), target_value.clone());
         }
+        return Ok(());
     }
 
     index.nodes.insert(here.clone(), value.clone());

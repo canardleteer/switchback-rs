@@ -2,7 +2,7 @@
 //! `[workspace.dependencies]`.
 
 use crate::workspace::WORKSPACE_ROOT;
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use clap::Parser;
 use std::fs;
 use std::path::{Path, PathBuf};

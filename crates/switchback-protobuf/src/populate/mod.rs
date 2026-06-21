@@ -20,7 +20,7 @@ use crate::companion::discover_companions;
 use crate::descriptor::FileDescriptorProto;
 use crate::descriptor_util::split_proto_type_name;
 use crate::input::ResolvedInput;
-use crate::populate::comments::{dedent_comment, package_overview, CommentIndex};
+use crate::populate::comments::{CommentIndex, dedent_comment, package_overview};
 use crate::populate::fence::{
     synthesize_enum_body, synthesize_message_body, synthesize_method_options_body,
     synthesize_service_body,

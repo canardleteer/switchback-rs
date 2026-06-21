@@ -5,16 +5,15 @@ use std::path::Path;
 use sha2::{Digest, Sha256};
 use switchback_codec_pb::WIRE_VERSION;
 use switchback_traits::{
-    companion_files_to_stored, ContractFamily, Document, EntityCategory, LinkExtractor,
-    ManualContract, Module, ModuleId, ReferenceManual, ResolvedManual, Source, SourceRef,
-    StoredEntity,
+    ContractFamily, Document, EntityCategory, LinkExtractor, ManualContract, Module, ModuleId,
+    ReferenceManual, ResolvedManual, Source, SourceRef, StoredEntity, companion_files_to_stored,
 };
 
 use crate::family::ProtobufFamily;
 use crate::input::ResolvedInput;
 use crate::link::ProtobufLinkExtractor;
-use crate::populate::grpc_attach;
 use crate::populate::PopulatedContract;
+use crate::populate::grpc_attach;
 
 pub fn build_reference_manual(
     populated: PopulatedContract,

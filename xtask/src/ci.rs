@@ -1,7 +1,7 @@
 //! CI helpers: fmt, clippy, test, toolchain, audit, rumdl, ryl.
 
-use crate::workspace::{cargo, external, WORKSPACE_ROOT};
-use anyhow::{bail, Context, Result};
+use crate::workspace::{WORKSPACE_ROOT, cargo, external};
+use anyhow::{Context, Result, bail};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 

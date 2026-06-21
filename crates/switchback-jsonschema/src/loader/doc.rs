@@ -23,10 +23,6 @@ pub struct Doc {
 
 impl Doc {
     pub fn fence_language(&self) -> &'static str {
-        if self.is_yaml {
-            "yaml"
-        } else {
-            "json"
-        }
+        if self.is_yaml { "yaml" } else { "json" }
     }
 }

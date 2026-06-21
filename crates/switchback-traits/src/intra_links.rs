@@ -1,7 +1,7 @@
 //! Intra-link splice helpers.
 
-use crate::link_context::LinkContext;
 use crate::LinkFormatter;
+use crate::link_context::LinkContext;
 use crate::{Anchor, IntraLink, LinkTarget};
 
 /// Applies resolved intra-links to a prose field, replacing anchored spans with

@@ -2,10 +2,12 @@
 name = "switchback-protocols"
 version.workspace = true
 edition.workspace = true
-rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-description = "Built-in protocol implementations (http, grpc) and ProtocolRegistry for switchback protocol attachments."
+homepage.workspace = true
+description = "HTTP and gRPC protocol attachments for the switchback framework."
+keywords = ["http", "grpc", "protocol", "rpc", "api"]
+categories = ["development-tools::documentation-tools"]
 include = [
     "src/**/*",
     "Cargo.toml",

@@ -4,7 +4,7 @@
 use crate::input::resolve_buf_path;
 #[cfg(not(feature = "buf"))]
 use crate::input::tool_exists;
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use std::fs::{self, File, OpenOptions};
 use std::io::{Read, Seek, SeekFrom};
 use std::path::{Path, PathBuf};

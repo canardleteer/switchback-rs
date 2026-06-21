@@ -1,7 +1,7 @@
 //! Golden HTML parity checks for the Rust protobuf / CEL highlighter.
 
 use crate::workspace::WORKSPACE_ROOT;
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use std::fs;
 use std::path::{Path, PathBuf};
 use switchback_mdbook::highlight::{highlight_source, normalize_newlines};

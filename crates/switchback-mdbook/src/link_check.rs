@@ -1,6 +1,6 @@
 //! Resolve relative Markdown links in a generated documentation tree.
 
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use switchback_traits::decode_markdown_link_path;

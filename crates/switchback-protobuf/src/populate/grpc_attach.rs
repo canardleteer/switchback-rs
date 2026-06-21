@@ -1,13 +1,13 @@
 //! gRPC protocol attachment helpers for protobuf populate.
 
-use buffa::unknown_fields::UnknownFieldData;
 use buffa::Message;
+use buffa::unknown_fields::UnknownFieldData;
 use buffa_descriptor::generated::descriptor::MethodDescriptorProto;
 use switchback_codec_pb::canardleteer::switchback::protocol::grpc::v1alpha1::RpcMetadataKeys;
 use switchback_protocols::{GrpcProtocol, ResponseProtocol};
 use switchback_traits::{ParameterRef, ProtocolAttachment, RefKind, Reference, ResponseRef};
 
-use crate::descriptor_util::{rpc_kind, RpcKind};
+use crate::descriptor_util::{RpcKind, rpc_kind};
 use crate::populate::fence::rpc_signature_plain;
 
 const SWITCHBACK_RPC_METADATA_FIELD: u32 = 50100;
@@ -76,7 +76,7 @@ fn metadata_parameters(method: &MethodDescriptorProto, module_id: &str) -> Vec<P
                 type_label: "string".to_string(),
                 description: String::new(),
                 protocols: vec![
-                    grpc.attach_metadata(&GrpcProtocol::metadata_meta(name, key.required))
+                    grpc.attach_metadata(&GrpcProtocol::metadata_meta(name, key.required)),
                 ],
             })
         })

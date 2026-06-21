@@ -5,8 +5,8 @@ use std::path::Path;
 use sha2::{Digest, Sha256};
 use switchback_codec_pb::WIRE_VERSION;
 use switchback_traits::{
-    companion_files_to_stored, ContractFamily, Document, EntityCategory, ManualContract, Module,
-    ModuleId, ReferenceManual, SourceRef, StoredEntity,
+    ContractFamily, Document, EntityCategory, ManualContract, Module, ModuleId, ReferenceManual,
+    SourceRef, StoredEntity, companion_files_to_stored,
 };
 
 use crate::family::JsonSchemaFamily;

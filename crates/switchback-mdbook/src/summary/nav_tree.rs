@@ -8,7 +8,7 @@ use switchback_traits::{Layout, LinkContext, OpenApiSummaryLabel, StoredEntity};
 
 use crate::companion::CompanionNav;
 use crate::summary::chapters::{entity_summary_items, package_target};
-use crate::summary::render_md::{link_path_for_summary, SUMMARY_MAX_DEPTH};
+use crate::summary::render_md::{SUMMARY_MAX_DEPTH, link_path_for_summary};
 
 pub struct NavInput<'a> {
     pub companions: &'a [CompanionNav],

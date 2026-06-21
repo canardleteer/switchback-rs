@@ -32,12 +32,11 @@ fn collect_ref_strings(
 ) {
     match value {
         Value::Object(map) => {
-            if let Some(Value::String(ref_key)) = map.get("$ref") {
-                if let Some(reference) =
+            if let Some(Value::String(ref_key)) = map.get("$ref")
+                && let Some(reference) =
                     ref_to_reference(ref_key, doc_uri, module_id, uri_to_group, index)
-                {
-                    out.push(reference);
-                }
+            {
+                out.push(reference);
             }
             for v in map.values() {
                 collect_ref_strings(v, out, doc_uri, module_id, uri_to_group, index);
@@ -113,10 +112,10 @@ pub fn resolve_ref_target(
         .unwrap_or_else(|| COMPONENTS_GROUP.to_string());
 
     let node = NodeRef::with_pointer(&target_doc_uri, pointer);
-    if let Some(resolved) = index.ref_targets.get(&node) {
-        if resolved.pointer.ends_with("#recursive") {
-            return Some((target_group, "schema", "recursive".into()));
-        }
+    if let Some(resolved) = index.ref_targets.get(&node)
+        && resolved.pointer.ends_with("#recursive")
+    {
+        return Some((target_group, "schema", "recursive".into()));
     }
 
     let (category, name) = name_from_pointer(pointer, &target_doc_uri)?;
@@ -174,10 +173,10 @@ pub fn schema_ref_from_value(
     uri_to_group: &BTreeMap<String, String>,
     index: &RefIndex,
 ) -> Option<Reference> {
-    if let Some(obj) = value.as_object() {
-        if let Some(Value::String(ref_key)) = obj.get("$ref") {
-            return ref_to_reference(ref_key, doc_uri, module_id, uri_to_group, index);
-        }
+    if let Some(obj) = value.as_object()
+        && let Some(Value::String(ref_key)) = obj.get("$ref")
+    {
+        return ref_to_reference(ref_key, doc_uri, module_id, uri_to_group, index);
     }
     None
 }

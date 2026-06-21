@@ -1,6 +1,6 @@
 //! Integration tests for mdbook-protobuf-highlight preprocessor behavior.
 
-use switchback_mdbook::highlight::{transform_chapter, HighlightConfig};
+use switchback_mdbook::highlight::{HighlightConfig, transform_chapter};
 
 #[test]
 fn preprocessor_rewrites_protobuf_fence_to_html() {

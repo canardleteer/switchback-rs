@@ -1,8 +1,8 @@
 //! Message definition synthesis.
 
 use super::{push_inline_comment_lines, strip_leading_dot};
-use crate::populate::comments::{path, CommentIndex};
-use crate::populate::source::{push_indented_lines, SourceCache};
+use crate::populate::comments::{CommentIndex, path};
+use crate::populate::source::{SourceCache, push_indented_lines};
 use buffa_descriptor::generated::descriptor::field_descriptor_proto::Type;
 use buffa_descriptor::generated::descriptor::{DescriptorProto, FieldDescriptorProto};
 
@@ -72,11 +72,11 @@ fn synthesize_message_field(
         push_inline_comment_lines(body, c);
     }
     let field_path = [path::FILE_MESSAGE, mi as i32, path::MSG_FIELD, fi as i32];
-    if let Some(src) = file_source {
-        if let Some(snippet) = idx.span_snippet(src, &field_path) {
-            push_indented_lines(body, &snippet, indent);
-            return;
-        }
+    if let Some(src) = file_source
+        && let Some(snippet) = idx.span_snippet(src, &field_path)
+    {
+        push_indented_lines(body, &snippet, indent);
+        return;
     }
     append_field(body, field, indent);
 }

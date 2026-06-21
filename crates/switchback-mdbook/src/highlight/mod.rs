@@ -9,9 +9,9 @@ mod markdown;
 mod protobuf;
 
 pub use book_toml::{
-    config_from_mdbook, configure_book_toml, install_book_toml, theme_css_content,
-    write_theme_css_file, PREPROCESSOR_COMMAND, PREPROCESSOR_NAME, THEME_CSS_REL,
+    PREPROCESSOR_COMMAND, PREPROCESSOR_NAME, THEME_CSS_REL, config_from_mdbook,
+    configure_book_toml, install_book_toml, theme_css_content, write_theme_css_file,
 };
 pub use cel_split::split_message_cel_blocks;
 pub use html::normalize_newlines;
-pub use markdown::{highlight_source, transform_chapter, HighlightConfig};
+pub use markdown::{HighlightConfig, highlight_source, transform_chapter};

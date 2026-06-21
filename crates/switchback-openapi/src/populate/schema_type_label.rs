@@ -18,12 +18,11 @@ pub fn schema_type_label(value: &Value) -> String {
 
 /// Derive a parameter type label from the parameter object and its schema value.
 pub fn parameter_type_label(param: &Value, schema: &Value) -> String {
-    if let Some(obj) = param.as_object() {
-        if obj.get("schema").is_none() {
-            if let Some(t) = obj.get("type") {
-                return type_field_label(t);
-            }
-        }
+    if let Some(obj) = param.as_object()
+        && obj.get("schema").is_none()
+        && let Some(t) = obj.get("type")
+    {
+        return type_field_label(t);
     }
     schema_type_label(schema)
 }

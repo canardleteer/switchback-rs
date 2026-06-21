@@ -11,12 +11,12 @@ use std::path::{Path, PathBuf};
 use anyhow::{Context, Result};
 use clap::Parser;
 use serde::Deserialize;
-use switchback_assemble::{assemble_module, AssembleArgs, GroupPrefixPolicy};
+use switchback_assemble::{AssembleArgs, GroupPrefixPolicy, assemble_module};
 use switchback_codec_pb::ProtobufCodec;
-use switchback_mdbook::{write_output_files, MdBookRenderer};
+use switchback_mdbook::{MdBookRenderer, write_output_files};
 use switchback_openapi::load::LoadArgs as OpenApiLoadArgs;
-use switchback_protobuf::load::{ensure_test_proto_deps, LoadArgs as ProtobufLoadArgs};
 use switchback_protobuf::Compiler;
+use switchback_protobuf::load::{LoadArgs as ProtobufLoadArgs, ensure_test_proto_deps};
 use switchback_traits::{Layout, Options, ReferenceManual, SyncRenderer, SyncSwitchbackCodec};
 
 #[derive(Parser)]

@@ -15,8 +15,8 @@ mod render;
 mod spec_vendor;
 mod workspace;
 
-use align_versions::{align_workspace_versions, AlignVersionsArgs};
-use anyhow::{bail, Result};
+use align_versions::{AlignVersionsArgs, align_workspace_versions};
+use anyhow::{Result, bail};
 use clap::{Parser, Subcommand};
 use workspace::run;
 

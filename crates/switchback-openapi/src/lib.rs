@@ -28,15 +28,15 @@ pub mod populate;
 pub use category::OpenApiCategory;
 pub use contract::OpenApiContract;
 pub use examples::{
+    EXAMPLE_ACME_INPUTS, EXAMPLE_FIXTURES, ExampleFixture, ExampleTier, MICRO_ACME_ROOT,
+    MICRO_COMPANION, MICRO_MULTIFILE, MICRO_NULLABLE_3_0, MICRO_STREAMING, MICRO_TAG_GROUPS,
+    UPSTREAM_HIGH_3_0, UPSTREAM_HIGH_3_1_WEBHOOK, UPSTREAM_LOW_3_0, UPSTREAM_LOW_3_1,
     default_example_fixtures, example_fixture, fixture_path, fixtures_dir, fixtures_for_tier,
-    load_acme_example, load_example, load_fixture_relative, ExampleFixture, ExampleTier,
-    EXAMPLE_ACME_INPUTS, EXAMPLE_FIXTURES, MICRO_ACME_ROOT, MICRO_COMPANION, MICRO_MULTIFILE,
-    MICRO_NULLABLE_3_0, MICRO_STREAMING, MICRO_TAG_GROUPS, UPSTREAM_HIGH_3_0,
-    UPSTREAM_HIGH_3_1_WEBHOOK, UPSTREAM_LOW_3_0, UPSTREAM_LOW_3_1,
+    load_acme_example, load_example, load_fixture_relative,
 };
 pub use family::OpenApiFamily;
 pub use link::OpenApiLinkExtractor;
-pub use load::{load, LoadArgs};
+pub use load::{LoadArgs, load};
 pub use manual::restore_sources;
 pub use populate::parse_openapi_version;
 

@@ -6,9 +6,9 @@
 
 #[cfg(all(feature = "protoc", not(feature = "buf")))]
 mod protoc_only {
+    use switchback_protobuf::LoadArgs;
     use switchback_protobuf::examples::fixtures_proto_dir;
     use switchback_protobuf::input::Compiler;
-    use switchback_protobuf::LoadArgs;
 
     #[test]
     fn buf_compiler_disabled_returns_clear_error() {
@@ -27,9 +27,9 @@ mod protoc_only {
 
 #[cfg(all(feature = "buf", not(feature = "protoc")))]
 mod buf_only {
+    use switchback_protobuf::LoadArgs;
     use switchback_protobuf::examples::fixtures_proto_dir;
     use switchback_protobuf::input::Compiler;
-    use switchback_protobuf::LoadArgs;
 
     #[test]
     fn protoc_compiler_disabled_returns_clear_error() {

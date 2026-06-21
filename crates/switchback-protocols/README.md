@@ -1,5 +1,16 @@
 # switchback-protocols
 
+> [!WARNING]
+> Early prototype while exploring design and aiming for equivalence
+> with [protobuf-mdbook](https://github.com/canardleteer/protobuf-mdbook), while
+> expanding scope through traits and intermediary on-disk representation.
+>
+> This is not ready for adoption, nor even stable at a `v1alpha1` yet. You'll
+> want to keep eyes on the repository for development.
+>
+> A lot of this is clanker driven, so vetting a good human read through pass
+> hasn't been completed yet.
+
 Built-in [`http`](https://www.rfc-editor.org/rfc/rfc9110.html) and
 [`grpc`](https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-GRPC.md) protocol
 implementations plus `ProtocolRegistry` for encoding and decoding
@@ -70,5 +81,5 @@ and handle `DecodedAttachment::Opaque` for unknown ids until you add a decoder.
 - [ADR 0012](https://github.com/canardleteer/switchback-rs/blob/main/docs/adr/0012-http-streaming-inference-and-grpc-metadata-from-protobuf-options.md)
   — streaming inference and protobuf metadata extension
 - [Glossary — protocol](https://github.com/canardleteer/switchback-rs/blob/main/docs/GLOSSARY.md#protocol)
-- `planning/PROGRESS.md` (local; gitignored) — protocol layer status
-  (**Implemented**); AsyncAPI multi-binding remains follow-on
+- AsyncAPI multi-binding populate remains follow-on (see
+  [ADR 0011](https://github.com/canardleteer/switchback-rs/blob/main/docs/adr/0011-protocol-layer-and-contract-family-binding.md))

@@ -9,13 +9,13 @@
 use std::fs;
 use std::path::PathBuf;
 
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use clap::{Parser, ValueEnum};
 use switchback_codec_pb::ProtobufCodec;
-use switchback_mdbook::{write_output_files, MdBookRenderer};
+use switchback_mdbook::{MdBookRenderer, write_output_files};
 use switchback_openapi::{
-    default_example_fixtures, example_fixture, fixtures_for_tier, load_example, ExampleFixture,
-    ExampleTier, EXAMPLE_FIXTURES,
+    EXAMPLE_FIXTURES, ExampleFixture, ExampleTier, default_example_fixtures, example_fixture,
+    fixtures_for_tier, load_example,
 };
 use switchback_traits::{
     Layout, OpenApiOperationSource, OpenApiSummaryLabel, Options, ReferenceManual, SyncRenderer,

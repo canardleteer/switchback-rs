@@ -56,9 +56,9 @@ pub use error::{Result, SwitchbackError};
 pub use ids::{EntityId, GroupId, ModuleId, SpecVersion};
 pub use intra_links::{anchor, apply_intra_links, links_for_field};
 pub use layout_paths::{
-    decode_markdown_link_path, encode_markdown_link_path, heading_slug, layout_entity_rel_path,
-    package_index_rel, package_page_rel, relative_path_from_dir, unique_heading_ids,
-    LayoutEntityKey, ProtobufEntityKind,
+    LayoutEntityKey, ProtobufEntityKind, decode_markdown_link_path, encode_markdown_link_path,
+    heading_slug, layout_entity_rel_path, package_index_rel, package_page_rel,
+    relative_path_from_dir, unique_heading_ids,
 };
 pub use link_context::LinkContext;
 pub use model::{
@@ -73,10 +73,10 @@ pub use options::{EscapeTags, Layout, OpenApiOperationSource, OpenApiSummaryLabe
 pub use paths::{entity_category_dir, entity_rel_path};
 pub use response_severity::ResponseSeverity;
 pub use traits::{
-    companion_files_to_stored, AsyncCompanionStrategy, AsyncContractLoader, AsyncLinkExtractor,
-    CompanionDiscovery, CompanionStrategy, Contract, ContractFamily, Entity, EntityCategory,
-    GenericCategory, LinkExtractor, LinkFormatter, OutputFile, RawDoc, Renderer, SupportedVersion,
-    SwitchbackCodec, SyncRenderer, SyncSwitchbackCodec, VersionStatus,
+    AsyncCompanionStrategy, AsyncContractLoader, AsyncLinkExtractor, CompanionDiscovery,
+    CompanionStrategy, Contract, ContractFamily, Entity, EntityCategory, GenericCategory,
+    LinkExtractor, LinkFormatter, OutputFile, RawDoc, Renderer, SupportedVersion, SwitchbackCodec,
+    SyncRenderer, SyncSwitchbackCodec, VersionStatus, companion_files_to_stored,
 };
 
 pub use model::CompanionFile;

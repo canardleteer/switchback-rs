@@ -1,6 +1,6 @@
 //! Path normalization and proto file discovery.
 
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use std::path::{Component, Path, PathBuf};
 use walkdir::WalkDir;
 
@@ -101,13 +101,12 @@ pub fn collect_module_proto_names(
         if !is_proto_file(path) {
             continue;
         }
-        if let Ok(name) = proto_name_relative_to_module(&module_root, path) {
-            if proto_file
+        if let Ok(name) = proto_name_relative_to_module(&module_root, path)
+            && proto_file
                 .iter()
                 .any(|f| f.name.as_deref() == Some(name.as_str()))
-            {
-                names.push(name);
-            }
+        {
+            names.push(name);
         }
     }
     names.sort();
