@@ -5,7 +5,8 @@
 > with [protobuf-mdbook](https://github.com/canardleteer/protobuf-mdbook), while
 > expanding scope through traits and intermediary on-disk representation.
 >
-> This is not ready for adoption, nor even stable at a `v1alpha1` yet.
+> This is not ready for adoption, nor even stable at a `v1alpha1` yet. You'll
+> want to keep eyes on the repository for development.
 >
 > A lot of this is clanker driven, so vetting a good human read through pass
 > hasn't been completed yet.
