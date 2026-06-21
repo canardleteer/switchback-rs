@@ -41,8 +41,8 @@ serde_json.workspace = true
 serde-saphyr.workspace = true
 
 [dev-dependencies]
-switchback-assemble.workspace = true
-switchback-asyncapi.workspace = true
-switchback-openapi.workspace = true
-switchback-protobuf = { workspace = true, features = ["buf", "protoc"] }
+switchback-assemble = { path = "../switchback-assemble" }
+switchback-asyncapi = { path = "../switchback-asyncapi" }
+switchback-openapi = { path = "../switchback-openapi" }
+switchback-protobuf = { path = "../switchback-protobuf", features = ["buf", "protoc"] }
 tempfile.workspace = true
