@@ -128,8 +128,8 @@ your changed paths).
 | `rust-tests.yml` matrix (linux / macOS) | After gate; `check`/`clippy` then `ci-post` on macOS only | `cargo xtask check`, `clippy`, `ci-post` (or full `cargo xtask ci`) |
 | [`rumdl.yml`](.github/workflows/rumdl.yml) | Every PR to `main`; push to `main` when `**/*.md` or `.rumdl.toml` change | `cargo xtask rumdl-check` |
 | [`yaml-lint.yml`](.github/workflows/yaml-lint.yml) | Every PR to `main`; push to `main` when in-repo YAML under `crates/`, `examples/`, `proto/` changes | `cargo xtask ryl` |
-| [`release-plz.yml`](.github/workflows/release-plz.yml) | Disabled until bootstrap; push to `main` when re-enabled | N/A |
-| [`publish-crate.yml`](.github/workflows/publish-crate.yml) | Manual `workflow_dispatch` on `main` only | N/A — bootstrap publish one crate at a time |
+| [`release-plz.yml`](.github/workflows/release-plz.yml) | Push to `main`, `workflow_dispatch` | N/A |
+| [`publish-crate.yml`](.github/workflows/publish-crate.yml) | Manual `workflow_dispatch` on `main` only | N/A — emergency republish one crate at a time |
 
 GHA uses
 [`rustsec/audit-check`](https://github.com/rustsec/audit-check/commit/858dc40f52ca2b8570b7a997c1c4e35c6fc9a432)
@@ -196,19 +196,15 @@ Audit, Markdown, and YAML hygiene run via separate workflows (see table above).
 Configuration lives in [`release-plz.toml`](release-plz.toml); the workspace
 changelog is [`CHANGELOG.md`](CHANGELOG.md).
 
-### crates.io bootstrap (current)
+### crates.io bootstrap (completed)
 
-[release-plz](https://release-plz.dev/) is **disabled** in
-[`.github/workflows/release-plz.yml`](.github/workflows/release-plz.yml) until
-all ten `switchback-*` crate names exist on crates.io. Automated
-`release-plz release` is unsafe for ten **new** crate names: [crates.io rate
-limits](https://crates.io/docs/rate-limits) allow a burst of five new crates,
-then one every ten minutes.
+All ten `switchback-*` crate names are registered on crates.io at
+`0.0.1-0.dev.0.<suffix>` (lockstep suffix via `version_suffix` on
+[`publish-crate.yml`](.github/workflows/publish-crate.yml); **`main` stays at
+`0.0.1-0.dev.1` in git**). Keep `publish-crate.yml` for emergency manual
+republish of one crate at a time.
 
-Bootstrap uses
-[`.github/workflows/publish-crate.yml`](.github/workflows/publish-crate.yml)
-(`workflow_dispatch` on **`main` only**, `release` environment). Pick one crate
-per run in **dependency order**:
+Reference order used for first-time registration (dependency order):
 
 1. `switchback-traits`
 2. `switchback-codec-pb`
@@ -221,23 +217,17 @@ per run in **dependency order**:
 9. `switchback-mdbook`
 10. `switchback-assemble`
 
-Each run publishes `0.0.1-0.dev.0.<short_sha>` (SHA of `main` at trigger time)
-with `--allow-dirty` after temporarily aligning the workspace version on the
-runner. **`main` stays at `0.0.1-0.dev.1` in git.** The `0.dev.0.<sha>` segment
-keeps bootstrap versions strictly below `0.0.1-0.dev.1` for the later
-release-plz publish.
-
-After every **fifth** successful bootstrap publish, wait **eleven minutes**
-before the next run. Confirm each crate on crates.io before continuing.
+After every **fifth** new crate, wait **eleven minutes** before the next run
+([crates.io rate limits](https://crates.io/docs/rate-limits)).
 
 ```bash
-gh workflow run publish-crate.yml -f crate=switchback-traits --ref main
+gh workflow run publish-crate.yml -f crate=switchback-traits -f version_suffix=ffcda32 --ref main
 ```
 
-### Steady-state release-plz (after bootstrap)
+### Steady-state release-plz
 
-Re-enable release-plz by removing `false &&` from both jobs in
-`release-plz.yml` (keep `publish-crate.yml` for emergency manual republish).
+[release-plz](https://release-plz.dev/) is enabled in
+[`.github/workflows/release-plz.yml`](.github/workflows/release-plz.yml).
 
 Flow:
 
