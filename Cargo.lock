@@ -1232,7 +1232,7 @@ dependencies = [
 
 [[package]]
 name = "mdbook-openapi-example"
-version = "0.0.1-0.dev.1"
+version = "0.0.1-0.dev.2"
 dependencies = [
  "anyhow",
  "clap",
@@ -1256,7 +1256,7 @@ dependencies = [
 
 [[package]]
 name = "mdbook-protobuf-example"
-version = "0.0.1-0.dev.1"
+version = "0.0.1-0.dev.2"
 dependencies = [
  "anyhow",
  "clap",
@@ -1845,7 +1845,7 @@ dependencies = [
 
 [[package]]
 name = "reference-manual-example"
-version = "0.0.1-0.dev.1"
+version = "0.0.1-0.dev.2"
 dependencies = [
  "anyhow",
  "clap",
@@ -2267,7 +2267,7 @@ checksum = "13c2bddecc57b384dee18652358fb23172facb8a2c51ccc10d74c157bdea3292"
 
 [[package]]
 name = "switchback-assemble"
-version = "0.0.1-0.dev.1"
+version = "0.0.1-0.dev.2"
 dependencies = [
  "switchback-openapi",
  "switchback-protobuf",
@@ -2276,7 +2276,7 @@ dependencies = [
 
 [[package]]
 name = "switchback-asyncapi"
-version = "0.0.1-0.dev.1"
+version = "0.0.1-0.dev.2"
 dependencies = [
  "serde",
  "sha2 0.10.9",
@@ -2288,7 +2288,7 @@ dependencies = [
 
 [[package]]
 name = "switchback-codec-pb"
-version = "0.0.1-0.dev.1"
+version = "0.0.1-0.dev.2"
 dependencies = [
  "buffa",
  "buffa-build",
@@ -2300,7 +2300,7 @@ dependencies = [
 
 [[package]]
 name = "switchback-jsonschema"
-version = "0.0.1-0.dev.1"
+version = "0.0.1-0.dev.2"
 dependencies = [
  "anyhow",
  "jsonschema",
@@ -2317,7 +2317,7 @@ dependencies = [
 
 [[package]]
 name = "switchback-mdbook"
-version = "0.0.1-0.dev.1"
+version = "0.0.1-0.dev.2"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2343,7 +2343,7 @@ dependencies = [
 
 [[package]]
 name = "switchback-openapi"
-version = "0.0.1-0.dev.1"
+version = "0.0.1-0.dev.2"
 dependencies = [
  "anyhow",
  "serde",
@@ -2361,7 +2361,7 @@ dependencies = [
 
 [[package]]
 name = "switchback-openrpc"
-version = "0.0.1-0.dev.1"
+version = "0.0.1-0.dev.2"
 dependencies = [
  "serde",
  "sha2 0.10.9",
@@ -2373,7 +2373,7 @@ dependencies = [
 
 [[package]]
 name = "switchback-protobuf"
-version = "0.0.1-0.dev.1"
+version = "0.0.1-0.dev.2"
 dependencies = [
  "anyhow",
  "buf-tools",
@@ -2392,7 +2392,7 @@ dependencies = [
 
 [[package]]
 name = "switchback-protocols"
-version = "0.0.1-0.dev.1"
+version = "0.0.1-0.dev.2"
 dependencies = [
  "buffa",
  "switchback-codec-pb",
@@ -2401,7 +2401,7 @@ dependencies = [
 
 [[package]]
 name = "switchback-traits"
-version = "0.0.1-0.dev.1"
+version = "0.0.1-0.dev.2"
 dependencies = [
  "static_assertions",
  "tempfile",
@@ -3218,7 +3218,7 @@ dependencies = [
 
 [[package]]
 name = "xtask"
-version = "0.0.1-0.dev.1"
+version = "0.0.1-0.dev.2"
 dependencies = [
  "anyhow",
  "buf-tools",
