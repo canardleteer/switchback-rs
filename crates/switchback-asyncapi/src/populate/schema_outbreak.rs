@@ -4,15 +4,13 @@ use std::collections::BTreeSet;
 
 use serde_json::Value;
 use switchback_avro::collect_named_avro_schemas;
-use switchback_jsonschema::schema::Schema;
 use switchback_avro::populate_avro_schema_body;
+use switchback_jsonschema::schema::Schema;
 use switchback_traits::{EntityBody, EntityCategory, RefKind, Reference};
 
 use crate::category::AsyncApiCategory;
 use crate::populate::components::push_schema_entity;
-use crate::populate::schema_dispatch::{
-    is_avro_schema_format, payload_value, schema_format,
-};
+use crate::populate::schema_dispatch::{is_avro_schema_format, payload_value, schema_format};
 use crate::populate::{PopulateCtx, PopulatedEntity};
 
 pub fn outbreak_entities(entities: &mut Vec<PopulatedEntity>, ctx: &PopulateCtx<'_>) {
@@ -87,7 +85,10 @@ fn outbreak_message_payload(
         return;
     }
     let schema_val = schema_val.expect("inline json schema checked above");
-    if schema_val.as_object().is_some_and(|o| o.contains_key("$ref")) {
+    if schema_val
+        .as_object()
+        .is_some_and(|o| o.contains_key("$ref"))
+    {
         return;
     }
 
@@ -205,9 +206,8 @@ fn attach_message_payload_refs(entities: &mut [PopulatedEntity], ctx: &PopulateC
             continue;
         }
 
-        let payload_ref_name = inline_json_schema_value(payload).map(|schema_val| {
-            inline_json_schema_name(&pe.entity.id.name, schema_val)
-        });
+        let payload_ref_name = inline_json_schema_value(payload)
+            .map(|schema_val| inline_json_schema_name(&pe.entity.id.name, schema_val));
 
         if let Some(name) = payload_ref_name {
             push_schema_ref_if_present(pe, &name, &group, &schema_names, ctx);

@@ -28,11 +28,12 @@ fn collect_named_avro_schemas_rec(
                 .filter(|s| !s.is_empty());
             let ty = map.get("type").and_then(|v| v.as_str());
 
-            let is_named = name.is_some() && (ty == Some("record")
-                || ty == Some("enum")
-                || ty == Some("fixed")
-                || map.contains_key("fields")
-                || map.get("symbols").is_some());
+            let is_named = name.is_some()
+                && (ty == Some("record")
+                    || ty == Some("enum")
+                    || ty == Some("fixed")
+                    || map.contains_key("fields")
+                    || map.get("symbols").is_some());
 
             if let Some(name) = name
                 && is_named
