@@ -8,6 +8,7 @@ use crate::render::fence::{
     entity_module_group, link_structural_refs_in_prose, operation_signature_markdown,
     proto_file_name, push_markdown_doc, push_proto_fence_body, render_proto_fence,
 };
+use crate::render::asyncapi::{is_asyncapi_family, render_asyncapi_package_sections};
 use crate::render::openapi::{is_openapi_family, render_openapi_package_sections};
 use crate::render::{md_heading, push_paragraph_break};
 
@@ -39,6 +40,11 @@ pub fn render_package_page(
 
     if is_openapi_family(family) {
         render_openapi_package_sections(&mut out, entities, package, &ctx, opts, formatter);
+        return (path, out);
+    }
+
+    if is_asyncapi_family(family) {
+        render_asyncapi_package_sections(&mut out, entities, package, &ctx, opts, formatter);
         return (path, out);
     }
 

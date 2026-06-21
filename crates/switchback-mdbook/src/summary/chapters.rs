@@ -6,10 +6,14 @@ use std::path::{Path, PathBuf};
 use mdbook_summary::{Link, Summary, SummaryItem};
 use switchback_traits::{
     EntityBody, Group, Layout, LinkContext, OpenApiSummaryLabel, ProtobufEntityKind,
-    ReferenceManual, StoredEntity,
+    ReferenceManual, StoredEntity, entity_category_dir, entity_rel_path,
 };
 
 use crate::companion::CompanionNav;
+use crate::render::asyncapi::{
+    asyncapi_category_rank, asyncapi_summary_link_text, asyncapi_summary_sort_key,
+    renderable_asyncapi_entities,
+};
 use crate::render::openapi::{
     openapi_category_rank, openapi_summary_link_text, openapi_summary_sort_key,
     renderable_openapi_entities,
@@ -43,6 +47,10 @@ pub fn entity_summary_items(
             summary_from,
             openapi_summary_label,
         );
+    }
+
+    if family == "asyncapi" {
+        return asyncapi_entity_summary_items(package, group_dir, entities, links, summary_from);
     }
 
     let mut out = Vec::new();
@@ -106,6 +114,46 @@ fn openapi_entity_summary_items(
     out
 }
 
+fn asyncapi_entity_summary_items(
+    package: &str,
+    group_dir: &str,
+    entities: &[StoredEntity],
+    links: &LinkContext,
+    summary_from: &Path,
+) -> Vec<SummaryItem> {
+    let mut renderable: Vec<_> = renderable_asyncapi_entities(entities);
+    renderable.sort_by(|a, b| {
+        asyncapi_category_rank(&a.category)
+            .cmp(&asyncapi_category_rank(&b.category))
+            .then_with(|| {
+                asyncapi_summary_sort_key(a).cmp(&asyncapi_summary_sort_key(b))
+            })
+    });
+
+    let mut out = Vec::new();
+    for entity in renderable {
+        let p = links
+            .entity_paths
+            .iter()
+            .find(|(key, _)| {
+                key.group == package && key.category == entity.category && key.name == entity.name
+            })
+            .map(|(_, path)| path.clone())
+            .unwrap_or_else(|| {
+                let rel = entity_rel_path(
+                    group_dir,
+                    entity_category_dir(&entity.category),
+                    &entity.name,
+                );
+                PathBuf::from(format!("{}/{}", links.markdown_root, rel))
+            });
+        let path = render_md::link_path_for_summary(summary_from, &p);
+        let title = asyncapi_summary_link_text(entity);
+        out.push(SummaryItem::Link(Link::new(title, path)));
+    }
+    out
+}
+
 #[allow(clippy::too_many_arguments)]
 pub fn flat_package_chapter(
     package: &str,
@@ -163,6 +211,36 @@ pub fn flat_package_chapter(
     }
 }
 
+pub fn build_asyncapi_summary(
+    h1: &str,
+    packages: &[super::nav_tree::PackageAtDir<'_>],
+    layout: Layout,
+    package_only: bool,
+    links: &LinkContext,
+    summary_from: &Path,
+) -> Summary {
+    let mut summary = Summary::default();
+    summary.title = Some(h1.to_string());
+    summary.numbered_chapters = packages
+        .iter()
+        .map(|pkg| {
+            flat_package_chapter(
+                pkg.package,
+                pkg.title,
+                pkg.group_dir,
+                pkg.entities.to_vec(),
+                pkg.family,
+                layout,
+                package_only,
+                links,
+                summary_from,
+                OpenApiSummaryLabel::default(),
+            )
+        })
+        .collect();
+    summary
+}
+
 pub fn build_openapi_summary(
     h1: &str,
     packages: &[super::nav_tree::PackageAtDir<'_>],
@@ -212,9 +290,10 @@ pub fn build_mixed_family_summary(
     let mut summary = Summary::default();
     summary.title = Some(h1.to_string());
 
-    let sections: [(&str, &str); 2] = [
+    let sections: [(&str, &str); 3] = [
         ("openapi", "HTTP (OpenAPI)"),
         ("protobuf", "gRPC (Protobuf)"),
+        ("asyncapi", "Events (AsyncAPI)"),
     ];
 
     for (family, section_title) in sections {
@@ -227,8 +306,8 @@ pub fn build_mixed_family_summary(
             continue;
         }
 
-        let nested = if family == "openapi" {
-            build_openapi_summary(
+        let nested = match family {
+            "openapi" => build_openapi_summary(
                 "",
                 &family_packages,
                 layout,
@@ -237,8 +316,17 @@ pub fn build_mixed_family_summary(
                 summary_from,
                 openapi_summary_label,
             )
-            .numbered_chapters
-        } else {
+            .numbered_chapters,
+            "asyncapi" => build_asyncapi_summary(
+                "",
+                &family_packages,
+                layout,
+                package_only,
+                links,
+                summary_from,
+            )
+            .numbered_chapters,
+            _ => {
             let family_companions: Vec<CompanionNav> = manual
                 .modules
                 .iter()
@@ -259,6 +347,7 @@ pub fn build_mixed_family_summary(
                 package_only,
             )
             .numbered_chapters
+            }
         };
 
         let mut section = Link::default();
