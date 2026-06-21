@@ -143,10 +143,9 @@ fn wire_policy_encode_succeeds() {
 
 #[test]
 fn upstream_streetlights_mqtt_loads() {
-    let manual = switchback_asyncapi::load_fixture_relative(
-        switchback_asyncapi::UPSTREAM_STREETLIGHTS_MQTT,
-    )
-    .expect("load streetlights mqtt");
+    let manual =
+        switchback_asyncapi::load_fixture_relative(switchback_asyncapi::UPSTREAM_STREETLIGHTS_MQTT)
+            .expect("load streetlights mqtt");
     assert!(count_entities(&manual) > 5);
 }
 

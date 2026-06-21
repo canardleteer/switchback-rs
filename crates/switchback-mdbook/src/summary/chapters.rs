@@ -14,13 +14,13 @@ use crate::render::asyncapi::{
     asyncapi_category_rank, asyncapi_summary_link_text, asyncapi_summary_sort_key,
     renderable_asyncapi_entities,
 };
-use crate::render::openrpc::{
-    openrpc_category_rank, openrpc_summary_link_text, openrpc_summary_sort_key,
-    renderable_openrpc_entities,
-};
 use crate::render::openapi::{
     openapi_category_rank, openapi_summary_link_text, openapi_summary_sort_key,
     renderable_openapi_entities,
+};
+use crate::render::openrpc::{
+    openrpc_category_rank, openrpc_summary_link_text, openrpc_summary_sort_key,
+    renderable_openrpc_entities,
 };
 use crate::summary::nav_tree::{NavInput, build_summary};
 use crate::summary::render_md;
@@ -171,9 +171,7 @@ fn openrpc_entity_summary_items(
     renderable.sort_by(|a, b| {
         openrpc_category_rank(&a.category)
             .cmp(&openrpc_category_rank(&b.category))
-            .then_with(|| {
-                openrpc_summary_sort_key(a).cmp(&openrpc_summary_sort_key(b))
-            })
+            .then_with(|| openrpc_summary_sort_key(a).cmp(&openrpc_summary_sort_key(b)))
     });
 
     let mut out = Vec::new();

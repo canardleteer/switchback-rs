@@ -295,7 +295,8 @@ does not yet populate `intra_links`.
 
 ### Grouping
 
-- **Single-entry:** `x-tagGroup` sections plus `default` and `components` groups.
+- **Single-entry:** `x-tagGroup` sections plus `default` and `components`
+  groups.
 - **Multi-entry Acme:** one group per entry via `info.x-switchback-group` or
   `vN/openrpc.json` path convention → `acme.example.vN`.
 
