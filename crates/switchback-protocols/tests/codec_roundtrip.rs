@@ -5,13 +5,13 @@
 
 use std::path::PathBuf;
 
-use switchback_codec_pb::{ProtobufCodec, WIRE_VERSION};
 use switchback_codec_pb::canardleteer::switchback::protocol::grpc::v1alpha1::{
     GrpcContractMeta, GrpcErrorMeta, GrpcMetadataMeta, GrpcOperationMeta, GrpcStatusMeta,
 };
 use switchback_codec_pb::canardleteer::switchback::protocol::http::v1alpha1::{
     HttpContractMeta, HttpErrorMeta, HttpOperationMeta, HttpParameterMeta, HttpResponseMeta,
 };
+use switchback_codec_pb::{ProtobufCodec, WIRE_VERSION};
 use switchback_protocols::{GrpcProtocol, HttpProtocol, ProtocolRegistry};
 use switchback_traits::{
     EntityBody, EntityRef, Group, GroupId, ManualContract, Module, ModuleId, OperationBody,

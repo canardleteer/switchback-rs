@@ -1,8 +1,8 @@
 mod common;
 
 use common::{
-    assert_sources_match_inputs, codec_roundtrip, count_entities, count_refs,
-    fixtures_catalog_dir, load_catalog, normalize, restore_sources_map,
+    assert_sources_match_inputs, codec_roundtrip, count_entities, count_refs, fixtures_catalog_dir,
+    load_catalog, normalize, restore_sources_map,
 };
 use switchback_jsonschema::examples::EXAMPLE_CATALOG_INPUTS;
 use switchback_jsonschema::{LoadArgs, load, resolve_inputs};
