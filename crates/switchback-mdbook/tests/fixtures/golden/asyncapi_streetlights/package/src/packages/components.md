@@ -6,6 +6,11 @@
 
 Command a particular streetlight to dim the lights.
 
+#### Payload
+
+- [dimLightPayload](#dimlightpayload)
+- `commonHeaders`
+
 ```yaml
 name: dimLight
 payload:
@@ -19,6 +24,11 @@ traits:
 ### lightMeasured
 
 Inform about environmental lighting conditions of a particular streetlight.
+
+#### Payload
+
+- [lightMeasuredPayload](#lightmeasuredpayload)
+- `commonHeaders`
 
 ```yaml
 contentType: application/json
@@ -35,6 +45,11 @@ traits:
 
 Command a particular streetlight to turn the lights on or off.
 
+#### Payload
+
+- [turnOnOffPayload](#turnonoffpayload)
+- `commonHeaders`
+
 ```yaml
 name: turnOnOff
 payload:
@@ -49,6 +64,12 @@ traits:
 
 ### dimLightPayload
 
+#### Properties
+
+| Field | Type |
+| --- | --- |
+| `sentAt` | [sentAt](#sentat) |
+
 ```yaml
 properties:
   percentage:
@@ -62,6 +83,12 @@ type: object
 ```
 
 ### lightMeasuredPayload
+
+#### Properties
+
+| Field | Type |
+| --- | --- |
+| `sentAt` | [sentAt](#sentat) |
 
 ```yaml
 properties:
@@ -85,6 +112,12 @@ type: string
 ```
 
 ### turnOnOffPayload
+
+#### Properties
+
+| Field | Type |
+| --- | --- |
+| `sentAt` | [sentAt](#sentat) |
 
 ```yaml
 properties:

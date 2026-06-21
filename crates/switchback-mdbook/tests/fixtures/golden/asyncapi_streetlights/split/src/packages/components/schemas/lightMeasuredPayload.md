@@ -1,5 +1,11 @@
 # lightMeasuredPayload
 
+#### Properties
+
+| Field | Type |
+| --- | --- |
+| `sentAt` | [sentAt](sentAt.md) |
+
 ```yaml
 properties:
   lumens:

@@ -2,6 +2,11 @@
 
 Command a particular streetlight to turn the lights on or off.
 
+#### Payload
+
+- [turnOnOffPayload](../schemas/turnOnOffPayload.md)
+- `commonHeaders`
+
 ```yaml
 name: turnOnOff
 payload:

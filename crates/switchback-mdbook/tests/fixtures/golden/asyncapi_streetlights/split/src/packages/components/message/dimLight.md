@@ -2,6 +2,11 @@
 
 Command a particular streetlight to dim the lights.
 
+#### Payload
+
+- [dimLightPayload](../schemas/dimLightPayload.md)
+- `commonHeaders`
+
 ```yaml
 name: dimLight
 payload:

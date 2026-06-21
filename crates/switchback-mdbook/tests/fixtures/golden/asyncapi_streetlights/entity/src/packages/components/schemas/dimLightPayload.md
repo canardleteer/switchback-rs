@@ -1,5 +1,11 @@
 # dimLightPayload
 
+#### Properties
+
+| Field | Type |
+| --- | --- |
+| `sentAt` | [sentAt](sentAt.md) |
+
 ```yaml
 properties:
   percentage:

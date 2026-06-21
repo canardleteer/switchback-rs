@@ -1,5 +1,11 @@
 # turnOnOffPayload
 
+#### Properties
+
+| Field | Type |
+| --- | --- |
+| `sentAt` | [sentAt](sentAt.md) |
+
 ```yaml
 properties:
   command:
