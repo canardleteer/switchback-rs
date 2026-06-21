@@ -2,6 +2,11 @@
 
 Inform about environmental lighting conditions of a particular streetlight.
 
+#### Payload
+
+- [lightMeasuredPayload](../schemas/lightMeasuredPayload.md)
+- `commonHeaders`
+
 ```yaml
 contentType: application/json
 name: lightMeasured
