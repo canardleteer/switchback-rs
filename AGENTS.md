@@ -126,7 +126,7 @@ your changed paths).
 | [`rust-tests.yml`](.github/workflows/rust-tests.yml) | Every push/PR to `main`; matrix linux / macOS / Windows | `cargo xtask ci` then `cargo xtask audit` |
 | `rust-tests.yml` (linux-only step) | Same, `ubuntu-latest` cell only | `cargo xtask align-workspace-versions --check` |
 | [`rumdl.yml`](.github/workflows/rumdl.yml) | Push/PR when `**/*.md` or `.rumdl.toml` change | `cargo xtask rumdl-check` |
-| [`yaml-lint.yml`](.github/workflows/yaml-lint.yml) | Push/PR when in-repo `**/*.{yaml,yml}` or `.yamllint` change (not `.github/`) | `cargo xtask ryl` |
+| [`yaml-lint.yml`](.github/workflows/yaml-lint.yml) | Push/PR when `.yamllint` or in-repo YAML under `crates/`, `examples/`, `proto/` changes | `cargo xtask ryl` |
 
 GHA uses
 [`rustsec/audit-check`](https://github.com/rustsec/audit-check/commit/858dc40f52ca2b8570b7a997c1c4e35c6fc9a432)

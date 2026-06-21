@@ -4,19 +4,17 @@ on:
   push:
     branches: [main]
     paths:
-      - "**/*.yaml"
-      - "**/*.yml"
       - ".yamllint"
-    paths-ignore:
-      - ".github/**"
+      - "crates/**"
+      - "examples/**"
+      - "proto/**"
   pull_request:
     branches: [main]
     paths:
-      - "**/*.yaml"
-      - "**/*.yml"
       - ".yamllint"
-    paths-ignore:
-      - ".github/**"
+      - "crates/**"
+      - "examples/**"
+      - "proto/**"
   workflow_dispatch:
 
 concurrency:
