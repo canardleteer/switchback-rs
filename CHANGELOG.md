@@ -7,3 +7,9 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.0.1-0.dev.2](https://github.com/canardleteer/switchback-rs/compare/v0.0.1-0.dev.1...v0.0.1-0.dev.2) - 2026-06-21
+
+### Other
+
+- update Cargo.lock dependencies
