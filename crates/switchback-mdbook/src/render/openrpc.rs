@@ -120,7 +120,7 @@ pub fn render_openrpc_package_sections(
         if section.is_empty() {
             continue;
         }
-        section.sort_by(|a, b| openrpc_summary_sort_key(a).cmp(&openrpc_summary_sort_key(b)));
+        section.sort_by_key(|a| openrpc_summary_sort_key(a));
         out.push_str(&md_heading(SECTION_LEVEL, category_section_title(category)));
         for entity in section {
             render_openrpc_entity_section(out, entity, group, ctx, opts, formatter);
@@ -180,12 +180,10 @@ fn render_openrpc_entity_body(
     formatter: &dyn LinkFormatter,
 ) -> String {
     match &entity.body {
-        EntityBody::Operation(body) => render_openrpc_operation_markdown(
-            entity, body, group, ctx, opts, formatter,
-        ),
-        EntityBody::Schema(body) => {
-            render_openrpc_schema_fence(entity, body, ctx, opts, formatter)
+        EntityBody::Operation(body) => {
+            render_openrpc_operation_markdown(entity, body, group, ctx, opts, formatter)
         }
+        EntityBody::Schema(body) => render_openrpc_schema_fence(entity, body, ctx, opts, formatter),
         EntityBody::Parameter(body) => {
             render_openrpc_parameter_fence(entity, body, ctx, opts, formatter)
         }
@@ -201,14 +199,7 @@ fn render_openrpc_operation_markdown(
     opts: &Options,
     formatter: &dyn LinkFormatter,
 ) -> String {
-    let mut out = openapi_operation_markdown(
-        entity,
-        body,
-        group,
-        opts.escape_tags,
-        formatter,
-        ctx,
-    );
+    let mut out = openapi_operation_markdown(entity, body, group, opts.escape_tags, formatter, ctx);
     render_openapi_operation_fence(
         &mut out,
         &body.fence_language,

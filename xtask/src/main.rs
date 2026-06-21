@@ -199,9 +199,9 @@ fn main() -> Result<()> {
                     example_fixtures::fetch_asyncapi(write_lock)?;
                     example_fixtures::fetch_openrpc(write_lock)
                 }
-                other => bail!(
-                    "fetch-fixtures --family {other}: use openapi, asyncapi, openrpc, or all"
-                ),
+                other => {
+                    bail!("fetch-fixtures --family {other}: use openapi, asyncapi, openrpc, or all")
+                }
             },
         },
     }

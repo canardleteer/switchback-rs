@@ -280,11 +280,11 @@ mod tests {
         EXAMPLE_ACME_INPUTS as ASYNCAPI_ACME_INPUTS, MICRO_ACME_ROOT as ASYNCAPI_ACME_ROOT,
         fixtures_dir as asyncapi_fixtures_dir,
     };
+    use switchback_openapi::examples::{EXAMPLE_ACME_INPUTS, MICRO_ACME_ROOT, fixtures_dir};
     use switchback_openrpc::examples::{
         EXAMPLE_ACME_INPUTS as OPENRPC_ACME_INPUTS, MICRO_ACME_ROOT as OPENRPC_ACME_ROOT,
         fixtures_dir as openrpc_fixtures_dir,
     };
-    use switchback_openapi::examples::{EXAMPLE_ACME_INPUTS, MICRO_ACME_ROOT, fixtures_dir};
     use switchback_protobuf::Compiler;
     use switchback_protobuf::examples::EXAMPLE_PROTO_INPUTS;
     use switchback_protobuf::examples::fixtures_proto_dir;

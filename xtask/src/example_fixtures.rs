@@ -20,11 +20,9 @@ const LEARN_RAW: &str = "https://raw.githubusercontent.com/OAI/learn.openapis.or
 
 const ASYNCAPI_SPEC_REPO: &str = "https://github.com/asyncapi/spec";
 const ASYNCAPI_V26_COMMIT: &str = "v2.6.0";
-const ASYNCAPI_V26_RAW: &str =
-    "https://raw.githubusercontent.com/asyncapi/spec/v2.6.0/examples";
+const ASYNCAPI_V26_RAW: &str = "https://raw.githubusercontent.com/asyncapi/spec/v2.6.0/examples";
 const ASYNCAPI_V31_COMMIT: &str = "v3.1.0";
-const ASYNCAPI_V31_RAW: &str =
-    "https://raw.githubusercontent.com/asyncapi/spec/v3.1.0/examples";
+const ASYNCAPI_V31_RAW: &str = "https://raw.githubusercontent.com/asyncapi/spec/v3.1.0/examples";
 
 const OPENRPC_EXAMPLES_REPO: &str = "https://github.com/open-rpc/examples";
 const OPENRPC_EXAMPLES_COMMIT: &str = "dce69463ba9a3ca2232506b734606fa97f25dd45";

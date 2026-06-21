@@ -1,7 +1,8 @@
 # Upstream OpenRPC example fixtures
 
-Vendored from [open-rpc/examples](https://github.com/open-rpc/examples) at the commit
-pinned in [`example-fixtures.lock.toml`](../../../example-fixtures.lock.toml).
+Vendored from [open-rpc/examples](https://github.com/open-rpc/examples) at the
+commit pinned in
+[`example-fixtures.lock.toml`](../../../example-fixtures.lock.toml).
 
 **Do not hand-edit.** Refresh with:
 

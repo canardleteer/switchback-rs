@@ -228,7 +228,10 @@ fn populate_multi_entry(resolved: &ResolvedInput) -> switchback_traits::Result<P
                 "missing entry doc {entry_uri}"
             )));
         };
-        uri_to_group.insert(entry_uri.clone(), entry_group::entry_group_id(entry_uri, &doc.value));
+        uri_to_group.insert(
+            entry_uri.clone(),
+            entry_group::entry_group_id(entry_uri, &doc.value),
+        );
     }
 
     for doc in &resolved.docs {
