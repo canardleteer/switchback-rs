@@ -125,7 +125,7 @@ your changed paths).
 | --- | --- | --- |
 | [`rust-tests.yml`](.github/workflows/rust-tests.yml) gate | Push/PR; `linux-gate` on `ubuntu-latest` | `cargo xtask align-workspace-versions --check`, `fmt-check`, `check`, `clippy`, `publish-check`, `audit` |
 | `rust-tests.yml` matrix (linux) | After gate; `ci-post` only | `cargo xtask ci-post` (or full `cargo xtask ci`) |
-| `rust-tests.yml` matrix (macOS / Windows) | After gate; `check`, `clippy`, then `ci-post` | `cargo xtask check`, `clippy`, `ci-post` (or full `cargo xtask ci`) |
+| `rust-tests.yml` matrix (linux / macOS) | After gate; `check`/`clippy` then `ci-post` on macOS only | `cargo xtask check`, `clippy`, `ci-post` (or full `cargo xtask ci`) |
 | [`rumdl.yml`](.github/workflows/rumdl.yml) | Push/PR when `**/*.md` or `.rumdl.toml` change | `cargo xtask rumdl-check` |
 | [`yaml-lint.yml`](.github/workflows/yaml-lint.yml) | Push/PR when `.yamllint` or in-repo YAML under `crates/`, `examples/`, `proto/` changes | `cargo xtask ryl` |
 | [`release-plz.yml`](.github/workflows/release-plz.yml) | Disabled until bootstrap; push to `main` when re-enabled | N/A |
@@ -150,7 +150,7 @@ cargo xtask ryl                                # yaml-lint.yml
 
 GHA splits compile gates across **`linux-gate`** (align, fmt-check, check,
 clippy, publish-check, audit) and the **matrix** (`ci-post` on linux; check,
-clippy, then `ci-post` on macOS/Windows). Local pre-merge still uses the
+clippy, then `ci-post` on macOS). Local pre-merge still uses the
 undivided `ci` block above.
 
 Hygiene subcommands require these tools on `PATH` (install once per machine):
@@ -166,7 +166,7 @@ If any are missing, `xtask` prints an install hint before failing.
 
 **`ci` is the full local Rust/parser gate.** GHA runs it in two parts: the
 **`linux-gate`** job (through clippy + audit) and the **matrix** (`ci-post`;
-check/clippy before `ci-post` on macOS/Windows only). Individual subcommands
+check/clippy before `ci-post` on macOS only). Individual subcommands
 (`fmt-check`, `clippy`, `test`, etc.) exist so you can run one step while
 iterating; they are not a substitute for `ci`.
 
