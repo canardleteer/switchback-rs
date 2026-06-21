@@ -128,7 +128,7 @@ your changed paths).
 | `rust-tests.yml` matrix (linux / macOS) | After gate; `check`/`clippy` then `ci-post` on macOS only | `cargo xtask check`, `clippy`, `ci-post` (or full `cargo xtask ci`) |
 | [`rumdl.yml`](.github/workflows/rumdl.yml) | Every PR to `main`; push to `main` when `**/*.md` or `.rumdl.toml` change | `cargo xtask rumdl-check` |
 | [`yaml-lint.yml`](.github/workflows/yaml-lint.yml) | Every PR to `main`; push to `main` when in-repo YAML under `crates/`, `examples/`, `proto/` changes | `cargo xtask ryl` |
-| [`release-plz.yml`](.github/workflows/release-plz.yml) | Push to `main`, `workflow_dispatch` | N/A |
+| [`release-plz.yml`](.github/workflows/release-plz.yml) | Disabled until publishable dev-deps fixed; push to `main` when re-enabled | N/A |
 | [`publish-crate.yml`](.github/workflows/publish-crate.yml) | Manual `workflow_dispatch` on `main` only | N/A — emergency republish one crate at a time |
 
 GHA uses
@@ -204,18 +204,26 @@ All ten `switchback-*` crate names are registered on crates.io at
 `0.0.1-0.dev.1` in git**). Keep `publish-crate.yml` for emergency manual
 republish of one crate at a time.
 
-Reference order used for first-time registration (dependency order):
+Bootstrap used [`publish-crate.yml`](.github/workflows/publish-crate.yml)
+(`workflow_dispatch` on **`main` only**, `release` environment). It temporarily
+**stripped** workspace `switchback-*` entries from `[dev-dependencies]` and used
+`--no-verify` so `cargo publish` could register new crate names before every
+dependency existed on crates.io. That strip is **bootstrap-only**; committed
+manifests must be `release-plz`-clean before Phase 3.
+
+**Publish order** (runtime dependencies, then dev-dependencies; enforced by
+`cargo xtask publish-check`):
 
 1. `switchback-traits`
 2. `switchback-codec-pb`
 3. `switchback-protocols`
 4. `switchback-jsonschema`
-5. `switchback-openapi` — fifth new crate; rate-limit boundary
-6. `switchback-asyncapi`
-7. `switchback-openrpc`
+5. `switchback-asyncapi`
+6. `switchback-openrpc`
+7. `switchback-openapi` — fifth new crate; rate-limit boundary during bootstrap
 8. `switchback-protobuf`
-9. `switchback-mdbook`
-10. `switchback-assemble`
+9. `switchback-assemble`
+10. `switchback-mdbook` — dev-depends on `openapi`, `protobuf`, and `assemble`
 
 After every **fifth** new crate, wait **eleven minutes** before the next run
 ([crates.io rate limits](https://crates.io/docs/rate-limits)).
@@ -224,10 +232,33 @@ After every **fifth** new crate, wait **eleven minutes** before the next run
 gh workflow run publish-crate.yml -f crate=switchback-traits -f version_suffix=ffcda32 --ref main
 ```
 
-### Steady-state release-plz
+### Publishable dev-dependencies (required before release-plz)
 
-[release-plz](https://release-plz.dev/) is enabled in
-[`.github/workflows/release-plz.yml`](.github/workflows/release-plz.yml).
+`cargo publish` resolves `[dev-dependencies]` against crates.io even though they
+are not shipped. Workspace `switchback-*` dev-deps must not form cycles and must
+only point at crates **earlier** in the publish order above.
+
+Changes made for `release-plz` readiness:
+
+- Removed the `switchback-codec-pb` ↔ `switchback-protocols` dev-dep cycle
+  (protocol round-trip test moved to `switchback-protocols`).
+- Removed cross-crate dev-deps from `switchback-jsonschema` (meta-schema loader
+  smoke tests moved to `switchback-openapi` / `switchback-openrpc`).
+- Removed duplicate `switchback-codec-pb` dev-deps where it is already a runtime
+  dependency.
+- Kept `switchback-mdbook` integration-test dev-deps on `openapi`, `protobuf`,
+  and `assemble`; **`assemble` must publish before `mdbook`**.
+
+`cargo xtask publish-check` fails if any publishable crate dev-depends on a
+later crate in the order. Re-enable release-plz only after that check passes on
+`main`.
+
+### Steady-state release-plz (after dev-deps fix)
+
+[release-plz](https://release-plz.dev/) is **disabled** in
+[`.github/workflows/release-plz.yml`](.github/workflows/release-plz.yml) until
+publishable dev-dependencies are fixed on `main`. Remove `false &&` from both
+jobs to re-enable (keep `publish-crate.yml` for emergency manual republish).
 
 Flow:
 
@@ -252,11 +283,11 @@ updates `[workspace.package].version` and the align step syncs dependency pins.
 
 ### `cargo xtask publish-check`
 
-Runs before merge in **`linux-gate`**. For each publishable crate:
-`cargo package --list -p <crate>` (packaging metadata and included files, no
-crates.io upload). Then `cargo publish -p switchback-traits --dry-run
---allow-dirty` for the leaf crate. Dependent crates are fully validated at
-bootstrap publish time via the manual workflow’s per-crate `--dry-run`.
+Runs before merge in **`linux-gate`**. Validates that publishable crate
+`[dev-dependencies]` only reference `switchback-*` crates earlier in the
+publish order (no cycles or forward dev-deps). For each publishable crate:
+`cargo package --list -p <crate>`. Then
+`cargo publish -p switchback-traits --dry-run --allow-dirty` for the leaf crate.
 
 ### Semver check (`cargo-semver-checks`)
 

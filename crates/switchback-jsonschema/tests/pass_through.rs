@@ -1,8 +1,8 @@
 mod common;
 
 use common::{
-    META_SCHEMA_FIXTURES, assert_sources_match_inputs, codec_roundtrip, count_entities, count_refs,
-    fixtures_catalog_dir, load_catalog, load_meta_schema_fixture, normalize, restore_sources_map,
+    assert_sources_match_inputs, codec_roundtrip, count_entities, count_refs,
+    fixtures_catalog_dir, load_catalog, normalize, restore_sources_map,
 };
 use switchback_jsonschema::examples::EXAMPLE_CATALOG_INPUTS;
 use switchback_jsonschema::{LoadArgs, load, resolve_inputs};
@@ -48,18 +48,6 @@ fn examples_catalog_load_codec_roundtrip_and_source_restore() {
         let got = std::fs::read(temp.path().join(input))
             .unwrap_or_else(|e| panic!("read restored {input}: {e}"));
         assert_eq!(expected, got, "restored bytes for {input}");
-    }
-}
-
-#[test]
-fn meta_schema_slice_loads_without_hang() {
-    for (family, path) in META_SCHEMA_FIXTURES {
-        let manual = load_meta_schema_fixture(family, path);
-        assert!(!manual.modules.is_empty());
-        assert!(
-            count_entities(&manual) > 0,
-            "{family}/{path} should yield entities"
-        );
     }
 }
 

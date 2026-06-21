@@ -9,15 +9,7 @@ use std::path::{Path, PathBuf};
 use switchback_codec_pb::{DEFAULT_SWITCHBACK_FILENAME, ProtobufCodec};
 use switchback_jsonschema::examples::EXAMPLE_CATALOG_INPUTS;
 use switchback_jsonschema::{LoadArgs, load, restore_sources};
-use switchback_openapi::meta_schemas as openapi_meta;
-use switchback_openrpc::meta_schemas as openrpc_meta;
 use switchback_traits::{ReferenceManual, SyncSwitchbackCodec};
-
-/// Curated vendored meta-schema paths for loader smoke tests.
-pub const META_SCHEMA_FIXTURES: &[(&str, &str)] = &[
-    ("openapi", "oas/3.1/schema/2025-09-15"),
-    ("openrpc", "spec/1.4/schema.json"),
-];
 
 pub fn manifest_dir() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -37,27 +29,6 @@ pub fn load_catalog() -> ReferenceManual {
         title: None,
     };
     load(&args).unwrap_or_else(|e| panic!("load examples catalog: {e}"))
-}
-
-pub fn load_meta_schema_fixture(family: &str, relative_path: &str) -> ReferenceManual {
-    let (module_root, input) = match family {
-        "openapi" => (
-            openapi_meta::manifest_dir().to_path_buf(),
-            openapi_meta::manifest_dir().join(relative_path),
-        ),
-        "openrpc" => (
-            openrpc_meta::manifest_dir().to_path_buf(),
-            openrpc_meta::manifest_dir().join(relative_path),
-        ),
-        other => panic!("unknown meta-schema family: {other}"),
-    };
-    let args = LoadArgs {
-        module_root,
-        inputs: vec![input],
-        search_roots: Vec::new(),
-        title: None,
-    };
-    load(&args).unwrap_or_else(|e| panic!("load meta-schema {family}/{relative_path}: {e}"))
 }
 
 pub fn normalize(mut manual: ReferenceManual) -> ReferenceManual {
