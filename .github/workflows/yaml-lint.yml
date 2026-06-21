@@ -8,13 +8,10 @@ on:
       - "crates/**"
       - "examples/**"
       - "proto/**"
+  # Required on every PR to main (ruleset); do not path-filter pull_request —
+  # path filters apply per push event, not the full MR diff vs base.
   pull_request:
     branches: [main]
-    paths:
-      - ".yamllint"
-      - "crates/**"
-      - "examples/**"
-      - "proto/**"
   workflow_dispatch:
 
 concurrency:
