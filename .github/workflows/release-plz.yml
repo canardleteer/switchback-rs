@@ -33,7 +33,7 @@ jobs:
           cache-bin: false
 
       - name: Generate GitHub App token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@v3
         id: release-plz-token
         with:
           app-id: ${{ secrets.RELEASE_PLZ_APP_ID }}
@@ -98,7 +98,7 @@ jobs:
           cache-bin: false
 
       - name: Generate GitHub App token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@v3
         id: release-plz-token
         with:
           app-id: ${{ secrets.RELEASE_PLZ_APP_ID }}
