@@ -1,15 +1,15 @@
 # reference-manual example
 
-End-to-end workspace example: assemble **Acme** HTTP (OpenAPI) and gRPC
-(protobuf) for **v1**, **v2**, and **v3alpha1** into one
+End-to-end workspace example: assemble **Acme** HTTP (OpenAPI), gRPC
+(protobuf), and events (AsyncAPI) for **v1**, **v2**, and **v3alpha1** into one
 [`ReferenceManual`](../../docs/GLOSSARY.md#reference-manual), then render with
 `switchback-mdbook`.
 
 This demonstrates
 [ADR 0014](../../docs/adr/0014-multi-contract-reference-manual-assembly.md)
 multi-contract assembly. Group ids are prefixed as `{family}.{package}` (for
-example `openapi.acme.example.v1` and `protobuf.acme.example.v1`) so mdBook
-indexes stay unique.
+example `openapi.acme.example.v1`, `protobuf.acme.example.v1`, and
+`asyncapi.acme.example.v1`) so mdBook indexes stay unique.
 
 ## Prerequisites
 
@@ -39,8 +39,8 @@ mdbook serve
 cargo run -p reference-manual-example -- --layout split -o /tmp/acme-ref
 ```
 
-Mixed-family books use top-level SUMMARY sections **HTTP (OpenAPI)** and
-**gRPC (Protobuf)**.
+Mixed-family books use top-level SUMMARY sections **HTTP (OpenAPI)**, **gRPC
+(Protobuf)**, and **Events (AsyncAPI)**.
 
 ### Serialized artifact round-trip
 
@@ -59,13 +59,14 @@ deferred.
 
 ## Scope and limits
 
-- **No cross-family intra-links** in prose yet; HTTP and gRPC sections link
-  within their contract only.
+- **No cross-family intra-links** in prose yet; HTTP, gRPC, and events sections
+  link within their contract only.
 - OpenAPI does not model bidirectional streaming as a single operation; the
   Acme HTTP corpus approximates relay with SSE + POST (see Acme v1 companion
   README). gRPC bidi remains on the protobuf side.
 
 Corpus paths point at existing fixtures under
-[`switchback-openapi/tests/fixtures/micro/acme/`](../../crates/switchback-openapi/tests/fixtures/micro/acme/)
+[`switchback-openapi/tests/fixtures/micro/acme/`](../../crates/switchback-openapi/tests/fixtures/micro/acme/),
+[`switchback-protobuf/tests/fixtures/proto/`](../../crates/switchback-protobuf/tests/fixtures/proto/),
 and
-[`switchback-protobuf/tests/fixtures/proto/`](../../crates/switchback-protobuf/tests/fixtures/proto/).
+[`switchback-asyncapi/tests/fixtures/micro/acme/`](../../crates/switchback-asyncapi/tests/fixtures/micro/acme/).

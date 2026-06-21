@@ -2,9 +2,9 @@
 id: acme
 title: Acme APIs
 overview: |
-  Combined HTTP (OpenAPI) and gRPC (protobuf) reference for Acme v1, v2, and
-  v3alpha1 — the same three-version corpus used by the mdbook-openapi and
-  mdbook-protobuf examples.
+  Combined HTTP (OpenAPI), gRPC (protobuf), and events (AsyncAPI) reference for
+  Acme v1, v2, and v3alpha1 — the same three-version corpus used by the
+  mdbook-openapi, mdbook-protobuf, and mdbook-asyncapi examples.
 contracts:
   - family: openapi
     module_root: ../../crates/switchback-openapi/tests/fixtures/micro/acme
@@ -23,3 +23,9 @@ contracts:
       - acme/example/v3alpha1/types.proto
       - acme/example/v3alpha1/pipeline.proto
       - acme/example/v3alpha1/services.proto
+  - family: asyncapi
+    module_root: ../../crates/switchback-asyncapi/tests/fixtures/micro/acme
+    inputs:
+      - v1/asyncapi.yaml
+      - v2/asyncapi.yaml
+      - v3alpha1/asyncapi.yaml

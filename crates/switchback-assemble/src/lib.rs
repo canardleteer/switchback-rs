@@ -2,6 +2,7 @@
 //!
 //! See [ADR 0014](https://github.com/canardleteer/switchback-rs/blob/main/docs/adr/0014-multi-contract-reference-manual-assembly.md).
 
+use switchback_asyncapi::load::LoadArgs as AsyncApiLoadArgs;
 use switchback_openapi::load::LoadArgs as OpenApiLoadArgs;
 use switchback_protobuf::load::LoadArgs as ProtobufLoadArgs;
 use switchback_traits::{
@@ -28,6 +29,7 @@ pub struct AssembleArgs {
     pub group_prefix: GroupPrefixPolicy,
     pub openapi: Option<OpenApiLoadArgs>,
     pub protobuf: Option<ProtobufLoadArgs>,
+    pub asyncapi: Option<AsyncApiLoadArgs>,
 }
 
 /// Load each configured family and merge into one reference manual.
@@ -57,6 +59,20 @@ pub fn assemble_module(args: &AssembleArgs) -> switchback_traits::Result<Referen
             modules,
             ..
         } = switchback_protobuf::load(protobuf)?;
+        if switchback_version.is_empty() {
+            switchback_version = sv;
+        }
+        sources.extend(manual_sources);
+        contracts.extend(modules.into_iter().flat_map(|m| m.contracts));
+    }
+
+    if let Some(asyncapi) = &args.asyncapi {
+        let ReferenceManual {
+            switchback_version: sv,
+            sources: manual_sources,
+            modules,
+            ..
+        } = switchback_asyncapi::load(asyncapi)?;
         if switchback_version.is_empty() {
             switchback_version = sv;
         }
@@ -244,6 +260,10 @@ fn rewrite_intra_link_group(link: &mut IntraLink, module: &str, old_group: &str,
 mod tests {
     use std::path::PathBuf;
 
+    use switchback_asyncapi::examples::{
+        EXAMPLE_ACME_INPUTS as ASYNCAPI_ACME_INPUTS, MICRO_ACME_ROOT as ASYNCAPI_ACME_ROOT,
+        fixtures_dir as asyncapi_fixtures_dir,
+    };
     use switchback_openapi::examples::{EXAMPLE_ACME_INPUTS, MICRO_ACME_ROOT, fixtures_dir};
     use switchback_protobuf::Compiler;
     use switchback_protobuf::examples::EXAMPLE_PROTO_INPUTS;
@@ -253,15 +273,16 @@ mod tests {
     use super::*;
 
     #[test]
-    fn assembles_acme_openapi_and_protobuf() {
+    fn assembles_acme_openapi_protobuf_and_asyncapi() {
         let openapi_root = fixtures_dir().join(MICRO_ACME_ROOT);
+        let asyncapi_root = asyncapi_fixtures_dir().join(ASYNCAPI_ACME_ROOT);
         let proto_root = fixtures_proto_dir();
         let export = ensure_test_proto_deps(&proto_root, None).expect("proto deps");
 
         let manual = assemble_module(&AssembleArgs {
             module_id: "acme".into(),
             title: "Acme APIs".into(),
-            overview: "Acme HTTP + gRPC".into(),
+            overview: "Acme HTTP + gRPC + events".into(),
             group_prefix: GroupPrefixPolicy::ContractFamily,
             openapi: Some(OpenApiLoadArgs {
                 module_root: openapi_root.clone(),
@@ -279,11 +300,17 @@ mod tests {
                 proto_deps_export: Some(export),
                 title: None,
             }),
+            asyncapi: Some(AsyncApiLoadArgs {
+                module_root: asyncapi_root.clone(),
+                inputs: ASYNCAPI_ACME_INPUTS.iter().map(PathBuf::from).collect(),
+                search_roots: vec![asyncapi_root],
+                title: None,
+            }),
         })
         .expect("assemble");
 
         assert_eq!(manual.modules.len(), 1);
-        assert_eq!(manual.modules[0].contracts.len(), 2);
+        assert_eq!(manual.modules[0].contracts.len(), 3);
         let families: Vec<_> = manual.modules[0]
             .contracts
             .iter()
@@ -291,6 +318,7 @@ mod tests {
             .collect();
         assert!(families.contains(&"openapi"));
         assert!(families.contains(&"protobuf"));
+        assert!(families.contains(&"asyncapi"));
 
         let group_ids: Vec<_> = manual.modules[0]
             .contracts
@@ -309,6 +337,12 @@ mod tests {
                     .iter()
                     .any(|id| id == &format!("protobuf.acme.example.{suffix}")),
                 "missing protobuf.acme.example.{suffix} in {group_ids:?}"
+            );
+            assert!(
+                group_ids
+                    .iter()
+                    .any(|id| id == &format!("asyncapi.acme.example.{suffix}")),
+                "missing asyncapi.acme.example.{suffix} in {group_ids:?}"
             );
         }
 
@@ -364,6 +398,24 @@ mod tests {
             response.schema_ref.target.group, "openapi.acme.example.v2",
             "expected prefixed group on response schema_ref: {:?}",
             response.schema_ref.target
+        );
+
+        let asyncapi = manual.modules[0]
+            .contracts
+            .iter()
+            .find(|c| c.family == "asyncapi")
+            .expect("asyncapi contract");
+        let async_v1 = asyncapi
+            .groups
+            .iter()
+            .find(|g| g.id.as_str() == "asyncapi.acme.example.v1")
+            .expect("asyncapi v1 group");
+        assert!(
+            async_v1
+                .entities
+                .iter()
+                .any(|e| e.name == "publishEchoUnary"),
+            "expected publishEchoUnary operation in asyncapi v1"
         );
     }
 }
