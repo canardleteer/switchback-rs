@@ -1,0 +1,2 @@
+# SHA-256 locked vendored assets must not get CRLF on Windows checkout.
+**/meta-schemas/** -text
