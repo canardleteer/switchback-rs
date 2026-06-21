@@ -99,7 +99,9 @@ Same rules apply to workspace links in crate-level rustdoc on docs.rs.
 
 ## YAML
 
-Use [`ryl`](https://crates.io/crates/ryl) to lint YAML.
+Use [`ryl`](https://crates.io/crates/ryl) to lint in-repo YAML (not
+[`.github/workflows/`](.github/workflows/); those are validated by GitHub).
+Configuration lives in [`.yamllint`](.yamllint).
 
 - Check YAML before finishing config edits: `ryl .`
 - Directory scans respect `.gitignore`, so generated or local-only files are
@@ -124,7 +126,7 @@ your changed paths).
 | [`rust-tests.yml`](.github/workflows/rust-tests.yml) | Every push/PR to `main`; matrix linux / macOS / Windows | `cargo xtask ci` then `cargo xtask audit` |
 | `rust-tests.yml` (linux-only step) | Same, `ubuntu-latest` cell only | `cargo xtask align-workspace-versions --check` |
 | [`rumdl.yml`](.github/workflows/rumdl.yml) | Push/PR when `**/*.md` or `.rumdl.toml` change | `cargo xtask rumdl-check` |
-| [`yaml-lint.yml`](.github/workflows/yaml-lint.yml) | Push/PR when `**/*.{yaml,yml}` or `.yamllint` change | `cargo xtask ryl` |
+| [`yaml-lint.yml`](.github/workflows/yaml-lint.yml) | Push/PR when in-repo `**/*.{yaml,yml}` or `.yamllint` change (not `.github/`) | `cargo xtask ryl` |
 
 GHA uses
 [`rustsec/audit-check`](https://github.com/rustsec/audit-check/commit/858dc40f52ca2b8570b7a997c1c4e35c6fc9a432)

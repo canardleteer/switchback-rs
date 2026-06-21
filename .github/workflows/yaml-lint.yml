@@ -7,14 +7,16 @@ on:
       - "**/*.yaml"
       - "**/*.yml"
       - ".yamllint"
-      - ".github/workflows/yaml-lint.yml"
+    paths-ignore:
+      - ".github/**"
   pull_request:
     branches: [main]
     paths:
       - "**/*.yaml"
       - "**/*.yml"
       - ".yamllint"
-      - ".github/workflows/yaml-lint.yml"
+    paths-ignore:
+      - ".github/**"
   workflow_dispatch:
 
 concurrency:
