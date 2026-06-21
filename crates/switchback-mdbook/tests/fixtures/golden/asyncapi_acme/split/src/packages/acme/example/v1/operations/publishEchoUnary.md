@@ -9,6 +9,10 @@ sequenceDiagram
   Client->>Broker: publish (publishEchoUnary)
 ```
 
+#### Messages
+
+- [EchoUnaryRequest](../message/EchoUnaryRequest.md)
+
 ```yaml
 message:
   $ref: "#/components/messages/EchoUnaryRequest"

@@ -10,6 +10,10 @@ Catalog and inventory event streams for the Acme fixture.
 
 **channel** `catalog/products/created`
 
+#### Messages
+
+- [ProductCreated](#productcreated)
+
 ```yaml
 bindings:
   kafka:
@@ -31,6 +35,10 @@ tags:
 
 **channel** `catalog/products/deleted`
 
+#### Messages
+
+- [ProductDeleted](#productdeleted)
+
 ```yaml
 bindings:
   kafka:
@@ -50,6 +58,10 @@ tags:
 ### inventory/adjustments
 
 **channel** `inventory/adjustments`
+
+#### Messages
+
+- [InventoryAdjustmentEvent](#inventoryadjustmentevent)
 
 ```yaml
 bindings:
@@ -81,6 +93,10 @@ sequenceDiagram
   Client->>Broker: publish (publishProductCreated)
 ```
 
+#### Messages
+
+- [ProductCreated](#productcreated)
+
 ```yaml
 message:
   $ref: "#/components/messages/ProductCreated"
@@ -100,6 +116,10 @@ sequenceDiagram
   participant Broker as catalog/products/deleted
   Client->>Broker: publish (publishProductDeleted)
 ```
+
+#### Messages
+
+- [ProductDeleted](#productdeleted)
 
 ```yaml
 message:
@@ -121,6 +141,10 @@ sequenceDiagram
   Client->>Broker: subscribe (subscribeInventoryAdjustments)
 ```
 
+#### Messages
+
+- [InventoryAdjustmentEvent](#inventoryadjustmentevent)
+
 ```yaml
 message:
   $ref: "#/components/messages/InventoryAdjustmentEvent"
@@ -134,6 +158,10 @@ tags:
 
 ### InventoryAdjustmentEvent
 
+#### Payload
+
+- [InventoryAdjustment](#inventoryadjustment)
+
 ```yaml
 name: InventoryAdjustmentEvent
 payload:
@@ -142,6 +170,10 @@ payload:
 
 ### ProductCreated
 
+#### Payload
+
+- [Product](#product)
+
 ```yaml
 name: ProductCreated
 payload:
@@ -149,6 +181,10 @@ payload:
 ```
 
 ### ProductDeleted
+
+#### Payload
+
+- [ProductDeletedPayload](#productdeletedpayload)
 
 ```yaml
 name: ProductDeleted
@@ -194,6 +230,16 @@ properties:
 required:
 - product_id
 - display_name
+type: object
+```
+
+### ProductDeletedPayload
+
+```yaml
+properties:
+  product_id:
+    format: uuid
+    type: string
 type: object
 ```
 

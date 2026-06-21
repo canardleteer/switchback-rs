@@ -19,3 +19,8 @@ Alpha pipeline and experiment event operations.
 - [Message PipelineStarted](message/PipelineStarted.md)
 - [Message PipelineStepCompleted](message/PipelineStepCompleted.md)
 
+## Schemas
+
+- [Schema AssignmentCreatedPayload](schemas/AssignmentCreatedPayload.md)
+- [Schema PipelineStatus](schemas/PipelineStatus.md)
+

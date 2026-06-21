@@ -25,4 +25,5 @@ Catalog and inventory event streams for the Acme fixture.
 - [Schema InventoryAdjustment](schemas/InventoryAdjustment.md)
 - [Schema Problem](schemas/Problem.md)
 - [Schema Product](schemas/Product.md)
+- [Schema ProductDeletedPayload](schemas/ProductDeletedPayload.md)
 

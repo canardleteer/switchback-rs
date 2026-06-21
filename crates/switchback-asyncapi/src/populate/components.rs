@@ -11,6 +11,7 @@ use crate::populate::PopulateCtx;
 use crate::populate::PopulatedEntity;
 use crate::populate::refs::structural_refs;
 use crate::populate::schema_dispatch::populate_schema_dispatch;
+use crate::populate::schema_outbreak;
 
 fn entity_group<'a>(ctx: &'a PopulateCtx<'a>) -> &'a str {
     ctx.entry_group.unwrap_or(COMPONENTS_GROUP)
@@ -43,9 +44,10 @@ pub fn populate_components(root: &Value, ctx: &PopulateCtx<'_>, out: &mut Vec<Po
     }
 
     crate::populate::messages::populate_component_messages(root, ctx, out);
+    schema_outbreak::outbreak_entities(out, ctx);
 }
 
-fn push_schema_entity(
+pub(crate) fn push_schema_entity(
     value: &Value,
     name: &str,
     ctx: &PopulateCtx<'_>,

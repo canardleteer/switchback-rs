@@ -4,6 +4,11 @@
 
 Echo unary request/response as events.
 
+#### Messages
+
+- [EchoUnaryRequest](../message/EchoUnaryRequest.md)
+- [EchoUnaryResponse](../message/EchoUnaryResponse.md)
+
 ```yaml
 bindings:
   kafka:

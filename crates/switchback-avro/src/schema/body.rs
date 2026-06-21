@@ -40,8 +40,11 @@ fn avro_properties(schema: &AvroSchema, module_id: &str, group_id: &str) -> Vec<
 }
 
 fn field_property(field: &AvroField, module_id: &str, group_id: &str) -> Option<Property> {
-    let AvroSchema::NamedRef(target_name) = &field.schema else {
-        return None;
+    let (target_name, required) = match &field.schema {
+        AvroSchema::NamedRef(target_name) => (target_name.clone(), field.default.is_none()),
+        AvroSchema::Enum(e) if !e.name.is_empty() => (e.name.clone(), true),
+        AvroSchema::Record(r) if !r.name.is_empty() => (r.name.clone(), field.default.is_none()),
+        _ => return None,
     };
     Some(Property {
         name: field.name.clone(),
@@ -50,10 +53,10 @@ fn field_property(field: &AvroField, module_id: &str, group_id: &str) -> Option<
                 module: module_id.to_string(),
                 group: group_id.to_string(),
                 category: "schema".to_string(),
-                name: target_name.clone(),
+                name: target_name,
             },
             kind: RefKind::Internal,
         },
-        required: field.default.is_none(),
+        required,
     })
 }

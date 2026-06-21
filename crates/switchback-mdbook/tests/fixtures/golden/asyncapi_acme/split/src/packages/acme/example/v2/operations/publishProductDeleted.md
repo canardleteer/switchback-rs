@@ -9,6 +9,10 @@ sequenceDiagram
   Client->>Broker: publish (publishProductDeleted)
 ```
 
+#### Messages
+
+- [ProductDeleted](../message/ProductDeleted.md)
+
 ```yaml
 message:
   $ref: "#/components/messages/ProductDeleted"

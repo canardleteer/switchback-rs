@@ -1,5 +1,9 @@
 # AssignmentCreated
 
+#### Payload
+
+- [AssignmentCreatedPayload](../schemas/AssignmentCreatedPayload.md)
+
 ```yaml
 name: AssignmentCreated
 payload:

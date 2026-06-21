@@ -1,5 +1,15 @@
 # PipelineStepCompleted
 
+#### Payload
+
+- [PipelineStatus](../schemas/PipelineStatus.md)
+
+#### Properties
+
+| Field | Type |
+| --- | --- |
+| `status` | [PipelineStatus](../schemas/PipelineStatus.md) |
+
 ```yaml
 name: PipelineStepCompleted
 payload:

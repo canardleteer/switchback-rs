@@ -2,6 +2,10 @@
 
 **channel** `inventory/adjustments`
 
+#### Messages
+
+- [InventoryAdjustmentEvent](../message/InventoryAdjustmentEvent.md)
+
 ```yaml
 bindings:
   kafka:

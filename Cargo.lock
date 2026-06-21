@@ -2364,6 +2364,7 @@ dependencies = [
  "serde_json",
  "switchback-assemble",
  "switchback-asyncapi",
+ "switchback-avro",
  "switchback-codec-pb",
  "switchback-openapi",
  "switchback-protobuf",

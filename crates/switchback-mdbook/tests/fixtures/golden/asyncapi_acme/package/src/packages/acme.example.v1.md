@@ -26,6 +26,10 @@ publish:
 
 Server-sent echo chunks as an event stream.
 
+#### Messages
+
+- [EchoStreamChunk](#echostreamchunk)
+
 ```yaml
 bindings:
   kafka:
@@ -45,6 +49,11 @@ subscribe:
 **channel** `echo/unary`
 
 Echo unary request/response as events.
+
+#### Messages
+
+- [EchoUnaryRequest](#echounaryrequest)
+- [EchoUnaryResponse](#echounaryresponse)
 
 ```yaml
 bindings:
@@ -102,6 +111,10 @@ sequenceDiagram
   Client->>Broker: publish (publishEchoUnary)
 ```
 
+#### Messages
+
+- [EchoUnaryRequest](#echounaryrequest)
+
 ```yaml
 message:
   $ref: "#/components/messages/EchoUnaryRequest"
@@ -120,6 +133,10 @@ sequenceDiagram
   Client->>Broker: subscribe (subscribeEchoUnary)
 ```
 
+#### Messages
+
+- [EchoUnaryResponse](#echounaryresponse)
+
 ```yaml
 message:
   $ref: "#/components/messages/EchoUnaryResponse"
@@ -137,6 +154,10 @@ sequenceDiagram
   participant Broker as echo/stream
   Client->>Broker: subscribe (subscribeEchoStream)
 ```
+
+#### Messages
+
+- [EchoStreamChunk](#echostreamchunk)
 
 ```yaml
 message:

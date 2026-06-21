@@ -2,6 +2,10 @@
 
 **channel** `experiments/assignments`
 
+#### Messages
+
+- [AssignmentCreated](../message/AssignmentCreated.md)
+
 ```yaml
 address: experiments/assignments
 messages:

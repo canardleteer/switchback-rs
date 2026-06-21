@@ -9,6 +9,10 @@ sequenceDiagram
   Client->>Broker: subscribe (subscribeInventoryAdjustments)
 ```
 
+#### Messages
+
+- [InventoryAdjustmentEvent](../message/InventoryAdjustmentEvent.md)
+
 ```yaml
 message:
   $ref: "#/components/messages/InventoryAdjustmentEvent"

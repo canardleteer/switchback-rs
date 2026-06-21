@@ -2,6 +2,10 @@
 
 **channel** `catalog/products/deleted`
 
+#### Messages
+
+- [ProductDeleted](../message/ProductDeleted.md)
+
 ```yaml
 bindings:
   kafka:
