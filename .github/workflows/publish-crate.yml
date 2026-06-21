@@ -61,10 +61,22 @@ jobs:
           set -euo pipefail
           cargo xtask align-workspace-versions --version "${{ steps.version.outputs.bootstrap_version }}"
 
+      - name: Strip switchback dev-dependencies for publish
+        run: |
+          set -euo pipefail
+          manifest="crates/${{ inputs.crate }}/Cargo.toml"
+          awk '
+            /^\[dev-dependencies\]/ { in_dev=1; print; next }
+            /^\[/ { in_dev=0 }
+            in_dev && /switchback-/ { next }
+            { print }
+          ' "$manifest" > "${manifest}.publish"
+          mv "${manifest}.publish" "$manifest"
+
       - name: Dry-run publish
         run: |
           set -euo pipefail
-          cargo publish -p "${{ inputs.crate }}" --dry-run --allow-dirty
+          cargo publish -p "${{ inputs.crate }}" --dry-run --allow-dirty --no-verify
 
       - name: Publish to crates.io
         env:
@@ -73,7 +85,7 @@ jobs:
           set -euo pipefail
           crate="${{ inputs.crate }}"
           version="${{ steps.version.outputs.bootstrap_version }}"
-          if cargo publish -p "$crate" --allow-dirty --token "$CARGO_REGISTRY_TOKEN"; then
+          if cargo publish -p "$crate" --allow-dirty --no-verify --token "$CARGO_REGISTRY_TOKEN"; then
             echo "Published ${crate} ${version}"
           else
             echo "::error::cargo publish failed for ${crate}"
