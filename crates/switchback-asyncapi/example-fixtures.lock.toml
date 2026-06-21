@@ -1,0 +1,8 @@
+[[asset]]
+id = "streetlights-kafka"
+path = "tests/fixtures/upstream/streetlights-kafka/asyncapi.yaml"
+url = "https://raw.githubusercontent.com/asyncapi/spec/v2.6.0/examples/streetlights-kafka.yml"
+sha256 = "71eff9ffa9b2fb0550fbd90544f669818281546606a6528d92866aba645f2a99"
+license = "Apache-2.0"
+upstream_repo = "https://github.com/asyncapi/spec"
+upstream_commit = "v2.6.0"

@@ -16,10 +16,7 @@ pub fn slugify(name: &str) -> String {
 }
 
 /// Module id from application `id`, `info.title`, or file stem.
-pub fn module_id_from_id_title_or_stem(
-    root: &serde_json::Value,
-    entry_uri: &str,
-) -> String {
+pub fn module_id_from_id_title_or_stem(root: &serde_json::Value, entry_uri: &str) -> String {
     if let Some(id) = root
         .get("id")
         .and_then(|v| v.as_str())

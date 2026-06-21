@@ -4,11 +4,11 @@ use switchback_traits::{
     EntityBody, Group, LinkContext, LinkFormatter, Options, StoredEntity, apply_intra_links,
 };
 
+use crate::render::asyncapi::{is_asyncapi_family, render_asyncapi_package_sections};
 use crate::render::fence::{
     entity_module_group, link_structural_refs_in_prose, operation_signature_markdown,
     proto_file_name, push_markdown_doc, push_proto_fence_body, render_proto_fence,
 };
-use crate::render::asyncapi::{is_asyncapi_family, render_asyncapi_package_sections};
 use crate::render::openapi::{is_openapi_family, render_openapi_package_sections};
 use crate::render::{md_heading, push_paragraph_break};
 

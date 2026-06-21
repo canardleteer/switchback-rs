@@ -35,12 +35,7 @@ impl Family {
 
     fn families(self) -> Vec<Family> {
         match self {
-            Self::All => vec![
-                Self::OpenApi,
-                Self::AsyncApi,
-                Self::OpenRpc,
-                Self::Avro,
-            ],
+            Self::All => vec![Self::OpenApi, Self::AsyncApi, Self::OpenRpc, Self::Avro],
             other => vec![other],
         }
     }

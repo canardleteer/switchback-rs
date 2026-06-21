@@ -212,6 +212,15 @@ The shared API-description object model lifted into `switchback-jsonschema`:
 `info`, `servers`, `components`, `security`, `tags`, `externalDocs`, and
 related fields common to OpenAPI, AsyncAPI, and OpenRPC documents.
 
+### schema payload layers
+
+JSON Schema message and component payloads are populated through
+[`switchback-jsonschema`](../crates/switchback-jsonschema/). Avro payloads
+(`schemaFormat` `application/vnd.apache.avro+json` or `+yaml`) are populated
+through the sibling [`switchback-avro`](../crates/switchback-avro/) crate.
+AsyncAPI document meta-schemas stay in `switchback-asyncapi`; Avro **format**
+meta-schemas stay in `switchback-avro` (ADR 0018).
+
 ### generic category
 
 Renderer-known entity categories (`Schema`, `Operation`, `Service`, `Generic`)

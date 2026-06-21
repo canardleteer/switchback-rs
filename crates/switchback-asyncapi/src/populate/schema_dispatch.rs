@@ -1,10 +1,10 @@
 //! Route message/schema payloads to JSON Schema or Avro populate.
 
 use serde_json::Value;
+use switchback_avro::populate_avro_schema_body;
 use switchback_jsonschema::loader::Doc;
 use switchback_jsonschema::schema::populate_schema_body;
 use switchback_traits::SchemaBody;
-use switchback_avro::populate_avro_schema_body;
 
 use crate::populate::PopulateCtx;
 

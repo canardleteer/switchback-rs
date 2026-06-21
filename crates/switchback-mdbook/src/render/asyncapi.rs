@@ -102,9 +102,7 @@ pub fn render_asyncapi_index_sections(
         if section.is_empty() {
             continue;
         }
-        section.sort_by(|a, b| {
-            asyncapi_summary_sort_key(a).cmp(&asyncapi_summary_sort_key(b))
-        });
+        section.sort_by_key(|a| asyncapi_summary_sort_key(a));
         out.push_str(&md_heading(SECTION_LEVEL, category_section_title(category)));
         for entity in section {
             let rel = asyncapi_entity_rel_path(markdown_root, group_dir, entity);
@@ -165,10 +163,7 @@ fn render_asyncapi_entity_section(
     opts: &Options,
     formatter: &dyn LinkFormatter,
 ) {
-    out.push_str(&md_heading(
-        ENTITY_LEVEL,
-        &asyncapi_entity_heading(entity),
-    ));
+    out.push_str(&md_heading(ENTITY_LEVEL, &asyncapi_entity_heading(entity)));
     out.push_str(&render_asyncapi_entity_body(
         entity, group, ctx, opts, formatter,
     ));
@@ -215,7 +210,9 @@ fn render_asyncapi_entity_body(
         EntityBody::Message(body) => {
             render_asyncapi_message_fence(entity, body, ctx, opts, formatter)
         }
-        EntityBody::Schema(body) => render_asyncapi_schema_fence(entity, body, ctx, opts, formatter),
+        EntityBody::Schema(body) => {
+            render_asyncapi_schema_fence(entity, body, ctx, opts, formatter)
+        }
         _ => String::new(),
     }
 }
@@ -271,7 +268,14 @@ fn render_asyncapi_message_fence(
     formatter: &dyn LinkFormatter,
 ) -> String {
     let mut out = String::new();
-    push_entity_doc(&mut out, entity, entity_link_group(entity), ctx, opts, formatter);
+    push_entity_doc(
+        &mut out,
+        entity,
+        entity_link_group(entity),
+        ctx,
+        opts,
+        formatter,
+    );
     push_fence_body(&mut out, &body.fence_language, &body.fence_body);
     out
 }
@@ -323,10 +327,14 @@ fn protocol_badges(protocols: &[switchback_traits::ProtocolAttachment]) -> Vec<S
     let mut badges = Vec::new();
     for attachment in protocols {
         match registry.decode_attachment(attachment) {
-            Ok(DecodedAttachment::Kafka(KafkaPayloadKind::Channel(meta))) if !meta.topic.is_empty() => {
+            Ok(DecodedAttachment::Kafka(KafkaPayloadKind::Channel(meta)))
+                if !meta.topic.is_empty() =>
+            {
                 badges.push(format!("`kafka` topic `{}`", meta.topic));
             }
-            Ok(DecodedAttachment::Mqtt(MqttPayloadKind::Channel(meta))) if !meta.topic.is_empty() => {
+            Ok(DecodedAttachment::Mqtt(MqttPayloadKind::Channel(meta)))
+                if !meta.topic.is_empty() =>
+            {
                 badges.push(format!("`mqtt` topic `{}`", meta.topic));
             }
             Ok(DecodedAttachment::Amqp(AmqpPayloadKind::Channel(meta))) => {

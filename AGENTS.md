@@ -53,6 +53,18 @@ Family parser crates may vend **upstream** example corpora and maintain
 Other family crates may adopt the same split later; protobuf/jsonschema fixtures
 keep their existing layouts until then.
 
+| Tier | Path (`switchback-asyncapi`) | Maintained how | Agent rule |
+| --- | --- | --- | --- |
+| **Upstream** | `crates/switchback-asyncapi/tests/fixtures/upstream/` | `cargo xtask spec-vendor fetch-fixtures --family asyncapi`; locked in `example-fixtures.lock.toml` | **Do not hand-edit.** Refresh from upstream, update lock SHA-256, run `validate-fixtures`. See `tests/fixtures/upstream/FIXTURES.md`. |
+| **Micro** | `crates/switchback-asyncapi/tests/fixtures/micro/` | Hand-maintained in-repo | **Safe to edit.** Acme three-version corpus, minimal smoke fixture. Keep tiny. |
+
+**Related locks (`switchback-asyncapi`):**
+
+- `meta-schemas/` + `meta-schemas.lock.toml` — AsyncAPI document meta-schemas;
+  `spec-vendor fetch --family asyncapi`.
+- `example-fixtures.lock.toml` — example API descriptions only;
+  `spec-vendor fetch-fixtures --family asyncapi`.
+
 ## Markdown
 
 Use [`rumdl`](https://github.com/rvben/rumdl) to lint Markdown. Configuration
@@ -187,7 +199,7 @@ gates):
 8. `link-check` — intra-link validation
 9. `check-highlight-rust` — protobuf / CEL highlighter golden HTML
 10. `spec-vendor validate` — vendored meta-schema SHA-256 locks
-11. `example-fixtures validate` — OpenAPI upstream fixture locks
+11. `example-fixtures validate` — OpenAPI and AsyncAPI upstream fixture locks
 
 Audit, Markdown, and YAML hygiene run via separate workflows (see table above).
 

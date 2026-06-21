@@ -1,0 +1,19 @@
+[package]
+name = "mdbook-asyncapi-example"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[[bin]]
+name = "mdbook-asyncapi"
+path = "main.rs"
+
+[dependencies]
+anyhow.workspace = true
+clap.workspace = true
+switchback-asyncapi.workspace = true
+switchback-codec-pb.workspace = true
+switchback-mdbook.workspace = true
+switchback-traits.workspace = true

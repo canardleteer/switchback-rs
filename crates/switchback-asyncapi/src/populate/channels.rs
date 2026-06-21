@@ -3,7 +3,7 @@
 use std::collections::BTreeMap;
 
 use serde_json::Value;
-use switchback_traits::{Entity, EntityBody, EntityCategory, EntityId, ChannelBody};
+use switchback_traits::{ChannelBody, Entity, EntityBody, EntityCategory, EntityId};
 
 use crate::category::AsyncApiCategory;
 use crate::paths::{COMPONENTS_GROUP, slugify};
@@ -73,11 +73,7 @@ pub fn populate_channels(
             let group_key = slugify(&group_id);
             let pe = PopulatedEntity {
                 entity: Entity {
-                    id: EntityId::new(
-                        group_key.as_str(),
-                        AsyncApiCategory::Channel.as_str(),
-                        name,
-                    ),
+                    id: EntityId::new(group_key.as_str(), AsyncApiCategory::Channel.as_str(), name),
                     category: AsyncApiCategory::Channel,
                     title: channel_val
                         .get("title")
@@ -134,6 +130,7 @@ fn serialize_fence(value: &Value, fence_language: &str) -> String {
     }
 }
 
+#[allow(dead_code)]
 pub fn entity_group<'a>(ctx: &'a PopulateCtx<'a>) -> &'a str {
     ctx.entry_group.unwrap_or(COMPONENTS_GROUP)
 }

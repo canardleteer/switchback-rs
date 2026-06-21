@@ -127,7 +127,10 @@ fn name_from_pointer(pointer: &str, target_doc_uri: &str) -> Option<(&'static st
         return pointer.split('/').nth(2).map(|n| ("schema", n.to_string()));
     }
     if pointer.starts_with("components/messages/") {
-        return pointer.split('/').nth(2).map(|n| ("message", n.to_string()));
+        return pointer
+            .split('/')
+            .nth(2)
+            .map(|n| ("message", n.to_string()));
     }
     if pointer.starts_with("components/parameters/") {
         return pointer
@@ -142,10 +145,16 @@ fn name_from_pointer(pointer: &str, target_doc_uri: &str) -> Option<(&'static st
             .map(|n| ("security-scheme", n.to_string()));
     }
     if pointer.starts_with("channels/") {
-        return pointer.split('/').nth(1).map(|n| ("channel", n.to_string()));
+        return pointer
+            .split('/')
+            .nth(1)
+            .map(|n| ("channel", n.to_string()));
     }
     if pointer.starts_with("operations/") {
-        return pointer.split('/').nth(1).map(|n| ("operation", n.to_string()));
+        return pointer
+            .split('/')
+            .nth(1)
+            .map(|n| ("operation", n.to_string()));
     }
     if pointer.starts_with("$defs/") || pointer.starts_with("definitions/") {
         return pointer.split('/').nth(1).map(|n| ("schema", n.to_string()));
@@ -163,6 +172,7 @@ fn name_from_pointer(pointer: &str, target_doc_uri: &str) -> Option<(&'static st
         .map(|n| ("schema", n.to_string()))
 }
 
+#[allow(dead_code)]
 pub fn schema_ref_from_value(
     value: &Value,
     doc_uri: &str,

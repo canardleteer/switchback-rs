@@ -61,9 +61,17 @@ switchback-rs/
 │   ├── switchback-mdbook/        renderer: switchback -> mdBook
 │   ├── switchback-protobuf/      parser: .proto -> switchback
 │   ├── switchback-jsonschema/    parser + shared JSON-Schema layer
+│   ├── switchback-avro/          Avro schema payload layer (AsyncAPI)
 │   ├── switchback-openapi/       parser: OpenAPI -> switchback
 │   ├── switchback-asyncapi/      parser: AsyncAPI -> switchback
-│   └── switchback-openrpc/       parser: OpenRPC -> switchback
+│   ├── switchback-assemble/      multi-contract manual assembly
+│   ├── switchback-openrpc/       parser: OpenRPC -> switchback
+│   └── switchback-protocols/     kafka / amqp / mqtt protocol attachments
+├── examples/
+│   ├── mdbook-protobuf/
+│   ├── mdbook-openapi/
+│   ├── mdbook-asyncapi/
+│   └── reference-manual/
 └── xtask/                        workspace task runner (ci, parse, render, ...)
 ```
 
@@ -106,6 +114,10 @@ switchback-rs/
   and a schema entity-body producer. Also a standalone parser that turns a
   JSON Schema catalog into a switchback. The OpenAPI, AsyncAPI, and OpenRPC
   parsers build on it; renderers never see it.
+- **`switchback-avro`** — sibling payload layer for Avro schema documents
+  (`application/vnd.apache.avro+json` / `+yaml`). Used by `switchback-asyncapi`
+  for message payloads; JSON Schema payloads still route through
+  `switchback-jsonschema`.
 - **`switchback-openapi`** — parses an OpenAPI Description (3.0.x and 3.1.x)
   into a switchback, preserving the contract's version. Categories: `schema`,
   `operation`, `parameter`, `response`, `request-body`, `security-scheme`.

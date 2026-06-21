@@ -12,7 +12,9 @@ pub fn parse_asyncapi_version(root: &Value) -> switchback_traits::Result<SpecVer
     let version = root
         .get("asyncapi")
         .and_then(|v| v.as_str())
-        .ok_or_else(|| switchback_traits::SwitchbackError::load("missing asyncapi version field"))?;
+        .ok_or_else(|| {
+            switchback_traits::SwitchbackError::load("missing asyncapi version field")
+        })?;
 
     if version.starts_with('1') {
         return Err(switchback_traits::SwitchbackError::load(

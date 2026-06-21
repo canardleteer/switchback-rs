@@ -11,8 +11,8 @@ use switchback_traits::{
 };
 
 use crate::family::AsyncApiFamily;
-use crate::populate::{PopulatedContract, PopulatedEntity, ResolvedInput};
 use crate::populate::protocol_attach;
+use crate::populate::{PopulatedContract, PopulatedEntity, ResolvedInput};
 
 pub fn build_reference_manual(
     populated: PopulatedContract,

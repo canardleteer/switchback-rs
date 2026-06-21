@@ -99,11 +99,11 @@ fn entry_uris_for_inputs(
 
 fn is_asyncapi_file(path: &Path) -> bool {
     match path.extension().and_then(|e| e.to_str()) {
-        Some(ext) if matches!(ext, "yaml" | "yml" | "json") => {
-            if let Some(stem) = path.file_stem().and_then(|s| s.to_str()) {
-                if matches!(stem, "asyncapi") {
-                    return true;
-                }
+        Some("yaml" | "yml" | "json") => {
+            if let Some(stem) = path.file_stem().and_then(|s| s.to_str())
+                && matches!(stem, "asyncapi")
+            {
+                return true;
             }
             looks_like_asyncapi(path)
         }

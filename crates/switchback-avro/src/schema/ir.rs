@@ -115,10 +115,7 @@ fn object_schema(map: &serde_json::Map<String, Value>) -> AvroSchema {
         return AvroSchema::Record(parse_record(map));
     }
 
-    let ty = map
-        .get("type")
-        .and_then(|v| v.as_str())
-        .unwrap_or_default();
+    let ty = map.get("type").and_then(|v| v.as_str()).unwrap_or_default();
     match ty {
         "record" => AvroSchema::Record(parse_record(map)),
         "enum" => AvroSchema::Enum(AvroEnum {
