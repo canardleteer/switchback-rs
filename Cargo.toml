@@ -21,23 +21,23 @@ members = [
 
 [workspace.package]
 edition = "2024"
-version = "0.0.1-0.dev.4"
+version = "0.0.1-0.dev.5"
 license = "Apache-2.0"
 repository = "https://github.com/canardleteer/switchback-rs"
 homepage = "https://github.com/canardleteer/switchback-rs"
 
 [workspace.dependencies]
-switchback-traits = { version = "0.0.1-0.dev.4", path = "crates/switchback-traits" }
-switchback-codec-pb = { version = "0.0.1-0.dev.4", path = "crates/switchback-codec-pb" }
-switchback-protocols = { version = "0.0.1-0.dev.4", path = "crates/switchback-protocols" }
-switchback-mdbook = { version = "0.0.1-0.dev.4", path = "crates/switchback-mdbook" }
-switchback-protobuf = { version = "0.0.1-0.dev.4", path = "crates/switchback-protobuf" }
-switchback-jsonschema = { version = "0.0.1-0.dev.4", path = "crates/switchback-jsonschema" }
-switchback-avro = { version = "0.0.1-0.dev.4", path = "crates/switchback-avro" }
-switchback-openapi = { version = "0.0.1-0.dev.4", path = "crates/switchback-openapi" }
-switchback-assemble = { version = "0.0.1-0.dev.4", path = "crates/switchback-assemble" }
-switchback-asyncapi = { version = "0.0.1-0.dev.4", path = "crates/switchback-asyncapi" }
-switchback-openrpc = { version = "0.0.1-0.dev.4", path = "crates/switchback-openrpc" }
+switchback-traits = { version = "0.0.1-0.dev.5", path = "crates/switchback-traits" }
+switchback-codec-pb = { version = "0.0.1-0.dev.5", path = "crates/switchback-codec-pb" }
+switchback-protocols = { version = "0.0.1-0.dev.5", path = "crates/switchback-protocols" }
+switchback-mdbook = { version = "0.0.1-0.dev.5", path = "crates/switchback-mdbook" }
+switchback-protobuf = { version = "0.0.1-0.dev.5", path = "crates/switchback-protobuf" }
+switchback-jsonschema = { version = "0.0.1-0.dev.5", path = "crates/switchback-jsonschema" }
+switchback-avro = { version = "0.0.1-0.dev.5", path = "crates/switchback-avro" }
+switchback-openapi = { version = "0.0.1-0.dev.5", path = "crates/switchback-openapi" }
+switchback-assemble = { version = "0.0.1-0.dev.5", path = "crates/switchback-assemble" }
+switchback-asyncapi = { version = "0.0.1-0.dev.5", path = "crates/switchback-asyncapi" }
+switchback-openrpc = { version = "0.0.1-0.dev.5", path = "crates/switchback-openrpc" }
 buffa = { version = "0.6.0", default-features = false, features = ["std"] }
 buffa-descriptor = { version = "0.6.0", default-features = false, features = ["std"] }
 protoc-bin-vendored = "3.2.0"
