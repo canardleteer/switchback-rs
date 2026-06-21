@@ -3,14 +3,16 @@
 //! Workspace task runner for `switchback-rs`.
 //!
 //! Commands: `ci`, `ci-post`, `fmt`, `fmt-check`, `clippy`, `test`, `align-workspace-versions`,
-//! `spec-vendor`, `parse` (`--parser <family>`), `render` (`--renderer <target>`), `link-check`,
-//! `check-highlight-rust`, `update-highlight-golden`, `update-golden`, and `check-toolchain`.
+//! `publish-check`, `spec-vendor`, `parse` (`--parser <family>`), `render` (`--renderer <target>`),
+//! `link-check`, `check-highlight-rust`, `update-highlight-golden`, `update-golden`, and
+//! `check-toolchain`.
 
 mod align_versions;
 mod ci;
 mod example_fixtures;
 mod highlight;
 mod link_check;
+mod publish_check;
 mod render;
 mod spec_vendor;
 mod workspace;
@@ -48,6 +50,8 @@ enum Cmd {
     Ryl,
     /// Sync `[workspace.package].version` with `switchback-*` workspace deps.
     AlignWorkspaceVersions(AlignVersionsArgs),
+    /// Validate crates.io packaging without uploading (package --list + traits dry-run).
+    PublishCheck,
     CheckToolchain {
         #[arg(long)]
         strict: bool,
@@ -144,6 +148,7 @@ fn main() -> Result<()> {
         Cmd::RumdlFmt => ci::rumdl_fmt(),
         Cmd::Ryl => ci::ryl_check(),
         Cmd::AlignWorkspaceVersions(args) => align_workspace_versions(args),
+        Cmd::PublishCheck => publish_check::publish_check(),
         Cmd::CheckToolchain { strict } => ci::check_toolchain(strict),
         Cmd::Parse { parser } => bail!("parse --parser {parser}: not implemented yet"),
         Cmd::Render { renderer } => {
