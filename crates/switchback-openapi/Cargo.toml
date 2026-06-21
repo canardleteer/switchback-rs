@@ -42,4 +42,3 @@ serde = { version = "1", features = ["derive"] }
 sha2 = "0.10"
 toml = "0.8"
 tempfile.workspace = true
-switchback-codec-pb.workspace = true

@@ -76,15 +76,19 @@ changelog_update = false
 [[package]]
 name = "xtask"
 release = false
+publish = false
 
 [[package]]
 name = "mdbook-protobuf-example"
 release = false
+publish = false
 
 [[package]]
 name = "mdbook-openapi-example"
 release = false
+publish = false
 
 [[package]]
 name = "reference-manual-example"
 release = false
+publish = false

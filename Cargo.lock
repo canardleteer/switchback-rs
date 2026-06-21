@@ -2294,7 +2294,6 @@ dependencies = [
  "buffa-build",
  "protoc-bin-vendored",
  "static_assertions",
- "switchback-protocols",
  "switchback-traits",
  "tokio",
 ]
@@ -2310,10 +2309,7 @@ dependencies = [
  "serde-saphyr",
  "serde_json",
  "sha2 0.10.9",
- "switchback-asyncapi",
  "switchback-codec-pb",
- "switchback-openapi",
- "switchback-openrpc",
  "switchback-traits",
  "tempfile",
  "walkdir",

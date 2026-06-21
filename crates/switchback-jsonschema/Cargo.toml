@@ -34,8 +34,4 @@ reqwest = { workspace = true, optional = true }
 jsonschema = { workspace = true, optional = true }
 
 [dev-dependencies]
-switchback-codec-pb.workspace = true
-switchback-openapi.workspace = true
-switchback-openrpc.workspace = true
-switchback-asyncapi.workspace = true
 tempfile.workspace = true

@@ -16,12 +16,12 @@ on:
           - switchback-codec-pb
           - switchback-protocols
           - switchback-jsonschema
-          - switchback-openapi
           - switchback-asyncapi
           - switchback-openrpc
+          - switchback-openapi
           - switchback-protobuf
-          - switchback-mdbook
           - switchback-assemble
+          - switchback-mdbook
       version_suffix:
         description: Lockstep bootstrap SHA suffix (default current HEAD short SHA)
         required: false
@@ -69,6 +69,8 @@ jobs:
           cargo xtask align-workspace-versions --version "${{ steps.version.outputs.bootstrap_version }}"
 
       - name: Strip switchback dev-dependencies for publish
+        # Bootstrap-only: release-plz requires publishable manifests without
+        # workspace switchback dev-deps (see AGENTS.md).
         run: |
           set -euo pipefail
           manifest="crates/${{ inputs.crate }}/Cargo.toml"
