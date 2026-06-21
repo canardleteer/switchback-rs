@@ -1,0 +1,90 @@
+[workspace]
+release_always = false
+semver_check = false
+repo_url = "https://github.com/canardleteer/switchback-rs"
+pr_labels = ["release"]
+git_tag_enable = false
+git_release_enable = false
+dependencies_update = false
+
+[[package]]
+name = "switchback-traits"
+version_group = "switchback"
+changelog_update = true
+changelog_path = "CHANGELOG.md"
+changelog_include = [
+    "switchback-asyncapi",
+    "switchback-assemble",
+    "switchback-codec-pb",
+    "switchback-jsonschema",
+    "switchback-mdbook",
+    "switchback-openapi",
+    "switchback-openrpc",
+    "switchback-protobuf",
+    "switchback-protocols",
+]
+git_tag_enable = true
+git_release_enable = true
+git_tag_name = "v{{ version }}"
+git_release_name = "v{{ version }}"
+
+[[package]]
+name = "switchback-codec-pb"
+version_group = "switchback"
+changelog_update = false
+
+[[package]]
+name = "switchback-protocols"
+version_group = "switchback"
+changelog_update = false
+
+[[package]]
+name = "switchback-mdbook"
+version_group = "switchback"
+changelog_update = false
+
+[[package]]
+name = "switchback-protobuf"
+version_group = "switchback"
+changelog_update = false
+
+[[package]]
+name = "switchback-jsonschema"
+version_group = "switchback"
+changelog_update = false
+
+[[package]]
+name = "switchback-openapi"
+version_group = "switchback"
+changelog_update = false
+
+[[package]]
+name = "switchback-assemble"
+version_group = "switchback"
+changelog_update = false
+
+[[package]]
+name = "switchback-asyncapi"
+version_group = "switchback"
+changelog_update = false
+
+[[package]]
+name = "switchback-openrpc"
+version_group = "switchback"
+changelog_update = false
+
+[[package]]
+name = "xtask"
+release = false
+
+[[package]]
+name = "mdbook-protobuf-example"
+release = false
+
+[[package]]
+name = "mdbook-openapi-example"
+release = false
+
+[[package]]
+name = "reference-manual-example"
+release = false

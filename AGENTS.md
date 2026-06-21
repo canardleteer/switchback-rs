@@ -128,6 +128,7 @@ your changed paths).
 | `rust-tests.yml` matrix (macOS / Windows) | After gate; `check`, `clippy`, then `ci-post` | `cargo xtask check`, `clippy`, `ci-post` (or full `cargo xtask ci`) |
 | [`rumdl.yml`](.github/workflows/rumdl.yml) | Push/PR when `**/*.md` or `.rumdl.toml` change | `cargo xtask rumdl-check` |
 | [`yaml-lint.yml`](.github/workflows/yaml-lint.yml) | Push/PR when `.yamllint` or in-repo YAML under `crates/`, `examples/`, `proto/` changes | `cargo xtask ryl` |
+| [`release-plz.yml`](.github/workflows/release-plz.yml) | Push to `main` (automated); not a local gate | N/A — opens/updates Release PRs and publishes after merge |
 
 GHA uses
 [`rustsec/audit-check`](https://github.com/rustsec/audit-check/commit/858dc40f52ca2b8570b7a997c1c4e35c6fc9a432)
@@ -188,11 +189,64 @@ gates):
 
 Audit, Markdown, and YAML hygiene run via separate workflows (see table above).
 
+## Releases
+
+Releases are automated with [release-plz](https://release-plz.dev/) via
+[`.github/workflows/release-plz.yml`](.github/workflows/release-plz.yml).
+Configuration lives in [`release-plz.toml`](release-plz.toml); the workspace
+changelog is [`CHANGELOG.md`](CHANGELOG.md).
+
+Flow:
+
+1. A conventional commit lands on `main`.
+2. **`release-plz-pr`** opens or updates a Release PR (GitHub App
+   `switchback-rs-release-plz-app`, so `rust-tests` and `rumdl` run on that PR).
+3. The workflow runs `cargo xtask align-workspace-versions` on the Release PR so
+   `[workspace.dependencies]` `switchback-*` pins match
+   `[workspace.package].version` (required for **`linux-gate`**).
+4. Merge the Release PR.
+5. **`release-plz-release`** publishes all workspace crates to crates.io (using
+   the `release` environment `CARGO_REGISTRY_TOKEN`), tags `v{{ version }}`, and
+   creates one GitHub Release.
+
+All ten publishable crates share `version_group = "switchback"` in
+`release-plz.toml`. Do not bump versions with `cargo set-version`; release-plz
+updates `[workspace.package].version` and the align step syncs dependency pins.
+
+### Semver check (`cargo-semver-checks`)
+
+[`release-plz.toml`](release-plz.toml) sets `semver_check = false` while the
+workspace version carries a **pre-release label** (for example
+`0.0.1-alpha.1`). API stability is not promised during that phase.
+
+**After the first stable release without pre-release metadata** (for example
+`1.0.0`, or `0.1.0` with no `-alpha`/`-beta` suffix), enable semver checking:
+
+1. Set `semver_check = true` under `[workspace]` in
+   [`release-plz.toml`](release-plz.toml).
+2. Treat Release PR **semver-check failures** as blocking — they indicate an
+   API-breaking change that needs a major bump (or an explicit, reviewed
+   exception before merge).
+
+release-plz runs
+[cargo-semver-checks](https://github.com/obi1kenobi/cargo-semver-checks) on
+library crates when this flag is on. Do not re-disable it without an ADR.
+
+### Future binary releases (not implemented)
+
+When publishable crates ship `[[bin]]` targets, add a separate workflow on
+`release: types: [published]` (triggered by the GitHub Release release-plz
+creates). Build a matrix (`ubuntu-latest`, `macos-14`, `windows-2025`), attach
+artifacts with `gh release upload` or `softprops/action-gh-release`. Library
+crate releases must not depend on binary artifacts being present.
+
 ### `cargo xtask align-workspace-versions`
 
 Syncs `[workspace.package].version` with every `switchback-*` `version` in
 `[workspace.dependencies]` (root [`Cargo.toml`](Cargo.toml) only). All member
 crates use `version.workspace = true`; do **not** run `cargo set-version` here.
+Release-plz bumps the workspace version; CI and the release-plz workflow run
+this command to keep dependency pins aligned.
 
 ```bash
 # Bump workspace semver
