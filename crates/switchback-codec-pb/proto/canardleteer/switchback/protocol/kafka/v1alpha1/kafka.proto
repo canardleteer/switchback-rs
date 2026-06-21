@@ -1,0 +1,59 @@
+// SPDX-FileCopyrightText: 2026 canardleteer
+// SPDX-License-Identifier: Apache-2.0
+
+syntax = "proto3";
+
+package canardleteer.switchback.protocol.kafka.v1alpha1;
+
+// Kafka protocol attachments (protocol_id = "kafka").
+//
+// AsyncAPI kafka binding 0.5.0 channel/operation/message fields. Payload bytes
+// on ProtocolAttachment encode exactly one arm of KafkaPayload below.
+
+// Top-level oneof for all Kafka protocol attachments.
+message KafkaPayload {
+  oneof kind {
+    // Contract.protocols[] — broker/cluster hints when documented.
+    KafkaContractMeta contract = 1;
+    // ChannelBody.protocols[] — topic and partition topology.
+    KafkaChannelMeta channel = 2;
+    // OperationBody.protocols[] — consumer group and client id.
+    KafkaOperationMeta operation = 3;
+    // MessageBody.protocols[] — message key and schema registry hints.
+    KafkaMessageMeta message = 4;
+  }
+}
+
+// Contract-level Kafka transport context.
+message KafkaContractMeta {
+  // Advertised bootstrap broker URLs when documented on servers.
+  repeated string bootstrap_servers = 1;
+}
+
+// Kafka channel / topic representation.
+message KafkaChannelMeta {
+  // Kafka topic name when different from the channel address.
+  string topic = 1;
+  // Number of partitions configured on the topic.
+  uint32 partitions = 2;
+  // Number of replicas configured on the topic.
+  uint32 replicas = 3;
+}
+
+// Kafka operation (consumer) metadata.
+message KafkaOperationMeta {
+  // Consumer group id when documented as a literal string.
+  string group_id = 1;
+  // Consumer client id when documented as a literal string.
+  string client_id = 2;
+}
+
+// Kafka message metadata.
+message KafkaMessageMeta {
+  // Schema id location: header or payload (Confluent-style).
+  string schema_id_location = 1;
+  // Schema id payload encoding hint when present.
+  string schema_id_payload_encoding = 2;
+  // Schema lookup strategy name when present.
+  string schema_lookup_strategy = 3;
+}

@@ -15,12 +15,18 @@ fn main() {
     let grpc_proto = "canardleteer/switchback/protocol/grpc/v1alpha1/grpc.proto";
     let grpc_metadata_options_proto =
         "canardleteer/switchback/protocol/grpc/v1alpha1/metadata_options.proto";
+    let kafka_proto = "canardleteer/switchback/protocol/kafka/v1alpha1/kafka.proto";
+    let amqp_proto = "canardleteer/switchback/protocol/amqp/v1alpha1/amqp.proto";
+    let mqtt_proto = "canardleteer/switchback/protocol/mqtt/v1alpha1/mqtt.proto";
 
     for path in [
         switchback_proto,
         http_proto,
         grpc_proto,
         grpc_metadata_options_proto,
+        kafka_proto,
+        amqp_proto,
+        mqtt_proto,
     ] {
         println!("cargo:rerun-if-changed={}", proto_root.join(path).display());
     }
@@ -37,6 +43,9 @@ fn main() {
             http_proto,
             grpc_proto,
             grpc_metadata_options_proto,
+            kafka_proto,
+            amqp_proto,
+            mqtt_proto,
         ])
         .includes(&["."])
         .include_file("_include.rs")

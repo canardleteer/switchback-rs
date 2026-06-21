@@ -1,0 +1,79 @@
+// SPDX-FileCopyrightText: 2026 canardleteer
+// SPDX-License-Identifier: Apache-2.0
+
+syntax = "proto3";
+
+package canardleteer.switchback.protocol.amqp.v1alpha1;
+
+// AMQP protocol attachments (protocol_id = "amqp").
+//
+// AsyncAPI amqp binding 0.3.0 channel/operation/message fields. Payload bytes
+// on ProtocolAttachment encode exactly one arm of AmqpPayload below.
+
+// Top-level oneof for all AMQP protocol attachments.
+message AmqpPayload {
+  oneof kind {
+    // Contract.protocols[] — virtual host defaults when documented.
+    AmqpContractMeta contract = 1;
+    // ChannelBody.protocols[] — exchange or queue channel shape.
+    AmqpChannelMeta channel = 2;
+    // OperationBody.protocols[] — publish/consume operation hints.
+    AmqpOperationMeta operation = 3;
+    // MessageBody.protocols[] — message delivery metadata.
+    AmqpMessageMeta message = 4;
+  }
+}
+
+// Contract-level AMQP transport context.
+message AmqpContractMeta {
+  // Default virtual host when documented on servers.
+  string default_vhost = 1;
+}
+
+// AMQP channel representation (queue or routing key).
+message AmqpChannelMeta {
+  // Channel kind: queue or routingKey (AsyncAPI `is` field).
+  string channel_kind = 1;
+  // Exchange name when is=routingKey.
+  string exchange_name = 2;
+  // Exchange type: topic, direct, fanout, default, headers.
+  string exchange_type = 3;
+  // Whether the exchange survives broker restarts.
+  bool exchange_durable = 4;
+  // Whether the exchange is deleted when the last queue unbinds.
+  bool exchange_auto_delete = 5;
+  // Exchange virtual host.
+  string exchange_vhost = 6;
+  // Queue name when is=queue.
+  string queue_name = 7;
+  // Whether the queue survives broker restarts.
+  bool queue_durable = 8;
+  // Whether the queue is exclusive to one connection.
+  bool queue_exclusive = 9;
+  // Whether the queue is deleted when the last consumer unsubscribes.
+  bool queue_auto_delete = 10;
+  // Queue virtual host.
+  string queue_vhost = 11;
+}
+
+// AMQP operation metadata.
+message AmqpOperationMeta {
+  // Message TTL in milliseconds when documented.
+  uint64 expiration_ms = 1;
+  // Publishing user id when documented.
+  string user_id = 2;
+  // Message priority when documented.
+  int32 priority = 3;
+  // Delivery mode: 1 transient, 2 persistent.
+  uint32 delivery_mode = 4;
+  // Whether the message is mandatory.
+  bool mandatory = 5;
+  // Whether the consumer should acknowledge the message.
+  bool ack = 6;
+}
+
+// AMQP message metadata.
+message AmqpMessageMeta {
+  // Content type when documented on the binding.
+  string content_type = 1;
+}
