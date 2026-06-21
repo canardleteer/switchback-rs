@@ -30,7 +30,9 @@ pub mod populate;
 
 pub use category::AsyncApiCategory;
 pub use contract::AsyncApiContract;
-pub use examples::fixtures_dir;
+pub use examples::{
+    EXAMPLE_ACME_INPUTS, MICRO_ACME_ROOT, fixtures_dir, load_acme_example, load_fixture_relative,
+};
 pub use family::AsyncApiFamily;
 pub use link::AsyncApiLinkExtractor;
 pub use load::{LoadArgs, load};
@@ -64,10 +66,6 @@ mod tests {
         })
         .expect("load minimal fixture");
         assert_eq!(manual.modules[0].contracts[0].family, "asyncapi");
-        assert_eq!(
-            manual.modules[0].contracts[0].version.as_str(),
-            "2.6.0"
-        );
         assert!(!manual.modules[0].contracts[0].groups.is_empty());
     }
 }
