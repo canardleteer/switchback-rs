@@ -123,26 +123,32 @@ your changed paths).
 
 | Workflow | When (GHA) | Local equivalent |
 | --- | --- | --- |
-| [`rust-tests.yml`](.github/workflows/rust-tests.yml) | Every push/PR to `main`; matrix linux / macOS / Windows | `cargo xtask ci` then `cargo xtask audit` |
-| `rust-tests.yml` (linux-only step) | Same, `ubuntu-latest` cell only | `cargo xtask align-workspace-versions --check` |
+| [`rust-tests.yml`](.github/workflows/rust-tests.yml) gate | Push/PR; `linux-gate` on `ubuntu-latest` | `cargo xtask align-workspace-versions --check`, `fmt-check`, `check`, `clippy`, `audit` |
+| `rust-tests.yml` matrix (linux) | After gate; `ci-post` only | `cargo xtask ci-post` (or full `cargo xtask ci`) |
+| `rust-tests.yml` matrix (macOS / Windows) | After gate; `check`, `clippy`, then `ci-post` | `cargo xtask check`, `clippy`, `ci-post` (or full `cargo xtask ci`) |
 | [`rumdl.yml`](.github/workflows/rumdl.yml) | Push/PR when `**/*.md` or `.rumdl.toml` change | `cargo xtask rumdl-check` |
 | [`yaml-lint.yml`](.github/workflows/yaml-lint.yml) | Push/PR when `.yamllint` or in-repo YAML under `crates/`, `examples/`, `proto/` changes | `cargo xtask ryl` |
 
 GHA uses
 [`rustsec/audit-check`](https://github.com/rustsec/audit-check/commit/858dc40f52ca2b8570b7a997c1c4e35c6fc9a432)
-(Node 24); locally that is the same check as `cargo xtask audit` →
-`cargo audit`.
+(Node 24) once in **`linux-gate`**; locally that is the same check as
+`cargo xtask audit` → `cargo audit`.
 
 **Full pre-merge gate (linux-equivalent)** — mirrors all three workflows on a
 typical PR:
 
 ```bash
-cargo xtask align-workspace-versions --check   # rust-tests.yml (linux only)
-cargo xtask ci                                 # rust-tests.yml (all platforms)
-cargo xtask audit                              # rust-tests.yml (all platforms)
+cargo xtask align-workspace-versions --check   # rust-tests.yml linux-gate
+cargo xtask ci                                 # full local gate (ci + ci-post)
+cargo xtask audit                              # rust-tests.yml linux-gate
 cargo xtask rumdl-check                        # rumdl.yml
 cargo xtask ryl                                # yaml-lint.yml
 ```
+
+GHA splits compile gates across **`linux-gate`** (align, fmt-check, check,
+clippy, audit) and the **matrix** (`ci-post` on linux; check, clippy, then
+`ci-post` on macOS/Windows). Local pre-merge still uses the undivided `ci`
+block above.
 
 Hygiene subcommands require these tools on `PATH` (install once per machine):
 
@@ -155,8 +161,9 @@ If any are missing, `xtask` prints an install hint before failing.
 
 ### `cargo xtask ci` — Rust/parser gate
 
-**`ci` is the Rust/parser gate** run in
-[`rust-tests.yml`](.github/workflows/rust-tests.yml). Individual subcommands
+**`ci` is the full local Rust/parser gate.** GHA runs it in two parts: the
+**`linux-gate`** job (through clippy + audit) and the **matrix** (`ci-post`;
+check/clippy before `ci-post` on macOS/Windows only). Individual subcommands
 (`fmt-check`, `clippy`, `test`, etc.) exist so you can run one step while
 iterating; they are not a substitute for `ci`.
 
@@ -167,12 +174,17 @@ iterating; they are not a substitute for `ci`.
    `buf format --diff`
 3. `check` — `cargo check --workspace --all-targets`
 4. `clippy` — `cargo clippy --workspace --all-targets -- -D warnings`
-5. `test` — `cargo test --workspace`
-6. `render mdbook` — golden renderer regression
-7. `link-check` — intra-link validation
-8. `check-highlight-rust` — protobuf / CEL highlighter golden HTML
-9. `spec-vendor validate` — vendored meta-schema SHA-256 locks
-10. `example-fixtures validate` — OpenAPI upstream fixture locks
+5. `ci-post` — steps 6–11 below
+
+`cargo xtask ci-post` runs the integration half only (GHA matrix after compile
+gates):
+
+6. `test` — `cargo test --workspace`
+7. `render mdbook` — golden renderer regression
+8. `link-check` — intra-link validation
+9. `check-highlight-rust` — protobuf / CEL highlighter golden HTML
+10. `spec-vendor validate` — vendored meta-schema SHA-256 locks
+11. `example-fixtures validate` — OpenAPI upstream fixture locks
 
 Audit, Markdown, and YAML hygiene run via separate workflows (see table above).
 
@@ -187,7 +199,7 @@ crates use `version.workspace = true`; do **not** run `cargo set-version` here.
 cargo xtask align-workspace-versions --version 0.0.1-alpha.2
 cargo generate-lockfile
 
-# CI invariant (linux rust-tests job)
+# CI invariant (linux-gate job)
 cargo xtask align-workspace-versions --check
 ```
 
