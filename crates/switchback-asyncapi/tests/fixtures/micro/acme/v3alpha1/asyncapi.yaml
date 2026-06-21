@@ -1,0 +1,113 @@
+---
+asyncapi: 3.0.0
+info:
+  title: Acme Events v3alpha1
+  version: 3alpha1
+  description: Alpha pipeline and experiment event operations.
+  x-switchback-group: acme.example.v3alpha1
+defaultContentType: application/json
+servers:
+  kafka:
+    host: events.acme.example:9092
+    protocol: kafka
+    bindings:
+      kafka:
+        bindingVersion: '0.5.0'
+channels:
+  pipelines/runs:
+    address: pipelines/runs
+    description: Pipeline run lifecycle events.
+    bindings:
+      kafka:
+        bindingVersion: '0.5.0'
+        topic: acme.pipelines.runs
+        partitions: 8
+    messages:
+      pipelineStarted:
+        $ref: '#/components/messages/PipelineStarted'
+      pipelineStepCompleted:
+        $ref: '#/components/messages/PipelineStepCompleted'
+  experiments/assignments:
+    address: experiments/assignments
+    messages:
+      assignmentCreated:
+        $ref: '#/components/messages/AssignmentCreated'
+operations:
+  startPipeline:
+    action: send
+    channel:
+      $ref: '#/channels/pipelines~1runs'
+    summary: Start a pipeline run
+    bindings:
+      kafka:
+        bindingVersion: '0.5.0'
+        groupId: pipeline-producers
+    messages:
+      - $ref: '#/channels/pipelines~1runs/messages/pipelineStarted'
+  watchPipelineSteps:
+    action: receive
+    channel:
+      $ref: '#/channels/pipelines~1runs'
+    summary: Watch pipeline step completions
+    bindings:
+      kafka:
+        bindingVersion: '0.5.0'
+        groupId: pipeline-watchers
+    messages:
+      - $ref: '#/channels/pipelines~1runs/messages/pipelineStepCompleted'
+  publishAssignment:
+    action: send
+    channel:
+      $ref: '#/channels/experiments~1assignments'
+    summary: Publish experiment assignment
+    messages:
+      - $ref: '#/channels/experiments~1assignments/messages/assignmentCreated'
+components:
+  messages:
+    PipelineStarted:
+      name: PipelineStarted
+      title: Pipeline started (Avro)
+      payload:
+        schemaFormat: application/vnd.apache.avro+json
+        schema:
+          type: record
+          name: PipelineStarted
+          namespace: acme.events.v3alpha1
+          fields:
+            - name: run_id
+              type: string
+            - name: pipeline_name
+              type: string
+            - name: started_at
+              type: string
+    PipelineStepCompleted:
+      name: PipelineStepCompleted
+      title: Pipeline step completed (Avro)
+      payload:
+        schemaFormat: application/vnd.apache.avro+json
+        schema:
+          type: record
+          name: PipelineStepCompleted
+          namespace: acme.events.v3alpha1
+          fields:
+            - name: run_id
+              type: string
+            - name: step_name
+              type: string
+            - name: status
+              type:
+                type: enum
+                name: PipelineStatus
+                symbols: [queued, running, succeeded, failed, cancelled]
+    AssignmentCreated:
+      name: AssignmentCreated
+      payload:
+        type: object
+        properties:
+          experiment_id:
+            type: string
+            format: uuid
+          subject_id:
+            type: string
+          arm:
+            type: string

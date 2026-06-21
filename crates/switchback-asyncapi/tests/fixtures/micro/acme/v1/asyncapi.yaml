@@ -1,0 +1,101 @@
+---
+asyncapi: '2.6.0'
+info:
+  title: Acme Events v1
+  version: 1.0.0
+  description: >
+    Echo and gateway events for the Acme documentation fixture.
+  x-switchback-group: acme.example.v1
+defaultContentType: application/json
+servers:
+  mqtt:
+    url: mqtt://events.acme.example:1883
+    protocol: mqtt
+  kafka:
+    url: kafka://events.acme.example:9092
+    protocol: kafka
+channels:
+  echo/unary:
+    description: Echo unary request/response as events.
+    bindings:
+      mqtt:
+        bindingVersion: '0.2.0'
+        qos: 1
+        retain: false
+      kafka:
+        bindingVersion: '0.4.0'
+        topic: acme.echo.unary
+        partitions: 6
+        replicas: 3
+    publish:
+      operationId: publishEchoUnary
+      summary: Publish echo request
+      message:
+        $ref: '#/components/messages/EchoUnaryRequest'
+    subscribe:
+      operationId: subscribeEchoUnary
+      summary: Receive echo response
+      message:
+        $ref: '#/components/messages/EchoUnaryResponse'
+  echo/stream:
+    description: Server-sent echo chunks as an event stream.
+    bindings:
+      kafka:
+        bindingVersion: '0.4.0'
+        topic: acme.echo.stream
+        partitions: 3
+    subscribe:
+      operationId: subscribeEchoStream
+      summary: Stream echo chunks
+      message:
+        $ref: '#/components/messages/EchoStreamChunk'
+  catalog/products:
+    publish:
+      operationId: publishCatalogProxy
+      summary: Catalog product list events (v2 schema)
+      message:
+        payload:
+          $ref: '../v2/asyncapi.yaml#/components/schemas/ListProductsResponse'
+components:
+  schemas:
+    EchoUnaryRequest:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+        locale:
+          type: string
+    EchoUnaryResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        echoed_at:
+          type: string
+          format: date-time
+    EchoStreamChunk:
+      type: object
+      properties:
+        sequence:
+          type: integer
+        payload:
+          type: string
+    Problem:
+      $ref: '../shared/schemas.yaml#/Problem'
+  messages:
+    EchoUnaryRequest:
+      name: EchoUnaryRequest
+      title: Echo unary request
+      payload:
+        $ref: '#/components/schemas/EchoUnaryRequest'
+    EchoUnaryResponse:
+      name: EchoUnaryResponse
+      title: Echo unary response
+      payload:
+        $ref: '#/components/schemas/EchoUnaryResponse'
+    EchoStreamChunk:
+      name: EchoStreamChunk
+      title: Echo stream chunk
+      payload:
+        $ref: '#/components/schemas/EchoStreamChunk'

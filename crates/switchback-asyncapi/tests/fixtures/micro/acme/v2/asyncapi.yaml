@@ -1,0 +1,102 @@
+---
+asyncapi: '2.6.0'
+info:
+  title: Acme Events v2
+  version: 2.0.0
+  description: Catalog and inventory event streams for the Acme fixture.
+  x-switchback-group: acme.example.v2
+defaultContentType: application/json
+servers:
+  kafka:
+    url: kafka://events.acme.example:9092
+    protocol: kafka
+tags:
+  - name: catalog
+    description: Product catalog lifecycle events.
+  - name: inventory
+    description: Warehouse inventory adjustment streams.
+channels:
+  catalog/products/created:
+    tags:
+      - name: catalog
+    bindings:
+      kafka:
+        bindingVersion: '0.4.0'
+        topic: acme.catalog.products.created
+        partitions: 12
+    publish:
+      operationId: publishProductCreated
+      summary: Product created event
+      tags:
+        - catalog
+      message:
+        $ref: '#/components/messages/ProductCreated'
+  catalog/products/deleted:
+    tags:
+      - name: catalog
+    bindings:
+      kafka:
+        bindingVersion: '0.4.0'
+        topic: acme.catalog.products.deleted
+    publish:
+      operationId: publishProductDeleted
+      summary: Product deleted event
+      tags:
+        - catalog
+      message:
+        $ref: '#/components/messages/ProductDeleted'
+  inventory/adjustments:
+    tags:
+      - name: inventory
+    bindings:
+      kafka:
+        bindingVersion: '0.4.0'
+        topic: acme.inventory.adjustments
+        groupId: inventory-watchers
+    subscribe:
+      operationId: subscribeInventoryAdjustments
+      summary: Stream inventory adjustments
+      tags:
+        - inventory
+      message:
+        $ref: '#/components/messages/InventoryAdjustmentEvent'
+components:
+  schemas:
+    Product:
+      type: object
+      required: [product_id, display_name]
+      properties:
+        product_id:
+          type: string
+          format: uuid
+        display_name:
+          type: string
+    InventoryAdjustment:
+      type: object
+      properties:
+        sku:
+          type: string
+        delta:
+          type: integer
+          format: int64
+        reason:
+          type: string
+    Problem:
+      $ref: '../shared/schemas.yaml#/Problem'
+  messages:
+    ProductCreated:
+      name: ProductCreated
+      payload:
+        $ref: '#/components/schemas/Product'
+    ProductDeleted:
+      name: ProductDeleted
+      payload:
+        type: object
+        properties:
+          product_id:
+            type: string
+            format: uuid
+    InventoryAdjustmentEvent:
+      name: InventoryAdjustmentEvent
+      payload:
+        $ref: '#/components/schemas/InventoryAdjustment'

@@ -1,0 +1,28 @@
+---
+# RFC 9457 Problem Details for JSON (shared across Acme AsyncAPI entries).
+Problem:
+  type: object
+  description: >
+    Standard problem response object (RFC 9457). Used by synthetic error
+    payloads across v1–v3alpha1 entry documents.
+  properties:
+    type:
+      type: string
+      format: uri-reference
+    title:
+      type: string
+    status:
+      type: integer
+      minimum: 400
+      maximum: 599
+    detail:
+      type: string
+    instance:
+      type: string
+      format: uri-reference
+    trace_id:
+      type: string
+  required:
+    - type
+    - title
+    - status
