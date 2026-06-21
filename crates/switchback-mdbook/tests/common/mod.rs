@@ -68,6 +68,61 @@ pub fn load_openapi_acme() -> ReferenceManual {
     switchback_openapi::load_acme_example().expect("load acme-api")
 }
 
+pub fn load_asyncapi_acme() -> ReferenceManual {
+    switchback_asyncapi::load_acme_example().expect("load acme events")
+}
+
+pub fn load_asyncapi_streetlights() -> ReferenceManual {
+    use switchback_asyncapi::{LoadArgs, fixtures_dir, load};
+
+    let upstream = fixtures_dir().join("upstream/streetlights-kafka/asyncapi.yaml");
+    if upstream.is_file() {
+        let module_root = upstream.parent().expect("parent").to_path_buf();
+        return load(&LoadArgs {
+            module_root: module_root.clone(),
+            inputs: vec![PathBuf::from("asyncapi.yaml")],
+            search_roots: vec![module_root],
+            title: None,
+        })
+        .expect("load streetlights upstream");
+    }
+
+    let module_root = fixtures_dir().join("micro/acme");
+    load(&LoadArgs {
+        module_root: module_root.clone(),
+        inputs: vec![PathBuf::from("v1/asyncapi.yaml")],
+        search_roots: vec![module_root],
+        title: None,
+    })
+    .unwrap_or_else(|e| {
+        panic!(
+            "load streetlights fallback: {e} (run cargo xtask spec-vendor fetch-fixtures --family asyncapi)"
+        )
+    })
+}
+
+pub fn render_asyncapi(layout: Layout, extra: &str) -> tempfile::TempDir {
+    let manual = load_asyncapi_streetlights();
+    let mut param = format!("layout={}", layout_name(layout));
+    if !extra.is_empty() {
+        param.push(',');
+        param.push_str(extra);
+    }
+    let opts = parse_parameter(&Some(param)).expect("parse options");
+    render_to_tempdir(&manual, &opts)
+}
+
+pub fn render_asyncapi_acme(layout: Layout, extra: &str) -> tempfile::TempDir {
+    let manual = load_asyncapi_acme();
+    let mut param = format!("layout={}", layout_name(layout));
+    if !extra.is_empty() {
+        param.push(',');
+        param.push_str(extra);
+    }
+    let opts = parse_parameter(&Some(param)).expect("parse options");
+    render_to_tempdir(&manual, &opts)
+}
+
 pub fn load_reference_manual_acme_v1() -> ReferenceManual {
     use std::path::PathBuf;
 
@@ -107,6 +162,7 @@ pub fn load_reference_manual_acme_v1() -> ReferenceManual {
             proto_deps_export: Some(export),
             title: None,
         }),
+        asyncapi: None,
     })
     .expect("assemble acme reference manual")
 }

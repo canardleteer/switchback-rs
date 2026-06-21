@@ -1,5 +1,6 @@
 //! Markdown page rendering from a [`ReferenceManual`](switchback_traits::ReferenceManual).
 
+pub mod asyncapi;
 pub mod entity;
 pub mod fence;
 pub mod markdown_doc;
