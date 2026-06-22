@@ -1,6 +1,6 @@
 # Export an audit batch
 
-****exportAuditBatch**** `(since) -> AuditBatch`
+**exportAuditBatch** (since) -> [AuditBatch](../schemas/AuditBatch.md)
 
 #### Parameters
 

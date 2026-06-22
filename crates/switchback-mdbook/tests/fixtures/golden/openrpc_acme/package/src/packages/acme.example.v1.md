@@ -8,7 +8,7 @@ Echo, streaming, and gateway entry for the Acme documentation fixture.
 
 ### Echo a message (unary)
 
-****echoUnary**** `(request, XRequestId, Authorization) -> EchoUnaryResponse`
+**echoUnary** (request, XRequestId, Authorization) -> [EchoUnaryResponse](#echounaryresponse)
 
 Round-trips a JSON payload for latency and auth testing.
 
@@ -62,7 +62,7 @@ Round-trips a JSON payload for latency and auth testing.
 
 ### Open relay session (server SSE + client POST frames)
 
-****relayConnect**** `(XRequestId, session_token, open) -> RelayFrame`
+**relayConnect** (XRequestId, session_token, open) -> [RelayFrame](#relayframe)
 
 #### Parameters
 
@@ -117,7 +117,7 @@ Round-trips a JSON payload for latency and auth testing.
 
 ### Proxy list products (v2 catalog types)
 
-****listCatalogProducts**** `(XRequestId, Authorization, page_size) -> ListProductsResponse`
+**listCatalogProducts** (XRequestId, Authorization, page_size) -> [ListProductsResponse](acme.example.v2.md#listproductsresponse)
 
 Gateway proxy to the v2 catalog list operation.
 
@@ -133,7 +133,7 @@ Gateway proxy to the v2 catalog list operation.
 
 | Status | Description | Media type | Schema |
 | --- | --- | --- | --- |
-| page |  | — | `ListProductsResponse` |
+| page |  | — | [ListProductsResponse](acme.example.v2.md#listproductsresponse) |
 
 <details>
 <summary>Operation definition (YAML)</summary>
@@ -173,7 +173,7 @@ Gateway proxy to the v2 catalog list operation.
 
 ### Send one inbound relay frame
 
-****relaySendFrame**** `(XRequestId, session_token, frame) -> boolean`
+**relaySendFrame** (XRequestId, session_token, frame) -> —
 
 #### Parameters
 
@@ -228,7 +228,7 @@ Gateway proxy to the v2 catalog list operation.
 
 ### Stream echo chunks (SSE)
 
-****echoServerStream**** `(XRequestId, message, chunk_count) -> EchoStreamChunk`
+**echoServerStream** (XRequestId, message, chunk_count) -> [EchoStreamChunk](#echostreamchunk)
 
 #### Parameters
 
@@ -284,7 +284,7 @@ Gateway proxy to the v2 catalog list operation.
 
 ### Upload echo parts (octet-stream)
 
-****echoClientStream**** `(XRequestId, parts) -> EchoUploadResponse`
+**echoClientStream** (XRequestId, parts) -> [EchoUploadResponse](#echouploadresponse)
 
 #### Parameters
 
@@ -332,7 +332,7 @@ Gateway proxy to the v2 catalog list operation.
 
 ### Watch echo events (NDJSON)
 
-****watchEcho**** `(XRequestId, topic) -> WatchEchoEvent`
+**watchEcho** (XRequestId, topic) -> [WatchEchoEvent](#watchechoevent)
 
 #### Parameters
 

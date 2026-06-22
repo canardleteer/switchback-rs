@@ -1,6 +1,6 @@
 # Watch inventory changes
 
-****watchInventory**** `(sku) -> InventoryEvent`
+**watchInventory** (sku) -> [InventoryEvent](../schemas/InventoryEvent.md)
 
 #### Parameters
 

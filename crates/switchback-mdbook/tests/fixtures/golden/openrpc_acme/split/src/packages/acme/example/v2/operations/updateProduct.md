@@ -1,6 +1,6 @@
 # Replace a product
 
-****updateProduct**** `(product_id, product) -> Product`
+**updateProduct** (product_id, product) -> [Product](../schemas/Product.md)
 
 #### Parameters
 

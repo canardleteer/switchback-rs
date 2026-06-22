@@ -1,6 +1,6 @@
 # Delete a product
 
-****deleteProduct**** `(product_id) -> boolean`
+**deleteProduct** (product_id) -> —
 
 #### Parameters
 

@@ -1,6 +1,6 @@
 # Stream assignment updates
 
-****streamAssignments**** `(experiment_id) -> ExperimentAssignment`
+**streamAssignments** (experiment_id) -> [ExperimentAssignment](../schemas/ExperimentAssignment.md)
 
 #### Parameters
 

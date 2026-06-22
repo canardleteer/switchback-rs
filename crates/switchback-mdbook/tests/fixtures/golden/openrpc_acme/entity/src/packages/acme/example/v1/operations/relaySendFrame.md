@@ -1,6 +1,6 @@
 # Send one inbound relay frame
 
-****relaySendFrame**** `(XRequestId, session_token, frame) -> boolean`
+**relaySendFrame** (XRequestId, session_token, frame) -> —
 
 #### Parameters
 

@@ -8,7 +8,7 @@ Catalog, inventory, and platform services for the Acme fixture.
 
 ### Create a catalog product
 
-****createProduct**** `(product) -> Product`
+**createProduct** (product) -> [Product](#product)
 
 #### Parameters
 
@@ -51,7 +51,7 @@ Catalog, inventory, and platform services for the Acme fixture.
 
 ### Delete a product
 
-****deleteProduct**** `(product_id) -> boolean`
+**deleteProduct** (product_id) -> —
 
 #### Parameters
 
@@ -94,7 +94,7 @@ Catalog, inventory, and platform services for the Acme fixture.
 
 ### Export an audit batch
 
-****exportAuditBatch**** `(since) -> AuditBatch`
+**exportAuditBatch** (since) -> [AuditBatch](#auditbatch)
 
 #### Parameters
 
@@ -137,7 +137,7 @@ Catalog, inventory, and platform services for the Acme fixture.
 
 ### Get one product
 
-****getProduct**** `(product_id) -> Product`
+**getProduct** (product_id) -> [Product](#product)
 
 #### Parameters
 
@@ -180,7 +180,7 @@ Catalog, inventory, and platform services for the Acme fixture.
 
 ### List catalog products
 
-****listProducts**** `(page_size, page_token) -> ListProductsResponse`
+**listProducts** (page_size, page_token) -> [ListProductsResponse](#listproductsresponse)
 
 #### Parameters
 
@@ -232,7 +232,7 @@ Catalog, inventory, and platform services for the Acme fixture.
 
 ### Replace a product
 
-****updateProduct**** `(product_id, product) -> Product`
+**updateProduct** (product_id, product) -> [Product](#product)
 
 #### Parameters
 
@@ -283,7 +283,7 @@ Catalog, inventory, and platform services for the Acme fixture.
 
 ### Upload draft product payloads
 
-****uploadDrafts**** `(drafts) -> integer`
+**uploadDrafts** (drafts) -> —
 
 #### Parameters
 
@@ -329,7 +329,7 @@ Catalog, inventory, and platform services for the Acme fixture.
 
 ### Watch inventory changes
 
-****watchInventory**** `(sku) -> InventoryEvent`
+**watchInventory** (sku) -> [InventoryEvent](#inventoryevent)
 
 #### Parameters
 
