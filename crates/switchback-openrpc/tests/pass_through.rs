@@ -2,7 +2,10 @@ mod common;
 
 use common::{codec_roundtrip, count_entities, count_refs, fixtures_dir, load_fixture, normalize};
 use switchback_openrpc::{
-    examples::{MICRO_COMPANION, MICRO_MULTIFILE, MICRO_TAG_GROUPS, UPSTREAM_METRICS_1_3},
+    examples::{
+        MICRO_COMPANION, MICRO_MULTIFILE, MICRO_TAG_GROUPS, UPSTREAM_LINK_1_4,
+        UPSTREAM_METRICS_1_3, UPSTREAM_PETSTORE_1_4,
+    },
     restore_sources,
 };
 use switchback_traits::{EntityBody, ResponseSeverity, SyncSwitchbackCodec};
@@ -51,6 +54,28 @@ fn micro_acme_operation_fields() {
     assert!(!auth.required);
     assert_eq!(body.responses.len(), 1);
     assert_eq!(body.responses[0].severity, ResponseSeverity::Unspecified);
+}
+
+#[test]
+fn micro_acme_cross_entry_ref_resolves() {
+    let manual = switchback_openrpc::load_acme_example().expect("load acme-api");
+    let contract = &manual.modules[0].contracts[0];
+    let list_catalog = contract
+        .groups
+        .iter()
+        .find(|g| g.id.as_str() == "acme.example.v1")
+        .and_then(|g| g.entities.iter().find(|e| e.name == "listCatalogProducts"))
+        .expect("listCatalogProducts operation");
+    let EntityBody::Operation(body) = &list_catalog.body else {
+        panic!("expected operation body");
+    };
+    let response = &body.responses[0];
+    assert_eq!(
+        response.schema_ref.target.group, "acme.example.v2",
+        "expected cross-entry result ref into v2 group: {:?}",
+        response.schema_ref.target
+    );
+    assert_eq!(response.schema_ref.target.name, "ListProductsResponse");
 }
 
 #[test]
@@ -113,6 +138,36 @@ fn upstream_metrics_1_3_loads() {
     let manual = load_fixture(UPSTREAM_METRICS_1_3);
     assert_eq!(manual.modules[0].contracts[0].version.as_str(), "1.3");
     assert!(count_entities(&manual) > 0);
+}
+
+#[test]
+fn upstream_petstore_expanded_1_4_loads() {
+    let path = fixtures_dir().join(UPSTREAM_PETSTORE_1_4);
+    if !path.is_file() {
+        eprintln!(
+            "skip upstream_petstore_expanded_1_4: run cargo xtask spec-vendor fetch-fixtures --family openrpc"
+        );
+        return;
+    }
+    let manual = load_fixture(UPSTREAM_PETSTORE_1_4);
+    assert_eq!(manual.modules[0].contracts[0].version.as_str(), "1.4");
+    assert!(count_entities(&manual) > 0);
+    assert!(count_refs(&manual) > 0);
+}
+
+#[test]
+fn upstream_link_example_1_4_loads() {
+    let path = fixtures_dir().join(UPSTREAM_LINK_1_4);
+    if !path.is_file() {
+        eprintln!(
+            "skip upstream_link_example_1_4: run cargo xtask spec-vendor fetch-fixtures --family openrpc"
+        );
+        return;
+    }
+    let manual = load_fixture(UPSTREAM_LINK_1_4);
+    assert_eq!(manual.modules[0].contracts[0].version.as_str(), "1.4");
+    assert!(count_entities(&manual) > 0);
+    assert!(count_refs(&manual) > 0);
 }
 
 #[test]

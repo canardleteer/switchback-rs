@@ -1,15 +1,17 @@
 # reference-manual example
 
 End-to-end workspace example: assemble **Acme** HTTP (OpenAPI), gRPC
-(protobuf), and events (AsyncAPI) for **v1**, **v2**, and **v3alpha1** into one
+(protobuf), events (AsyncAPI), and JSON-RPC (OpenRPC) for **v1**, **v2**, and
+**v3alpha1** into one
 [`ReferenceManual`](../../docs/GLOSSARY.md#reference-manual), then render with
 `switchback-mdbook`.
 
 This demonstrates
 [ADR 0014](../../docs/adr/0014-multi-contract-reference-manual-assembly.md)
 multi-contract assembly. Group ids are prefixed as `{family}.{package}` (for
-example `openapi.acme.example.v1`, `protobuf.acme.example.v1`, and
-`asyncapi.acme.example.v1`) so mdBook indexes stay unique.
+example `openapi.acme.example.v1`, `protobuf.acme.example.v1`,
+`asyncapi.acme.example.v1`, and `openrpc.acme.example.v1`) so mdBook indexes stay
+unique.
 
 ## Prerequisites
 
@@ -40,7 +42,7 @@ cargo run -p reference-manual-example -- --layout split -o /tmp/acme-ref
 ```
 
 Mixed-family books use top-level SUMMARY sections **HTTP (OpenAPI)**, **gRPC
-(Protobuf)**, and **Events (AsyncAPI)**.
+(Protobuf)**, **Events (AsyncAPI)**, and **JSON-RPC (OpenRPC)**.
 
 ### Serialized artifact round-trip
 
@@ -69,4 +71,8 @@ Corpus paths point at existing fixtures under
 [`switchback-openapi/tests/fixtures/micro/acme/`](../../crates/switchback-openapi/tests/fixtures/micro/acme/),
 [`switchback-protobuf/tests/fixtures/proto/`](../../crates/switchback-protobuf/tests/fixtures/proto/),
 and
-[`switchback-asyncapi/tests/fixtures/micro/acme/`](../../crates/switchback-asyncapi/tests/fixtures/micro/acme/).
+[`switchback-asyncapi/tests/fixtures/micro/acme/`](../../crates/switchback-asyncapi/tests/fixtures/micro/acme/),
+and
+[`switchback-openrpc/tests/fixtures/micro/acme/`](../../crates/switchback-openrpc/tests/fixtures/micro/acme/).
+See also [`examples/mdbook-openrpc/`](../mdbook-openrpc/) for a single-family
+JSON-RPC book.
