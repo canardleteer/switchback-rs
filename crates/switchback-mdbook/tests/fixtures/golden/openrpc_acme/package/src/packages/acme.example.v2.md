@@ -8,7 +8,7 @@ Catalog, inventory, and platform services for the Acme fixture.
 
 ### Create a catalog product
 
-**createProduct** (product) -> [Product](#product)
+**createProduct**(`product`: [Product](#product)) -> [Product](#product)
 
 #### Parameters
 
@@ -51,7 +51,7 @@ Catalog, inventory, and platform services for the Acme fixture.
 
 ### Delete a product
 
-**deleteProduct** (product_id) -> —
+**deleteProduct**(`product_id`: `string`) -> `boolean`
 
 #### Parameters
 
@@ -94,7 +94,7 @@ Catalog, inventory, and platform services for the Acme fixture.
 
 ### Export an audit batch
 
-**exportAuditBatch** (since) -> [AuditBatch](#auditbatch)
+**exportAuditBatch**(`since`: `string`) -> [AuditBatch](#auditbatch)
 
 #### Parameters
 
@@ -137,7 +137,7 @@ Catalog, inventory, and platform services for the Acme fixture.
 
 ### Get one product
 
-**getProduct** (product_id) -> [Product](#product)
+**getProduct**(`product_id`: `string`) -> [Product](#product)
 
 #### Parameters
 
@@ -180,7 +180,7 @@ Catalog, inventory, and platform services for the Acme fixture.
 
 ### List catalog products
 
-**listProducts** (page_size, page_token) -> [ListProductsResponse](#listproductsresponse)
+**listProducts**(`page_size`: `integer`, `page_token`: `string`) -> [ListProductsResponse](#listproductsresponse)
 
 #### Parameters
 
@@ -232,7 +232,7 @@ Catalog, inventory, and platform services for the Acme fixture.
 
 ### Replace a product
 
-**updateProduct** (product_id, product) -> [Product](#product)
+**updateProduct**(`product_id`: `string`, `product`: [Product](#product)) -> [Product](#product)
 
 #### Parameters
 
@@ -283,7 +283,7 @@ Catalog, inventory, and platform services for the Acme fixture.
 
 ### Upload draft product payloads
 
-**uploadDrafts** (drafts) -> —
+**uploadDrafts**(`drafts`: `array`) -> `integer`
 
 #### Parameters
 
@@ -329,7 +329,7 @@ Catalog, inventory, and platform services for the Acme fixture.
 
 ### Watch inventory changes
 
-**watchInventory** (sku) -> [InventoryEvent](#inventoryevent)
+**watchInventory**(`sku`: `string`) -> [InventoryEvent](#inventoryevent)
 
 #### Parameters
 

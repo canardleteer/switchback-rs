@@ -1,6 +1,6 @@
 # Proxy list products (v2 catalog types)
 
-**listCatalogProducts** (XRequestId, Authorization, page_size) -> [ListProductsResponse](../../v2/schemas/ListProductsResponse.md)
+**listCatalogProducts**(`XRequestId`: `string`, `Authorization`: `string`, `page_size`: `integer`) -> [ListProductsResponse](../../v2/schemas/ListProductsResponse.md)
 
 Gateway proxy to the v2 catalog list operation.
 

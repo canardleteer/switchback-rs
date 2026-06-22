@@ -1,6 +1,6 @@
 # Replace a product
 
-**updateProduct** (product_id, product) -> [Product](../schemas/Product.md)
+**updateProduct**(`product_id`: `string`, `product`: [Product](../schemas/Product.md)) -> [Product](../schemas/Product.md)
 
 #### Parameters
 

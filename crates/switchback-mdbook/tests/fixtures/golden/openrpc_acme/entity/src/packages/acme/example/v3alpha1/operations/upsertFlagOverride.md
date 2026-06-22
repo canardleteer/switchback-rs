@@ -1,6 +1,6 @@
 # Upsert a flag override
 
-**upsertFlagOverride** (override) -> [FlagOverride](../schemas/FlagOverride.md)
+**upsertFlagOverride**(`override`: [FlagOverride](../schemas/FlagOverride.md)) -> [FlagOverride](../schemas/FlagOverride.md)
 
 #### Parameters
 

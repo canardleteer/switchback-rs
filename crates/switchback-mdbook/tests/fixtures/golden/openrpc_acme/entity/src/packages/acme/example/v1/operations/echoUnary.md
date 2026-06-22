@@ -1,6 +1,6 @@
 # Echo a message (unary)
 
-**echoUnary** (request, XRequestId, Authorization) -> [EchoUnaryResponse](../schemas/EchoUnaryResponse.md)
+**echoUnary**(`request`: [EchoUnaryRequest](../schemas/EchoUnaryRequest.md), `XRequestId`: `string`, `Authorization`: `string`) -> [EchoUnaryResponse](../schemas/EchoUnaryResponse.md)
 
 Round-trips a JSON payload for latency and auth testing.
 

@@ -1,6 +1,6 @@
 # Open relay session (server SSE + client POST frames)
 
-**relayConnect** (XRequestId, session_token, open) -> [RelayFrame](../schemas/RelayFrame.md)
+**relayConnect**(`XRequestId`: `string`, `session_token`: `string`, `open`: [RelayOpen](../schemas/RelayOpen.md)) -> [RelayFrame](../schemas/RelayFrame.md)
 
 #### Parameters
 

@@ -1,6 +1,6 @@
 # Upload echo parts (octet-stream)
 
-**echoClientStream** (XRequestId, parts) -> [EchoUploadResponse](../schemas/EchoUploadResponse.md)
+**echoClientStream**(`XRequestId`: `string`, `parts`: `string`) -> [EchoUploadResponse](../schemas/EchoUploadResponse.md)
 
 #### Parameters
 

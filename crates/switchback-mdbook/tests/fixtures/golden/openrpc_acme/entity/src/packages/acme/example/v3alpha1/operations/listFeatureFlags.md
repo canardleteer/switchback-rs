@@ -1,6 +1,6 @@
 # List feature flags
 
-**listFeatureFlags** (namespace) -> —
+**listFeatureFlags**(`namespace`: `string`) -> `array`
 
 #### Parameters
 
