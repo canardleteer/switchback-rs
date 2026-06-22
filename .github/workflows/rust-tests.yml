@@ -3,8 +3,11 @@ name: rust-tests
 on:
   pull_request:
     branches: [main]
+  # All branch pushes (including PR branches) so checks still run if
+  # pull_request synchronize is missed; strict ruleset requires the HEAD SHA.
   push:
-    branches: [main]
+    branches:
+      - "**"
   workflow_dispatch:
 
 concurrency:

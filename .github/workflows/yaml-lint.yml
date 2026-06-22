@@ -1,21 +1,13 @@
 name: yaml-lint
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - ".yamllint"
-      - "crates/**"
-      - "examples/**"
-      - "proto/**"
-  # Required on every PR to main (ruleset). Do not add `paths` here — if a
-  # required workflow is skipped, its checks stay Pending and block merge.
-  #
-  # GitHub path filter diffs (docs.github.com/actions/using-workflows/workflow-syntax):
-  # - pull_request: three-dot diff vs base (full PR delta, not just the latest push)
-  # - push: two-dot diff for the pushed commit(s) only
   pull_request:
     branches: [main]
+  # All branch pushes so required checks run on the HEAD SHA when pull_request
+  # synchronize is missed (strict ruleset).
+  push:
+    branches:
+      - "**"
   workflow_dispatch:
 
 concurrency:
