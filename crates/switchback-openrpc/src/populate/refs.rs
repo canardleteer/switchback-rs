@@ -4,7 +4,7 @@ use std::collections::BTreeMap;
 use std::path::Path;
 
 use serde_json::Value;
-use switchback_jsonschema::paths::strip_dot_slash;
+use switchback_jsonschema::paths::{normalize_path, strip_dot_slash};
 use switchback_jsonschema::resolver::{NodeRef, RefIndex};
 use switchback_traits::{EntityRef, RefKind, Reference};
 
@@ -103,7 +103,9 @@ pub fn resolve_ref_target(
             .parent()
             .unwrap_or(Path::new(""))
             .join(file_part);
-        candidate.to_string_lossy().replace('\\', "/")
+        normalize_path(&candidate)
+            .to_string_lossy()
+            .replace('\\', "/")
     };
 
     let target_group = uri_to_group

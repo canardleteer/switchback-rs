@@ -53,4 +53,8 @@ Implement `switchback-openrpc` as a library-first parser per ADR 0007:
   multi-entry Acme scoping.
 - mdBook renderer gains family-aware OpenRPC pages; assemble + reference-manual
   gain JSON-RPC slice.
+- `switchback-assemble` takes a runtime dependency on `switchback-openrpc`;
+  `switchback-mdbook` uses `switchback-openrpc` as a **dev-dependency** only
+  (golden/link-check tests). No forward workspace dev-deps on
+  `switchback-openrpc`.
 - CLI, `xtask parse`, `--validate`, and prose intra-links remain follow-up work.
