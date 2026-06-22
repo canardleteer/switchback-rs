@@ -303,12 +303,12 @@ fn format_schema_type_display(
     ctx: &LinkContext,
     from: &std::path::Path,
 ) -> String {
-    if let Some(item_label) = type_label.strip_suffix("[]") {
-        if !item_label.is_empty() {
-            let linked = format_openapi_type(item_label, schema_ref, ctx, from);
-            if linked != "—" {
-                return format!("{linked}[]");
-            }
+    if let Some(item_label) = type_label.strip_suffix("[]")
+        && !item_label.is_empty()
+    {
+        let linked = format_openapi_type(item_label, schema_ref, ctx, from);
+        if linked != "—" {
+            return format!("{linked}[]");
         }
     }
     let linked = format_openapi_type(type_label, schema_ref, ctx, from);
