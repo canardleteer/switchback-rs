@@ -1,6 +1,6 @@
 # Get one product
 
-****getProduct**** `(product_id) -> Product`
+**getProduct** (product_id) -> [Product](../schemas/Product.md)
 
 #### Parameters
 

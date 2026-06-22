@@ -1,6 +1,6 @@
 # Proxy list products (v2 catalog types)
 
-****listCatalogProducts**** `(XRequestId, Authorization, page_size) -> ListProductsResponse`
+**listCatalogProducts** (XRequestId, Authorization, page_size) -> [ListProductsResponse](../../v2/schemas/ListProductsResponse.md)
 
 Gateway proxy to the v2 catalog list operation.
 
@@ -16,7 +16,7 @@ Gateway proxy to the v2 catalog list operation.
 
 | Status | Description | Media type | Schema |
 | --- | --- | --- | --- |
-| page |  | — | `ListProductsResponse` |
+| page |  | — | [ListProductsResponse](../../v2/schemas/ListProductsResponse.md) |
 
 <details>
 <summary>Operation definition (YAML)</summary>

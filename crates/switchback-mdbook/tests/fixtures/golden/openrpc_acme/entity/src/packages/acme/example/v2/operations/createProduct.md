@@ -1,6 +1,6 @@
 # Create a catalog product
 
-****createProduct**** `(product) -> Product`
+**createProduct** (product) -> [Product](../schemas/Product.md)
 
 #### Parameters
 

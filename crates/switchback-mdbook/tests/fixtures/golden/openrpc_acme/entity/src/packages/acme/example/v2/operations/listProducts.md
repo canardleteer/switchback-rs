@@ -1,6 +1,6 @@
 # List catalog products
 
-****listProducts**** `(page_size, page_token) -> ListProductsResponse`
+**listProducts** (page_size, page_token) -> [ListProductsResponse](../schemas/ListProductsResponse.md)
 
 #### Parameters
 

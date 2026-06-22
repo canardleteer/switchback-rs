@@ -8,7 +8,7 @@ Feature flags, experiments, and pipeline preview for the Acme fixture.
 
 ### Assign an experiment cohort
 
-****assignExperiment**** `(subject_id, experiment_id) -> ExperimentAssignment`
+**assignExperiment** (subject_id, experiment_id) -> [ExperimentAssignment](#experimentassignment)
 
 #### Parameters
 
@@ -59,7 +59,7 @@ Feature flags, experiments, and pipeline preview for the Acme fixture.
 
 ### Get pipeline run status
 
-****getPipelineRun**** `(run_id) -> PipelineRun`
+**getPipelineRun** (run_id) -> [PipelineRun](#pipelinerun)
 
 #### Parameters
 
@@ -102,7 +102,7 @@ Feature flags, experiments, and pipeline preview for the Acme fixture.
 
 ### List feature flags
 
-****listFeatureFlags**** `(namespace) -> array`
+**listFeatureFlags** (namespace) -> —
 
 #### Parameters
 
@@ -147,7 +147,7 @@ Feature flags, experiments, and pipeline preview for the Acme fixture.
 
 ### Start a pipeline run
 
-****startPipeline**** `(pipeline) -> PipelineRun`
+**startPipeline** (pipeline) -> [PipelineRun](#pipelinerun)
 
 #### Parameters
 
@@ -190,7 +190,7 @@ Feature flags, experiments, and pipeline preview for the Acme fixture.
 
 ### Stream assignment updates
 
-****streamAssignments**** `(experiment_id) -> ExperimentAssignment`
+**streamAssignments** (experiment_id) -> [ExperimentAssignment](#experimentassignment)
 
 #### Parameters
 
@@ -233,7 +233,7 @@ Feature flags, experiments, and pipeline preview for the Acme fixture.
 
 ### Upsert a flag override
 
-****upsertFlagOverride**** `(override) -> FlagOverride`
+**upsertFlagOverride** (override) -> [FlagOverride](#flagoverride)
 
 #### Parameters
 
@@ -276,7 +276,7 @@ Feature flags, experiments, and pipeline preview for the Acme fixture.
 
 ### Watch pipeline events
 
-****watchPipeline**** `(run_id) -> PipelineEvent`
+**watchPipeline** (run_id) -> [PipelineEvent](#pipelineevent)
 
 #### Parameters
 

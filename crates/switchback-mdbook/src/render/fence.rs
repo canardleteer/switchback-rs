@@ -133,7 +133,11 @@ pub fn openapi_operation_markdown(
         .find(|r| !r.target.module.is_empty())
         .map(|r| r.target.module.as_str())
         .unwrap_or("");
-    let mut out = format_method_path_line(&body.signature, &body.protocols);
+    let mut out = if body.signature.contains(" -> ") {
+        format_openrpc_method_line(&body.signature, &body.responses, ctx, from)
+    } else {
+        format_method_path_line(&body.signature, &body.protocols)
+    };
     if let Some(doc) = entity.doc.as_deref() {
         let doc = apply_intra_links("doc", doc, &entity.intra_links, formatter, ctx);
         let doc = link_structural_refs_in_prose(&doc, &entity.refs, module, group, ctx, from);
@@ -235,6 +239,27 @@ fn format_method_path_line(signature: &str, protocols: &[ProtocolAttachment]) ->
         return format!("**{signature}**\n\n");
     };
     format!("**{method}** `{path}`\n\n")
+}
+
+fn format_openrpc_method_line(
+    signature: &str,
+    responses: &[ResponseRef],
+    ctx: &LinkContext,
+    from: &std::path::Path,
+) -> String {
+    let Some((prefix, _result_plain)) = signature.split_once(" -> ") else {
+        return format!("{signature}\n\n");
+    };
+    let result = responses
+        .first()
+        .map(|response| format_openapi_response_schema(response, ctx, from))
+        .unwrap_or_else(|| {
+            signature
+                .split_once(" -> ")
+                .map(|(_, r)| r.to_string())
+                .unwrap_or_default()
+        });
+    format!("{prefix} -> {result}\n\n")
 }
 
 fn format_openapi_parameter_name(

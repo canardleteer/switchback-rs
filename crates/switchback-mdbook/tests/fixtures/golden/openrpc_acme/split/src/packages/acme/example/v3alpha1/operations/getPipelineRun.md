@@ -1,6 +1,6 @@
 # Get pipeline run status
 
-****getPipelineRun**** `(run_id) -> PipelineRun`
+**getPipelineRun** (run_id) -> [PipelineRun](../schemas/PipelineRun.md)
 
 #### Parameters
 

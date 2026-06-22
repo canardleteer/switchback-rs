@@ -1,6 +1,6 @@
 # Stream echo chunks (SSE)
 
-****echoServerStream**** `(XRequestId, message, chunk_count) -> EchoStreamChunk`
+**echoServerStream** (XRequestId, message, chunk_count) -> [EchoStreamChunk](../schemas/EchoStreamChunk.md)
 
 #### Parameters
 
