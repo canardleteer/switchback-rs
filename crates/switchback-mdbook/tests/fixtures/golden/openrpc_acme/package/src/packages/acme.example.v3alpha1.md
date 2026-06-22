@@ -102,7 +102,7 @@ Feature flags, experiments, and pipeline preview for the Acme fixture.
 
 ### List feature flags
 
-**listFeatureFlags**(`namespace`: `string`) -> `array`
+**listFeatureFlags**(`namespace`: `string`) -> [FeatureFlag](#featureflag)[]
 
 #### Parameters
 
@@ -114,7 +114,7 @@ Feature flags, experiments, and pipeline preview for the Acme fixture.
 
 | Status | Description | Media type | Schema |
 | --- | --- | --- | --- |
-| flags |  | — | — |
+| flags |  | — | [FeatureFlag](#featureflag)[] |
 
 <details>
 <summary>Operation definition (YAML)</summary>

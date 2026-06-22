@@ -14,7 +14,7 @@
 
 | Status | Description | Media type | Schema |
 | --- | --- | --- | --- |
-| accepted |  | — | — |
+| accepted |  | — | `boolean` |
 
 <details>
 <summary>Operation definition (YAML)</summary>

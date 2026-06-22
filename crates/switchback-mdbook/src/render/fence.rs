@@ -216,7 +216,17 @@ pub fn openapi_operation_markdown(
                 out.push_str(&escape_table_cell(&response.media_type));
             }
             out.push_str(" | ");
-            out.push_str(&format_openapi_response_schema(response, ctx, from));
+            let schema = if body.signature.contains(" -> ") {
+                let result_type = body
+                    .signature
+                    .split_once(" -> ")
+                    .map(|(_, label)| label)
+                    .unwrap_or("");
+                format_schema_type_display(result_type, &response.schema_ref, ctx, from)
+            } else {
+                format_openapi_response_schema(response, ctx, from)
+            };
+            out.push_str(&schema);
             out.push_str(" |\n");
         }
         out.push('\n');
@@ -276,8 +286,7 @@ fn format_openrpc_method_line(
     };
     let result = responses
         .first()
-        .map(|response| format_openapi_response_schema(response, ctx, from))
-        .filter(|linked| linked != "—")
+        .map(|response| format_schema_type_display(result_plain, &response.schema_ref, ctx, from))
         .unwrap_or_else(|| {
             if result_plain.is_empty() || result_plain == "void" {
                 "`void`".into()
@@ -286,6 +295,31 @@ fn format_openrpc_method_line(
             }
         });
     format!("{method_head}({params}) -> {result}\n\n")
+}
+
+fn format_schema_type_display(
+    type_label: &str,
+    schema_ref: &Reference,
+    ctx: &LinkContext,
+    from: &std::path::Path,
+) -> String {
+    if let Some(item_label) = type_label.strip_suffix("[]") {
+        if !item_label.is_empty() {
+            let linked = format_openapi_type(item_label, schema_ref, ctx, from);
+            if linked != "—" {
+                return format!("{linked}[]");
+            }
+        }
+    }
+    let linked = format_openapi_type(type_label, schema_ref, ctx, from);
+    if linked != "—" {
+        return linked;
+    }
+    if type_label.is_empty() || type_label == "void" {
+        "`void`".into()
+    } else {
+        format!("`{type_label}`")
+    }
 }
 
 fn format_openapi_parameter_name(

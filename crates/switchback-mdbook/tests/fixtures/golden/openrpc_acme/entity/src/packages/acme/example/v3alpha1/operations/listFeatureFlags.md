@@ -1,6 +1,6 @@
 # List feature flags
 
-**listFeatureFlags**(`namespace`: `string`) -> `array`
+**listFeatureFlags**(`namespace`: `string`) -> [FeatureFlag](../schemas/FeatureFlag.md)[]
 
 #### Parameters
 
@@ -12,7 +12,7 @@
 
 | Status | Description | Media type | Schema |
 | --- | --- | --- | --- |
-| flags |  | — | — |
+| flags |  | — | [FeatureFlag](../schemas/FeatureFlag.md)[] |
 
 <details>
 <summary>Operation definition (YAML)</summary>

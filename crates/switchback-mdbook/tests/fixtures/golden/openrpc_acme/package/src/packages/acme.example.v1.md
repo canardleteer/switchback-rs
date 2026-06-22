@@ -187,7 +187,7 @@ Gateway proxy to the v2 catalog list operation.
 
 | Status | Description | Media type | Schema |
 | --- | --- | --- | --- |
-| accepted |  | — | — |
+| accepted |  | — | `boolean` |
 
 <details>
 <summary>Operation definition (YAML)</summary>

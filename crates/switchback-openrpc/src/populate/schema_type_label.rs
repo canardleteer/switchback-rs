@@ -10,10 +10,48 @@ pub fn schema_type_label(value: &Value) -> String {
     if let Some(Value::String(ref_key)) = obj.get("$ref") {
         return ref_key.rsplit('/').next().unwrap_or("ref").to_string();
     }
+    if obj.get("type").and_then(|v| v.as_str()) == Some("array") {
+        if let Some(items) = obj.get("items") {
+            let item_label = schema_type_label(items);
+            if item_label.is_empty() {
+                return "array".to_string();
+            }
+            return format!("{item_label}[]");
+        }
+        return "array".to_string();
+    }
     if let Some(t) = obj.get("type") {
         return type_field_label(t);
     }
     String::new()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::json;
+
+    #[test]
+    fn array_of_ref_tail_name() {
+        assert_eq!(
+            schema_type_label(&json!({
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/FeatureFlag" }
+            })),
+            "FeatureFlag[]"
+        );
+    }
+
+    #[test]
+    fn array_of_inline_string() {
+        assert_eq!(
+            schema_type_label(&json!({
+                "type": "array",
+                "items": { "type": "string" }
+            })),
+            "string[]"
+        );
+    }
 }
 
 /// Derive a parameter type label from a content descriptor and its schema value.
