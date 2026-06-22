@@ -5,10 +5,10 @@ how they move through parse → wire → render, and what they look like in each
 [contract family](GLOSSARY.md#contract-family). For hierarchy terms see
 [GLOSSARY.md](GLOSSARY.md); this file is the linking-specific companion.
 
-**Status:** protobuf and OpenAPI structural `refs` reflect current behavior.
-OpenAPI, AsyncAPI, and
-OpenRPC examples are **synthetic** — intended naming and shape targets until
-those parsers land.
+**Status:** protobuf, OpenAPI, AsyncAPI, and OpenRPC **structural `refs`**
+reflect current populate behavior in the sections below. **Prose intra-links**
+remain deferred for JSON contract families (OpenAPI, AsyncAPI, OpenRPC
+extractors return empty `intra_links` today).
 
 ---
 
@@ -209,33 +209,97 @@ paths:
 
 ---
 
-## asyncapi *(synthetic — parser not implemented)*
+## asyncapi
 
-**Planned default extractor:** `AsyncApiLinkExtractor` (stub today, name
-`"asyncapi-stub"`).
+**Default extractor:** `AsyncApiLinkExtractor` (stub today, name
+`"asyncapi-stub"`). Prose intra-links are **deferred** — extractor returns
+empty `intra_links`.
 
-### Structural reference (`refs`)
+### Structural reference (`refs`) — implemented
 
-From channel/message/payload graph.
+From channels, operations, messages, components, and **schema outbreak**
+(inline JSON payloads and nested Avro types promoted to schema entities).
 
-**Message payload ref:**
+**Explicit payload `$ref`:**
 
 ```yaml
-channels:
-  user/signedup:
-    publish:
-      message:
-        payload:
-          $ref: "#/components/schemas/UserSignedUp"
+components:
+  messages:
+    lightMeasured:
+      payload:
+        $ref: "#/components/schemas/lightMeasuredPayload"
 ```
 
-- Populate: operation (or message) entity `refs` → `UserSignedUp` schema.
+- Populate: message entity `refs` → `lightMeasuredPayload` schema
+  (`RefKind::Internal` / `Component`).
 
-**Schema field ref:** same pattern as OpenAPI (`$ref` in payload properties).
+**Inline JSON payload (outbreak):**
+
+```yaml
+components:
+  messages:
+    ProductDeleted:
+      payload:
+        type: object
+        properties:
+          id:
+            type: string
+```
+
+- Populate: after component populate, outbreak creates schema entity
+  `ProductDeletedPayload` (or schema `title` when set) and adds message → schema
+  `refs`.
+
+**Nested Avro types (outbreak):**
+
+```yaml
+components:
+  messages:
+    PipelineStepCompleted:
+      payload:
+        schemaFormat: application/vnd.apache.avro+json
+        schema:
+          type: record
+          name: PipelineStepCompleted
+          fields:
+            - name: status
+              type:
+                type: record
+                name: PipelineStatus
+                fields: [...]
+```
+
+- Populate: nested record `PipelineStatus` becomes a schema entity; message
+  `refs` → `PipelineStatus` only.
+- **Self-name skip:** Avro record name equal to the message name
+  (`PipelineStepCompleted`) is **not** duplicated as a separate schema entity
+  and is **not** listed as a Payload link on the message page — only nested
+  named types outbreak.
+
+**Schema property refs:** component and outbreak schema entities record `$ref`s
+in `StoredEntity.refs`; Avro schemas also populate `SchemaBody.properties` for
+render-time property tables.
+
+**Channel / operation → message:** operation and channel entities `refs`
+message entities used in publish/subscribe or 3.x operation bindings.
+
+### mdBook render (structural links)
+
+Renderers link structural refs in **dedicated subsections above source fences**.
+YAML/JSON fences remain literal authored spec text — `$ref` strings inside
+fences are not rewritten.
+
+| Entity page | Linked sections |
+| --- | --- |
+| Channel, operation | **Messages** — bullet list of message refs |
+| Message | **Payload** — schema refs (nested types after outbreak); **Properties** — field table for inline Avro payloads |
+| Schema | **Properties** — table from `SchemaBody.properties` |
+
+Implementation: `crates/switchback-mdbook/src/render/asyncapi.rs`.
 
 ### Intra-link (`intra_links`)
 
-From prose in channel or message `description`.
+From prose in channel, message, or operation `description` / `summary`.
 
 ```yaml
 components:
@@ -246,8 +310,10 @@ components:
         `#/components/schemas/UserSignedUp`.
 ```
 
-- Extractor (planned): AsyncAPI doc conventions + shared JSON Pointer / `$ref`
+- Extractor (deferred): AsyncAPI doc conventions + shared JSON Pointer / `$ref`
   prose rules with OpenAPI where possible.
+- Until then, only structural `refs` and render subsections above provide
+  cross-page navigation for payloads and schemas.
 
 ---
 
