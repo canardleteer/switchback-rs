@@ -1,6 +1,6 @@
 # Start a pipeline run
 
-**startPipeline** (pipeline) -> [PipelineRun](../schemas/PipelineRun.md)
+**startPipeline**(`pipeline`: [PipelineSpec](../schemas/PipelineSpec.md)) -> [PipelineRun](../schemas/PipelineRun.md)
 
 #### Parameters
 

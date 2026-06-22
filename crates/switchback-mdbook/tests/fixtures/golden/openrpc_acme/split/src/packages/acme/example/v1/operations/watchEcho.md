@@ -1,6 +1,6 @@
 # Watch echo events (NDJSON)
 
-**watchEcho** (XRequestId, topic) -> [WatchEchoEvent](../schemas/WatchEchoEvent.md)
+**watchEcho**(`XRequestId`: `string`, `topic`: `string`) -> [WatchEchoEvent](../schemas/WatchEchoEvent.md)
 
 #### Parameters
 

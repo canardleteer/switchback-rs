@@ -1,6 +1,6 @@
 # Assign an experiment cohort
 
-**assignExperiment** (subject_id, experiment_id) -> [ExperimentAssignment](../schemas/ExperimentAssignment.md)
+**assignExperiment**(`subject_id`: `string`, `experiment_id`: `string`) -> [ExperimentAssignment](../schemas/ExperimentAssignment.md)
 
 #### Parameters
 

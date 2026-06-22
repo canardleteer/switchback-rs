@@ -39,6 +39,7 @@ fn micro_acme_operation_fields() {
         panic!("expected operation body");
     };
     assert!(body.signature.contains("**echoUnary**"));
+    assert!(body.signature.contains("request: EchoUnaryRequest"));
     assert!(body.signature.contains("EchoUnaryResponse"));
     let request = body
         .parameters

@@ -1,6 +1,6 @@
 # Watch pipeline events
 
-**watchPipeline** (run_id) -> [PipelineEvent](../schemas/PipelineEvent.md)
+**watchPipeline**(`run_id`: `string`) -> [PipelineEvent](../schemas/PipelineEvent.md)
 
 #### Parameters
 

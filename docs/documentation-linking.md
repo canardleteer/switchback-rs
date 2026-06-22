@@ -280,6 +280,10 @@ From method `params` / `result` JSON Schema refs and component schemas.
 - Populate: method entity `refs` → `EchoUnaryRequest`, `EchoUnaryResponse`
   schema entities in the same group (or resolved cross-file target group).
 
+Operation pages render a Rust-style signature line from structured fields:
+`**method**(`param`: Type, …) -> ReturnType`, with structural links on schema
+types (primitives stay in backticks).
+
 ### Intra-link (`intra_links`)
 
 Deferred in the first behavior parser. Method `summary` / `description` prose

@@ -134,7 +134,13 @@ pub fn openapi_operation_markdown(
         .map(|r| r.target.module.as_str())
         .unwrap_or("");
     let mut out = if body.signature.contains(" -> ") {
-        format_openrpc_method_line(&body.signature, &body.responses, ctx, from)
+        format_openrpc_method_line(
+            &body.signature,
+            &body.parameters,
+            &body.responses,
+            ctx,
+            from,
+        )
     } else {
         format_method_path_line(&body.signature, &body.protocols)
     };
@@ -243,23 +249,43 @@ fn format_method_path_line(signature: &str, protocols: &[ProtocolAttachment]) ->
 
 fn format_openrpc_method_line(
     signature: &str,
+    parameters: &[ParameterRef],
     responses: &[ResponseRef],
     ctx: &LinkContext,
     from: &std::path::Path,
 ) -> String {
-    let Some((prefix, _result_plain)) = signature.split_once(" -> ") else {
+    let Some((_, result_plain)) = signature.split_once(" -> ") else {
         return format!("{signature}\n\n");
+    };
+    let method_head = signature
+        .split_once('(')
+        .map(|(head, _)| head)
+        .unwrap_or(signature);
+    let param_parts: Vec<String> = parameters
+        .iter()
+        .map(|param| {
+            let name = format!("`{}`", param.name);
+            let ty = format_openapi_type(param.type_label.as_str(), &param.schema_ref, ctx, from);
+            format!("{name}: {ty}")
+        })
+        .collect();
+    let params = if param_parts.is_empty() {
+        String::new()
+    } else {
+        param_parts.join(", ")
     };
     let result = responses
         .first()
         .map(|response| format_openapi_response_schema(response, ctx, from))
+        .filter(|linked| linked != "—")
         .unwrap_or_else(|| {
-            signature
-                .split_once(" -> ")
-                .map(|(_, r)| r.to_string())
-                .unwrap_or_default()
+            if result_plain.is_empty() || result_plain == "void" {
+                "`void`".into()
+            } else {
+                format!("`{result_plain}`")
+            }
         });
-    format!("{prefix} -> {result}\n\n")
+    format!("{method_head}({params}) -> {result}\n\n")
 }
 
 fn format_openapi_parameter_name(

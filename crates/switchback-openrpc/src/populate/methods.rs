@@ -23,14 +23,18 @@ pub fn build_operation_body(
 ) -> OperationBody {
     let parameters = collect_parameter_refs(method_value, ctx);
     let result_type = result_type_label(method_value, ctx);
-    let signature = format!(
-        "**{method_name}** ({}) -> {result_type}",
-        parameters
-            .iter()
-            .map(|p| p.name.as_str())
-            .collect::<Vec<_>>()
-            .join(", ")
-    );
+    let param_sig = parameters
+        .iter()
+        .map(|p| {
+            if p.type_label.is_empty() {
+                p.name.clone()
+            } else {
+                format!("{}: {}", p.name, p.type_label)
+            }
+        })
+        .collect::<Vec<_>>()
+        .join(", ");
+    let signature = format!("**{method_name}**({param_sig}) -> {result_type}");
     let responses = collect_result_refs(method_value, ctx);
     let fence_body = serialize_fence(method_value, doc);
 

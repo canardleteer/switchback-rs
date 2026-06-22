@@ -1,6 +1,6 @@
 # Send one inbound relay frame
 
-**relaySendFrame** (XRequestId, session_token, frame) -> —
+**relaySendFrame**(`XRequestId`: `string`, `session_token`: `string`, `frame`: [RelayFrame](../schemas/RelayFrame.md)) -> `boolean`
 
 #### Parameters
 

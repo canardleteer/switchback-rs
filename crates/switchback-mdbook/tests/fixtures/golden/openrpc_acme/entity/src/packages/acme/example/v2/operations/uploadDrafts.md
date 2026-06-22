@@ -1,6 +1,6 @@
 # Upload draft product payloads
 
-**uploadDrafts** (drafts) -> —
+**uploadDrafts**(`drafts`: `array`) -> `integer`
 
 #### Parameters
 
