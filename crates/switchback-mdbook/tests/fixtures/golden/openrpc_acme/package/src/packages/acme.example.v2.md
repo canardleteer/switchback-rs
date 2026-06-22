@@ -63,7 +63,7 @@ Catalog, inventory, and platform services for the Acme fixture.
 
 | Status | Description | Media type | Schema |
 | --- | --- | --- | --- |
-| deleted |  | — | — |
+| deleted |  | — | `boolean` |
 
 <details>
 <summary>Operation definition (YAML)</summary>
@@ -283,19 +283,19 @@ Catalog, inventory, and platform services for the Acme fixture.
 
 ### Upload draft product payloads
 
-**uploadDrafts**(`drafts`: `array`) -> `integer`
+**uploadDrafts**(`drafts`: [ProductDraft](#productdraft)) -> `integer`
 
 #### Parameters
 
 | Name | In | Type | Required | Description |
 | --- | --- | --- | --- | --- |
-| `drafts` | param | `array` | required |  |
+| `drafts` | param | [ProductDraft](#productdraft) | required |  |
 
 #### Responses
 
 | Status | Description | Media type | Schema |
 | --- | --- | --- | --- |
-| accepted |  | — | — |
+| accepted |  | — | `integer` |
 
 <details>
 <summary>Operation definition (YAML)</summary>

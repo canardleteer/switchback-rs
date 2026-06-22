@@ -58,6 +58,23 @@ fn micro_acme_operation_fields() {
 }
 
 #[test]
+fn micro_acme_array_result_type_label() {
+    let manual = switchback_openrpc::load_acme_example().expect("load acme-api");
+    let contract = &manual.modules[0].contracts[0];
+    let list_flags = contract
+        .groups
+        .iter()
+        .find(|g| g.id.as_str() == "acme.example.v3alpha1")
+        .and_then(|g| g.entities.iter().find(|e| e.name == "listFeatureFlags"))
+        .expect("listFeatureFlags operation");
+    let EntityBody::Operation(body) = &list_flags.body else {
+        panic!("expected operation body");
+    };
+    assert!(body.signature.contains("FeatureFlag[]"));
+    assert_eq!(body.responses[0].schema_ref.target.name, "FeatureFlag");
+}
+
+#[test]
 fn micro_acme_cross_entry_ref_resolves() {
     let manual = switchback_openrpc::load_acme_example().expect("load acme-api");
     let contract = &manual.modules[0].contracts[0];

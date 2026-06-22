@@ -1,18 +1,18 @@
 # Upload draft product payloads
 
-**uploadDrafts**(`drafts`: `array`) -> `integer`
+**uploadDrafts**(`drafts`: [ProductDraft](../schemas/ProductDraft.md)) -> `integer`
 
 #### Parameters
 
 | Name | In | Type | Required | Description |
 | --- | --- | --- | --- | --- |
-| `drafts` | param | `array` | required |  |
+| `drafts` | param | [ProductDraft](../schemas/ProductDraft.md) | required |  |
 
 #### Responses
 
 | Status | Description | Media type | Schema |
 | --- | --- | --- | --- |
-| accepted |  | — | — |
+| accepted |  | — | `integer` |
 
 <details>
 <summary>Operation definition (YAML)</summary>

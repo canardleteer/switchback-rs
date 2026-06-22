@@ -157,10 +157,15 @@ pub fn schema_ref_from_value(
     uri_to_group: &BTreeMap<String, String>,
     index: &RefIndex,
 ) -> Option<Reference> {
-    if let Some(obj) = value.as_object()
-        && let Some(Value::String(ref_key)) = obj.get("$ref")
-    {
-        return ref_to_reference(ref_key, doc_uri, module_id, uri_to_group, index);
+    if let Some(obj) = value.as_object() {
+        if let Some(Value::String(ref_key)) = obj.get("$ref") {
+            return ref_to_reference(ref_key, doc_uri, module_id, uri_to_group, index);
+        }
+        if obj.get("type").and_then(|v| v.as_str()) == Some("array")
+            && let Some(items) = obj.get("items")
+        {
+            return schema_ref_from_value(items, doc_uri, module_id, uri_to_group, index);
+        }
     }
     None
 }

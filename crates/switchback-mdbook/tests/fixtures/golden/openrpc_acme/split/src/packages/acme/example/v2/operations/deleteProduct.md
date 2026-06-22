@@ -12,7 +12,7 @@
 
 | Status | Description | Media type | Schema |
 | --- | --- | --- | --- |
-| deleted |  | — | — |
+| deleted |  | — | `boolean` |
 
 <details>
 <summary>Operation definition (YAML)</summary>
