@@ -8,6 +8,24 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.0.1-0.dev.5](https://github.com/canardleteer/switchback-rs/compare/v0.0.1-0.dev.4...v0.0.1-0.dev.5) - 2026-06-22
+
+### Added
+
+- *(openrpc)* implement parser, mdBook render, and assembly integration
+
+### Fixed
+
+- label and link openrpc array result element types
+- render openrpc signatures with typed params and structural links
+- link openrpc result types in operation signature lines
+- resolve cross-entry openrpc refs and extend pass-through tests
+
+### Other
+
+- fix rumdl and rustfmt for openrpc CI
+- fix clippy collapsible_if and test module ordering
+
 ## [0.0.1-0.dev.4](https://github.com/canardleteer/switchback-rs/compare/v0.0.1-0.dev.3...v0.0.1-0.dev.4) - 2026-06-21
 
 ### Added
