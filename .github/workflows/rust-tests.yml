@@ -3,10 +3,8 @@ name: rust-tests
 on:
   pull_request:
     branches: [main]
-  # Backup when pull_request synchronize is missed; also covers direct branch pushes.
   push:
-    branches:
-      - "**"
+    branches: [main]
   workflow_dispatch:
 
 concurrency:

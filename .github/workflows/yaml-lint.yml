@@ -1,14 +1,21 @@
 name: yaml-lint
 
 on:
-  # Required on every PR to main (ruleset); always run — do not path-filter here.
+  push:
+    branches: [main]
+    paths:
+      - ".yamllint"
+      - "crates/**"
+      - "examples/**"
+      - "proto/**"
+  # Required on every PR to main (ruleset). Do not add `paths` here — if a
+  # required workflow is skipped, its checks stay Pending and block merge.
+  #
+  # GitHub path filter diffs (docs.github.com/actions/using-workflows/workflow-syntax):
+  # - pull_request: three-dot diff vs base (full PR delta, not just the latest push)
+  # - push: two-dot diff for the pushed commit(s) only
   pull_request:
     branches: [main]
-  # push: path filters on `paths` compare only the pushed commit on main. Feature
-  # branches use a job-level diff vs main (full PR delta) via dorny/paths-filter.
-  push:
-    branches:
-      - "**"
   workflow_dispatch:
 
 concurrency:
@@ -19,56 +26,7 @@ permissions:
   contents: read
 
 jobs:
-  changes:
-    runs-on: ubuntu-latest
-    outputs:
-      run: ${{ steps.decide.outputs.run }}
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-
-      - name: Diff vs main (feature branch / pull_request shape)
-        if: github.event_name != 'workflow_dispatch' && github.ref != 'refs/heads/main'
-        uses: dorny/paths-filter@v3
-        id: filter_branch
-        with:
-          base: main
-          filters: |
-            yaml:
-              - ".yamllint"
-              - "crates/**"
-              - "examples/**"
-              - "proto/**"
-
-      - name: Diff for push to main (single commit)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: dorny/paths-filter@v3
-        id: filter_main
-        with:
-          filters: |
-            yaml:
-              - ".yamllint"
-              - "crates/**"
-              - "examples/**"
-              - "proto/**"
-
-      - name: Decide whether to run
-        id: decide
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ github.event_name }}" = "pull_request" ]; then
-            echo "run=true" >> "$GITHUB_OUTPUT"
-          elif [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            echo "run=${{ steps.filter_main.outputs.yaml }}" >> "$GITHUB_OUTPUT"
-          elif [ "${{ github.event_name }}" = "push" ]; then
-            echo "run=${{ steps.filter_branch.outputs.yaml }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "run=false" >> "$GITHUB_OUTPUT"
-          fi
-
   ryl:
-    needs: changes
-    if: needs.changes.outputs.run == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
