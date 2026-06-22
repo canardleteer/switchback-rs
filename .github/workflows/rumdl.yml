@@ -1,18 +1,13 @@
 name: rumdl
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "**/*.md"
-      - ".rumdl.toml"
-      - ".github/workflows/rumdl.yml"
-  # Required on every PR to main (ruleset). Do not add `paths` here — if a
-  # required workflow is skipped, its checks stay Pending and block merge.
-  # GitHub path filters behave differently by event (see workflow comments in
-  # yaml-lint.yml).
   pull_request:
     branches: [main]
+  # All branch pushes so required checks run on the HEAD SHA when pull_request
+  # synchronize is missed (strict ruleset).
+  push:
+    branches:
+      - "**"
   workflow_dispatch:
 
 concurrency:
