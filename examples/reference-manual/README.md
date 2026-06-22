@@ -10,8 +10,8 @@ This demonstrates
 [ADR 0014](../../docs/adr/0014-multi-contract-reference-manual-assembly.md)
 multi-contract assembly. Group ids are prefixed as `{family}.{package}` (for
 example `openapi.acme.example.v1`, `protobuf.acme.example.v1`,
-`asyncapi.acme.example.v1`, and `openrpc.acme.example.v1`) so mdBook indexes stay
-unique.
+`asyncapi.acme.example.v1`, and `openrpc.acme.example.v1`) so mdBook indexes
+stay unique.
 
 ## Prerequisites
 

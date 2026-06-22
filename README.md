@@ -133,8 +133,9 @@ switchback-rs/
   `Operation` entities, content descriptors / `components.schemas` -> `Schema`
   entities. Categories: `operation`, `schema`, `parameter`. Reuses
   `switchback-jsonschema` and `switchback-traits` with a method-to-operation
-  mapper. Workspace examples include [`examples/mdbook-openrpc/`](examples/mdbook-openrpc/)
-  for fixture-driven JSON-RPC books.
+  mapper. Workspace examples include
+  [`examples/mdbook-openrpc/`](examples/mdbook-openrpc/) for fixture-driven
+  JSON-RPC books.
 
 ### Tooling
 
