@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: rvben/rumdl@v0
+      - uses: rvben/rumdl@v0.2.46
         with:
           config: .rumdl.toml
           args: --respect-gitignore
