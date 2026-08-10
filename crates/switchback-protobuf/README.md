@@ -59,7 +59,7 @@ Default features enable both compilers:
 | Feature | Dependency | Fallback |
 | --- | --- | --- |
 | `protoc` (default) | `protoc-bin-vendored` | `PATH` `protoc` |
-| `buf` (default) | `buf-tools` 1.70.0-hotfix.1 | `PATH` `buf` |
+| `buf` (default) | `buf-tools` 1.71.0 | `PATH` `buf` |
 
 Disable defaults for slim builds, e.g.
 `cargo build -p switchback-protobuf --no-default-features --features protoc`.

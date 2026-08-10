@@ -180,9 +180,9 @@ checksum = "dc0b364ead1874514c8c2855ab558056ebfeb775653e7ae45ff72f28f8f3166c"
 
 [[package]]
 name = "buf-tools"
-version = "1.70.0-hotfix.1"
+version = "1.71.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "50d72de488e1a23e640c909c16764fe6018221b47bb133a9e04e650b722fbbf7"
+checksum = "2c8b3045c14d095ecefea36ceb4f778ff2ab0e2de4a5fd4ebd0a213e102e69e5"
 dependencies = [
  "dirs",
  "flate2",

@@ -187,7 +187,7 @@ fn resolve_buf_for_export(explicit: Option<&Path>) -> Result<PathBuf> {
             return Ok(PathBuf::from("buf"));
         }
         bail!(
-            "buf not found on PATH; install with: cargo install buf-toolchain --locked --version 1.70.0-hotfix.1"
+            "buf not found on PATH; install with: cargo install buf-toolchain --locked --version 1.71.0"
         )
     }
 }

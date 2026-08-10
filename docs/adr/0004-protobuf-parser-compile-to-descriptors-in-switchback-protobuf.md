@@ -22,7 +22,7 @@ Implement switchback-protobuf as a library-only parser that:
 
 1. Compiles inputs to FileDescriptorSet via protoc or buf build (Cargo features
    `protoc` and `buf`, both default; vendored fallbacks via protoc-bin-vendored
-   and buf-tools 1.70.0-hotfix.1).
+   and buf-tools 1.71.0).
 2. Uses buffa-descriptor generated types (same as protobuf-mdbook), not prost.
 3. Maps protobuf packages to switchback groups; messages/enums to schema
    entities; services and RPCs to service/operation entities with fence
