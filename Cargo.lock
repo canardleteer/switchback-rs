@@ -1317,7 +1317,7 @@ dependencies = [
 
 [[package]]
 name = "mdbook-asyncapi-example"
-version = "0.0.1-0.dev.5"
+version = "0.0.1-0.dev.6"
 dependencies = [
  "anyhow",
  "clap",
@@ -1402,7 +1402,7 @@ dependencies = [
 
 [[package]]
 name = "mdbook-openapi-example"
-version = "0.0.1-0.dev.5"
+version = "0.0.1-0.dev.6"
 dependencies = [
  "anyhow",
  "clap",
@@ -1414,7 +1414,7 @@ dependencies = [
 
 [[package]]
 name = "mdbook-openrpc-example"
-version = "0.0.1-0.dev.5"
+version = "0.0.1-0.dev.6"
 dependencies = [
  "anyhow",
  "clap",
@@ -1438,7 +1438,7 @@ dependencies = [
 
 [[package]]
 name = "mdbook-protobuf-example"
-version = "0.0.1-0.dev.5"
+version = "0.0.1-0.dev.6"
 dependencies = [
  "anyhow",
  "clap",
@@ -2043,7 +2043,7 @@ dependencies = [
 
 [[package]]
 name = "reference-manual-example"
-version = "0.0.1-0.dev.5"
+version = "0.0.1-0.dev.6"
 dependencies = [
  "anyhow",
  "clap",
@@ -2558,7 +2558,7 @@ checksum = "13c2bddecc57b384dee18652358fb23172facb8a2c51ccc10d74c157bdea3292"
 
 [[package]]
 name = "switchback-assemble"
-version = "0.0.1-0.dev.5"
+version = "0.0.1-0.dev.6"
 dependencies = [
  "switchback-asyncapi",
  "switchback-openapi",
@@ -2569,7 +2569,7 @@ dependencies = [
 
 [[package]]
 name = "switchback-asyncapi"
-version = "0.0.1-0.dev.5"
+version = "0.0.1-0.dev.6"
 dependencies = [
  "anyhow",
  "serde",
@@ -2588,7 +2588,7 @@ dependencies = [
 
 [[package]]
 name = "switchback-avro"
-version = "0.0.1-0.dev.5"
+version = "0.0.1-0.dev.6"
 dependencies = [
  "serde",
  "serde_json",
@@ -2599,7 +2599,7 @@ dependencies = [
 
 [[package]]
 name = "switchback-codec-pb"
-version = "0.0.1-0.dev.5"
+version = "0.0.1-0.dev.6"
 dependencies = [
  "buffa",
  "buffa-build",
@@ -2611,7 +2611,7 @@ dependencies = [
 
 [[package]]
 name = "switchback-jsonschema"
-version = "0.0.1-0.dev.5"
+version = "0.0.1-0.dev.6"
 dependencies = [
  "anyhow",
  "jsonschema",
@@ -2628,7 +2628,7 @@ dependencies = [
 
 [[package]]
 name = "switchback-mdbook"
-version = "0.0.1-0.dev.5"
+version = "0.0.1-0.dev.6"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2657,7 +2657,7 @@ dependencies = [
 
 [[package]]
 name = "switchback-openapi"
-version = "0.0.1-0.dev.5"
+version = "0.0.1-0.dev.6"
 dependencies = [
  "anyhow",
  "serde",
@@ -2675,7 +2675,7 @@ dependencies = [
 
 [[package]]
 name = "switchback-openrpc"
-version = "0.0.1-0.dev.5"
+version = "0.0.1-0.dev.6"
 dependencies = [
  "serde",
  "serde-saphyr",
@@ -2691,7 +2691,7 @@ dependencies = [
 
 [[package]]
 name = "switchback-protobuf"
-version = "0.0.1-0.dev.5"
+version = "0.0.1-0.dev.6"
 dependencies = [
  "anyhow",
  "buf-tools",
@@ -2710,7 +2710,7 @@ dependencies = [
 
 [[package]]
 name = "switchback-protocols"
-version = "0.0.1-0.dev.5"
+version = "0.0.1-0.dev.6"
 dependencies = [
  "buffa",
  "switchback-codec-pb",
@@ -2719,7 +2719,7 @@ dependencies = [
 
 [[package]]
 name = "switchback-traits"
-version = "0.0.1-0.dev.5"
+version = "0.0.1-0.dev.6"
 dependencies = [
  "static_assertions",
  "tempfile",
@@ -3425,7 +3425,7 @@ dependencies = [
 
 [[package]]
 name = "xtask"
-version = "0.0.1-0.dev.5"
+version = "0.0.1-0.dev.6"
 dependencies = [
  "anyhow",
  "buf-tools",
