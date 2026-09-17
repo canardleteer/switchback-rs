@@ -12,12 +12,12 @@ Echo unary request/response as events.
 ```yaml
 bindings:
   kafka:
-    bindingVersion: 0.4.0
+    bindingVersion: "0.4.0"
     partitions: 6
     replicas: 3
     topic: acme.echo.unary
   mqtt:
-    bindingVersion: 0.2.0
+    bindingVersion: "0.2.0"
     qos: 1
     retain: false
 description: Echo unary request/response as events.

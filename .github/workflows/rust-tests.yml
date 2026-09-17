@@ -36,14 +36,8 @@ jobs:
       - name: cargo xtask align-workspace-versions --check
         run: cargo xtask align-workspace-versions --check
 
-      - name: cargo xtask fmt-check
-        run: cargo xtask fmt-check
-
-      - name: cargo xtask check
-        run: cargo xtask check
-
-      - name: cargo xtask clippy
-        run: cargo xtask clippy
+      - name: cargo xtask check --only=fmt,check,clippy
+        run: cargo xtask check --only=fmt,check,clippy
 
       - name: cargo xtask publish-check
         run: cargo xtask publish-check
@@ -79,13 +73,9 @@ jobs:
           shared-key: cargo
           cache-bin: false
 
-      - name: cargo xtask check
+      - name: cargo xtask check --only=check,clippy
         if: matrix.platform != 'linux-amd64'
-        run: cargo xtask check
+        run: cargo xtask check --only=check,clippy
 
-      - name: cargo xtask clippy
-        if: matrix.platform != 'linux-amd64'
-        run: cargo xtask clippy
-
-      - name: cargo xtask ci-post
-        run: cargo xtask ci-post
+      - name: cargo xtask check --only=test,render,link-check,highlight,spec-vendor,example-fixtures
+        run: cargo xtask check --only=test,render,link-check,highlight,spec-vendor,example-fixtures

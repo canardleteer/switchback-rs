@@ -28,25 +28,6 @@ fn cargo_fmt(extra: &[&str]) -> Result<()> {
     cargo(&args)
 }
 
-pub fn check() -> Result<()> {
-    cargo(&["check", "--workspace", "--all-targets"])
-}
-
-pub fn clippy() -> Result<()> {
-    cargo(&[
-        "clippy",
-        "--workspace",
-        "--all-targets",
-        "--",
-        "-D",
-        "warnings",
-    ])
-}
-
-pub fn test() -> Result<()> {
-    cargo(&["test", "--workspace"])
-}
-
 pub fn audit() -> Result<()> {
     external("cargo", &["audit"], CARGO_AUDIT_INSTALL)
 }

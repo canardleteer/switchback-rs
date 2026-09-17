@@ -11,7 +11,7 @@ Server-sent echo chunks as an event stream.
 ```yaml
 bindings:
   kafka:
-    bindingVersion: 0.4.0
+    bindingVersion: "0.4.0"
     partitions: 3
     topic: acme.echo.stream
 description: Server-sent echo chunks as an event stream.

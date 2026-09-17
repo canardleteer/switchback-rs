@@ -15,7 +15,7 @@ Echo and gateway events for the Acme documentation fixture.
 publish:
   message:
     payload:
-      $ref: "../v2/asyncapi.yaml#/components/schemas/ListProductsResponse"
+      $ref: ../v2/asyncapi.yaml#/components/schemas/ListProductsResponse
   operationId: publishCatalogProxy
   summary: Catalog product list events (v2 schema)
 ```
@@ -33,7 +33,7 @@ Server-sent echo chunks as an event stream.
 ```yaml
 bindings:
   kafka:
-    bindingVersion: 0.4.0
+    bindingVersion: "0.4.0"
     partitions: 3
     topic: acme.echo.stream
 description: Server-sent echo chunks as an event stream.
@@ -58,12 +58,12 @@ Echo unary request/response as events.
 ```yaml
 bindings:
   kafka:
-    bindingVersion: 0.4.0
+    bindingVersion: "0.4.0"
     partitions: 6
     replicas: 3
     topic: acme.echo.unary
   mqtt:
-    bindingVersion: 0.2.0
+    bindingVersion: "0.2.0"
     qos: 1
     retain: false
 description: Echo unary request/response as events.
@@ -95,7 +95,7 @@ sequenceDiagram
 ```yaml
 message:
   payload:
-    $ref: "../v2/asyncapi.yaml#/components/schemas/ListProductsResponse"
+    $ref: ../v2/asyncapi.yaml#/components/schemas/ListProductsResponse
 operationId: publishCatalogProxy
 summary: Catalog product list events (v2 schema)
 ```
@@ -236,6 +236,6 @@ type: object
 ### Problem
 
 ```yaml
-$ref: "../shared/schemas.yaml#/Problem"
+$ref: ../shared/schemas.yaml#/Problem
 ```
 

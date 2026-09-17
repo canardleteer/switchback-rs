@@ -606,7 +606,7 @@ type: object
 ### Problem
 
 ```yaml
-$ref: "../shared/schemas.yaml#/Problem"
+$ref: ../shared/schemas.yaml#/Problem
 ```
 
 ### Product

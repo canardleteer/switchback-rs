@@ -36,7 +36,7 @@ Pipeline run lifecycle events.
 address: pipelines/runs
 bindings:
   kafka:
-    bindingVersion: 0.5.0
+    bindingVersion: "0.5.0"
     partitions: 8
     topic: acme.pipelines.runs
 description: Pipeline run lifecycle events.
@@ -84,7 +84,7 @@ sequenceDiagram
 action: send
 bindings:
   kafka:
-    bindingVersion: 0.5.0
+    bindingVersion: "0.5.0"
     groupId: pipeline-producers
 channel:
   $ref: "#/channels/pipelines~1runs"
@@ -108,7 +108,7 @@ sequenceDiagram
 action: receive
 bindings:
   kafka:
-    bindingVersion: 0.5.0
+    bindingVersion: "0.5.0"
     groupId: pipeline-watchers
 channel:
   $ref: "#/channels/pipelines~1runs"

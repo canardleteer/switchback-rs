@@ -9,7 +9,7 @@
 ```yaml
 bindings:
   kafka:
-    bindingVersion: 0.4.0
+    bindingVersion: "0.4.0"
     partitions: 12
     topic: acme.catalog.products.created
 publish:
