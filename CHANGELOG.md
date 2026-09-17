@@ -8,6 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.0.1-0.dev.6](https://github.com/canardleteer/switchback-rs/compare/v0.0.1-0.dev.5...v0.0.1-0.dev.6) - 2026-09-17
+
+### Other
+
+- unify xtask check/ci and absorb buf, buffa, and dependency bumps
+- update Cargo.toml dependencies
+
 ## [0.0.1-0.dev.5](https://github.com/canardleteer/switchback-rs/compare/v0.0.1-0.dev.4...v0.0.1-0.dev.5) - 2026-06-22
 
 ### Added
