@@ -154,7 +154,7 @@ fn infer_module_root(inputs: &[PathBuf]) -> Result<PathBuf> {
 #[cfg(feature = "buf")]
 #[allow(dead_code)] // referenced when `buf` feature is disabled
 pub(crate) const BUF_INSTALL_HINT: &str =
-    "cargo install buf-toolchain --locked --version 1.70.0-hotfix.1";
+    "cargo install buf-toolchain --locked --version 1.73.0-rc.1";
 
 pub(crate) fn tool_exists(name: &str) -> bool {
     use std::process::{Command, Stdio};

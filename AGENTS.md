@@ -134,11 +134,26 @@ Configuration lives in [`.yamllint`](.yamllint).
 
 ## Workspace checks (`xtask`)
 
-The workspace task runner lives in [`xtask/`](xtask/).
+The workspace task runner lives in [`xtask/`](xtask/). For work under
+`xtask/`, also read and follow [`xtask/AGENTS.md`](xtask/AGENTS.md).
+
+Canonical handles: `cargo xtask check` (visible alias `ci`), `coverage` /
+`coverage-open`, and `profile` / `profile-open`. **Omitted:** `image` (no owned
+images) and MCP evaluation (no stdio MCP server). Keep GitHub workflow
+declarations aligned with those handles when behavior changes; the xtask must
+not inspect a CI provider declaration.
+
+Prefer `cargo xtask` over new Python scripts for typed, cross-platform,
+Cargo-aware development orchestration. Inspect overlapping Python scripts and
+propose a migration, but obtain user approval before replacing a mature script
+or changing its callers. Retain Python when its ecosystem or data-processing
+strengths materially fit better. This repository has no retained Python
+orchestration. When an xtask command needs async I/O or concurrency, `tokio`
+and `tracing` are appropriate; leave synchronous commands synchronous.
 
 [`rust-toolchain.toml`](rust-toolchain.toml) pins the Rust channel and rustup
 components (`rustfmt`, `clippy`). Run `rustup toolchain install` in the repo
-root if `cargo xtask check-toolchain` reports missing components.
+root if `cargo xtask check --only=toolchain` reports missing components.
 
 Before opening a PR, run the full pre-merge block below (or the subset matching
 your changed paths).
@@ -147,11 +162,11 @@ your changed paths).
 
 | Workflow | When (GHA) | Local equivalent |
 | --- | --- | --- |
-| [`rust-tests.yml`](.github/workflows/rust-tests.yml) gate | Push/PR; `linux-gate` on `ubuntu-latest` | `cargo xtask align-workspace-versions --check`, `fmt-check`, `check`, `clippy`, `publish-check`, `audit` |
-| `rust-tests.yml` matrix (linux) | After gate; `ci-post` only | `cargo xtask ci-post` (or full `cargo xtask ci`) |
-| `rust-tests.yml` matrix (linux / macOS) | After gate; `check`/`clippy` then `ci-post` on macOS only | `cargo xtask check`, `clippy`, `ci-post` (or full `cargo xtask ci`) |
-| [`rumdl.yml`](.github/workflows/rumdl.yml) | Every PR to `main`; push to `main` when `**/*.md` or `.rumdl.toml` change | `cargo xtask rumdl-check` |
-| [`yaml-lint.yml`](.github/workflows/yaml-lint.yml) | Every PR to `main`; push to `main` when in-repo YAML under `crates/`, `examples/`, `proto/` changes | `cargo xtask ryl` |
+| [`rust-tests.yml`](.github/workflows/rust-tests.yml) gate | Push/PR; `linux-gate` on `ubuntu-latest` | `cargo xtask align-workspace-versions --check`, `cargo xtask check --only=fmt,check,clippy`, `publish-check`, `audit` |
+| `rust-tests.yml` matrix (linux) | After gate; integration subset | `cargo xtask check --only=test,render,link-check,highlight,spec-vendor,example-fixtures` |
+| `rust-tests.yml` matrix (macOS) | After gate; compile then integration | `cargo xtask check --only=check,clippy,test,render,link-check,highlight,spec-vendor,example-fixtures` |
+| [`rumdl.yml`](.github/workflows/rumdl.yml) | Every PR to `main`; every branch push | `cargo xtask rumdl-check` |
+| [`yaml-lint.yml`](.github/workflows/yaml-lint.yml) | Every PR to `main`; every branch push | `cargo xtask ryl` |
 | [`release-plz.yml`](.github/workflows/release-plz.yml) | Push to `main`, `workflow_dispatch` | N/A |
 | [`publish-crate.yml`](.github/workflows/publish-crate.yml) | Manual `workflow_dispatch` on `main` only | N/A — emergency republish one crate at a time |
 
@@ -164,18 +179,20 @@ GHA uses
 typical PR:
 
 ```bash
-cargo xtask align-workspace-versions --check   # rust-tests.yml linux-gate
-cargo xtask ci                                 # full local gate (ci + ci-post)
-cargo xtask audit                              # rust-tests.yml linux-gate
-cargo xtask publish-check                      # rust-tests.yml linux-gate
-cargo xtask rumdl-check                        # rumdl.yml
-cargo xtask ryl                                # yaml-lint.yml
+cargo xtask align-workspace-versions --check # rust-tests.yml linux-gate
+cargo xtask check                            # full local gate (alias: cargo xtask ci)
+cargo xtask audit                            # rust-tests.yml linux-gate
+cargo xtask publish-check                    # rust-tests.yml linux-gate
+cargo xtask rumdl-check                      # rumdl.yml
+cargo xtask ryl                              # yaml-lint.yml
 ```
 
-GHA splits compile gates across **`linux-gate`** (align, fmt-check, check,
-clippy, publish-check, audit) and the **matrix** (`ci-post` on linux; check,
-clippy, then `ci-post` on macOS). Local pre-merge still uses the
-undivided `ci` block above.
+GHA splits compile gates across **linux-gate** (align,
+`--only=fmt,check,clippy`, publish-check, audit) and the **matrix**
+(integration `--only=` subset on linux; `--only=check,clippy` then the
+integration subset on macOS). Local pre-merge uses the undivided `check` /
+`ci` command (all registered steps). Do not run bare `cargo xtask check` in
+GHA; that would fold the matrix into linux-gate.
 
 Hygiene subcommands require these tools on `PATH` (install once per machine):
 
@@ -186,34 +203,35 @@ Hygiene subcommands require these tools on `PATH` (install once per machine):
 
 If any are missing, `xtask` prints an install hint before failing.
 
-### `cargo xtask ci` — Rust/parser gate
+### `cargo xtask check` / `ci` — Rust/parser gate
 
-**`ci` is the full local Rust/parser gate.** GHA runs it in two parts: the
-**`linux-gate`** job (through clippy + audit) and the **matrix** (`ci-post`;
-check/clippy before `ci-post` on macOS only). Individual subcommands
-(`fmt-check`, `clippy`, `test`, etc.) exist so you can run one step while
-iterating; they are not a substitute for `ci`.
+**`check` is the full local Rust/parser gate; `ci` is a visible alias over the
+same parser and execution path.** Registered steps run fail-fast in this
+order: `toolchain`, `fmt`, `check`, `clippy`, `test`, `render`, `link-check`,
+`highlight`, `spec-vendor`, `example-fixtures`. Absence of a selector means
+all steps. Use `--only` or `--exclude` (they conflict). Feature-aware Cargo
+steps (`check`, `clippy`, `test`, `coverage`) default to `--all-features` when
+no feature flag is passed.
 
-`cargo xtask ci` runs, in order:
+```bash
+cargo xtask check --only=fmt,clippy,test
+cargo xtask check --exclude=toolchain
+```
 
-1. `check-toolchain` — pin matches [`rust-toolchain.toml`](rust-toolchain.toml)
-2. `fmt-check` — `cargo fmt --all --check` plus wire-schema `buf lint` /
-   `buf format --diff`
-3. `check` — `cargo check --workspace --all-targets`
-4. `clippy` — `cargo clippy --workspace --all-targets -- -D warnings`
-5. `ci-post` — steps 6–11 below
+Iteration shortcuts (`fmt`, `fmt-check`, `clippy`, `test`, `audit`,
+`rumdl-check`, `ryl`, `align-workspace-versions`, `publish-check`,
+`check-toolchain`, `spec-vendor`, `render`, `link-check`, highlight/golden
+updaters) remain. They are not a substitute for the full `check` / `ci` gate.
 
-`cargo xtask ci-post` runs the integration half only (GHA matrix after compile
-gates):
-
-6. `test` — `cargo test --workspace`
-7. `render mdbook` — golden renderer regression
-8. `link-check` — intra-link validation
-9. `check-highlight-rust` — protobuf / CEL highlighter golden HTML
-10. `spec-vendor validate` — vendored meta-schema SHA-256 locks
-11. `example-fixtures validate` — OpenAPI and AsyncAPI upstream fixture locks
+`fmt` as a registered check step is `cargo fmt --all --check` plus wire-schema
+`buf lint` / `buf format --diff`. The `fmt` shortcut still applies rustfmt,
+buf format, rumdl, and ryl fixes.
 
 Audit, Markdown, and YAML hygiene run via separate workflows (see table above).
+
+Optional local handles (not CI): `cargo xtask coverage` / `coverage-open`
+(llvm-cov default, tarpaulin supported) and `cargo xtask profile` /
+`profile-open` (Samply on `reference-manual-example`).
 
 ## Releases
 
@@ -361,4 +379,5 @@ cargo xtask align-workspace-versions --check
   markdown (or the whole tree), `ryl --fix` where applicable.
 - **`cargo xtask fmt-check`**, **`clippy`**, **`test`**, **`audit`**,
   **`rumdl-check`**, **`ryl`** — single-step shortcuts; same flags as the
-  matching hygiene or gate step.
+  matching hygiene or registered `check` step. Prefer
+  `cargo xtask check --only=…` when selecting several gate steps.

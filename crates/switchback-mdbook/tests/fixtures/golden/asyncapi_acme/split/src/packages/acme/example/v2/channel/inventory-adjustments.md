@@ -9,7 +9,7 @@
 ```yaml
 bindings:
   kafka:
-    bindingVersion: 0.4.0
+    bindingVersion: "0.4.0"
     groupId: inventory-watchers
     topic: acme.inventory.adjustments
 subscribe:

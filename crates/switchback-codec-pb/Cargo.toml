@@ -27,8 +27,8 @@ switchback-traits.workspace = true
 buffa.workspace = true
 
 [build-dependencies]
-buffa-build = { version = "0.6.0", default-features = false }
-protoc-bin-vendored = "3.1.0"
+buffa-build = { version = "0.9.2", default-features = false }
+protoc-bin-vendored.workspace = true
 
 [dev-dependencies]
 static_assertions = "1"

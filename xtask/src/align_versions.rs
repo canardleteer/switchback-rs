@@ -8,7 +8,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use toml_edit::{DocumentMut, Item, Value};
 
-#[derive(Parser)]
+#[derive(Debug, Parser)]
 pub struct AlignVersionsArgs {
     /// Target semver; default is the current `[workspace.package].version`.
     #[arg(long)]

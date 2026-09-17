@@ -50,7 +50,7 @@ responses:
     content:
       application/json:
         schema:
-          $ref: "../v2/openapi.yaml#/components/schemas/ListProductsResponse"
+          $ref: ../v2/openapi.yaml#/components/schemas/ListProductsResponse
     description: Product page from v2 catalog schema
   "401":
     $ref: "#/components/responses/Unauthorized"

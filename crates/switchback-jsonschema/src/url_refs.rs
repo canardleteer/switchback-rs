@@ -11,10 +11,10 @@ fn cache() -> &'static Mutex<BTreeMap<String, Vec<u8>>> {
 
 /// Fetch a URL `$ref` target with an in-memory cache.
 pub async fn fetch_url(url: &str) -> switchback_traits::Result<Vec<u8>> {
-    if let Ok(guard) = cache().lock() {
-        if let Some(bytes) = guard.get(url) {
-            return Ok(bytes.clone());
-        }
+    if let Ok(guard) = cache().lock()
+        && let Some(bytes) = guard.get(url)
+    {
+        return Ok(bytes.clone());
     }
 
     let response = reqwest::get(url)

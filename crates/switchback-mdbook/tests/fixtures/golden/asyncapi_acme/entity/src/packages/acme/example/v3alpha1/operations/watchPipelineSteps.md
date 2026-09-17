@@ -13,7 +13,7 @@ sequenceDiagram
 action: receive
 bindings:
   kafka:
-    bindingVersion: 0.5.0
+    bindingVersion: "0.5.0"
     groupId: pipeline-watchers
 channel:
   $ref: "#/channels/pipelines~1runs"

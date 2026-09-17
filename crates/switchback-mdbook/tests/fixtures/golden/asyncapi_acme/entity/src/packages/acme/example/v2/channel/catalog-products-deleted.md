@@ -9,7 +9,7 @@
 ```yaml
 bindings:
   kafka:
-    bindingVersion: 0.4.0
+    bindingVersion: "0.4.0"
     topic: acme.catalog.products.deleted
 publish:
   message:

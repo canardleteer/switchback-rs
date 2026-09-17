@@ -17,7 +17,7 @@ Catalog and inventory event streams for the Acme fixture.
 ```yaml
 bindings:
   kafka:
-    bindingVersion: 0.4.0
+    bindingVersion: "0.4.0"
     partitions: 12
     topic: acme.catalog.products.created
 publish:
@@ -42,7 +42,7 @@ tags:
 ```yaml
 bindings:
   kafka:
-    bindingVersion: 0.4.0
+    bindingVersion: "0.4.0"
     topic: acme.catalog.products.deleted
 publish:
   message:
@@ -66,7 +66,7 @@ tags:
 ```yaml
 bindings:
   kafka:
-    bindingVersion: 0.4.0
+    bindingVersion: "0.4.0"
     groupId: inventory-watchers
     topic: acme.inventory.adjustments
 subscribe:
@@ -215,7 +215,7 @@ type: object
 ### Problem
 
 ```yaml
-$ref: "../shared/schemas.yaml#/Problem"
+$ref: ../shared/schemas.yaml#/Problem
 ```
 
 ### Product
